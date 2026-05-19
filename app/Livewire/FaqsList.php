@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Livewire;
+
+use App\Models\Faq;
+use Livewire\Component;
+
+class FaqsList extends Component
+{
+    public $section;
+    public $faqs;
+
+    public function mount(): void
+    {
+        $this->faqs = Faq::active()->where('section', $this->section)->get();
+
+    }
+    public function render()
+    {
+        $faqsSchema = $this->generateFaqSchema();
+        return view('livewire.faqs-list', compact('faqsSchema'));
+    }
+
+
+    protected function generateFaqSchema(){
+
+        $faqs = $this->faqs;
+
+        if (!$faqs) {
+            return null;
+        }
+        $mainEntity = [];
+        foreach ($faqs as $faq) {
+
+            $mainEntity[] = [
+                '@type' => 'Question',
+                'name' => $faq['question'],
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text' => strip_tags($faq['answer'])
+                ]
+            ];
+        }
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'FAQPage',
+            'mainEntity' => $mainEntity
+        ];
+        return json_encode($schema);
+    }
+
+}
