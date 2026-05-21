@@ -1,7 +1,8 @@
 <?php
-
+// correct
 namespace App\Livewire;
 
+use Illuminate\Support\Str;
 use AllowDynamicProperties;
 use App\Enums\EmploymentType;
 use App\Models\JobCategory;
@@ -16,10 +17,6 @@ class JobsComponent extends Component
 {
     use WithPagination;
 
-    // url query string
-
-
-//    public $jobs;
     public $location;
     public $category;
     public $job_type = [];
@@ -28,56 +25,44 @@ class JobsComponent extends Component
     public $categories;
     public $job_types;
     public $salary_ranges;
-
-    // Free-text search: job title or employer name (from query string `q`)
     public $q;
-
-    public $i = 1;
-
-
-
 
     public function mount($location = null, $category_slug = null): void
     {
         $this->categories = JobCategory::active()->pluck('name', 'id');
         $this->locations = Opening::distinct()->pluck('location');
-        // Get job types from EmploymentType enum
         $this->job_types = EmploymentType::toOptionsArray();
-
-        // Initialize keyword from the query string if present
         $this->q = request()->query('q');
 
-
-        if ($location && !$category_slug) {
-            // Check if it's a category slug instead of a location (for BC)
-            $cat = JobCategory::where('slug', $location)->first();
+        if ($location) {
+            $cat = JobCategory::where('slug', Str::slug($location))->first();
             if ($cat) {
                 $this->category = $cat->id;
                 $this->location = null;
             } else {
-                // If it's not a category, treat it as location.
-                // We should try to find matching location from existing ones.
-                $originalLocation = str_replace('-', ' ', $location);
-                // Try to find the actual case-sensitive location from the database
-                $foundLocation = $this->locations->first(function ($loc) use ($originalLocation) {
-                    return strtolower($loc) === strtolower($originalLocation);
+                $foundLocation = $this->locations->first(function ($loc) use ($location) {
+                    return Str::slug($loc) === Str::slug($location);
                 });
-                $this->location = $foundLocation ?: $originalLocation;
+                $this->location = Str::slug($foundLocation) ? $foundLocation : null;
             }
-        } elseif ($location && $category_slug) {
-            $originalLocation = str_replace('-', ' ', $location);
-            $foundLocation = $this->locations->first(function ($loc) use ($originalLocation) {
-                return strtolower($loc) === strtolower($originalLocation);
+        }
+        if ($category_slug) {
+            $foundLocation = $this->locations->first(function ($loc) use ($location) {
+                return Str::slug($loc) === Str::slug($location);
             });
-            $this->location = $foundLocation ?: $originalLocation;
+            $this->location = $foundLocation;
 
-            $cat = JobCategory::where('slug', $category_slug)->first();
+            $cat = JobCategory::where('slug', Str::slug($category_slug))->first();
             if ($cat) {
                 $this->category = $cat->id;
             }
         }
     }
 
+    public function hydrate(): void
+    {
+        $this->q = request()->query('q', $this->q);
+    }
 
     public function updatedLocation($value)
     {
@@ -91,7 +76,7 @@ class JobsComponent extends Component
 
     private function updateUrl()
     {
-        $locationSlug = $this->location ? strtolower(str_replace(' ', '-', $this->location)) : null;
+        $locationSlug = $this->location ? Str::slug($this->location) : null;
         $categorySlug = null;
 
         if ($this->category) {
@@ -101,20 +86,16 @@ class JobsComponent extends Component
 
         $url = route('jobs');
         if ($locationSlug && $categorySlug) {
-            $url = route('jobs.seo', ['location' => $locationSlug, 'category_slug' => $categorySlug]);
+            $url = route('jobs.location.category', ['location' => $locationSlug, 'category_slug' => $categorySlug]);
         } elseif ($locationSlug) {
-            $url = route('jobs.seo', ['location' => $locationSlug]);
+            $url = route('jobs.location', ['location' => $locationSlug]);
         } elseif ($categorySlug) {
-            // Using the new structure, we need to put it in category_slug position if no location
-            // But if we want it to be /jobs/{category_slug}, we might need to handle it.
-            // For now, let's stick to the route we defined.
-            $url = route('jobs.seo', ['location' => $categorySlug]); // BC handled in mount
+            $url = route('jobs.category', ['category' => $categorySlug]);
         }
 
-        // Ensure trailing slash and preserve existing keyword query `q` if set
         $url = rtrim($url, '/') . '/';
         if (!empty($this->q)) {
-            $url .= ('?q=' . urlencode(trim($this->q)));
+            $url .= '?q=' . urlencode(trim($this->q));
         }
 
         $this->dispatch('url-updated', ['url' => $url]);
@@ -127,58 +108,56 @@ class JobsComponent extends Component
         $this->category = null;
         $this->job_type = [];
         $this->salary_range = null;
-        // clear query string
         $this->q = null;
         $this->updateUrl();
         $this->jobs = $this->search();
         $this->resetPage();
-        $this->dispatch('reinit-select2');
+        $this->dispatch('reset-select2');
     }
 
     public function render()
     {
-
         $this->jobs = $this->search();
-//        dd($job_list);
-        return view('livewire.jobs-component',
-            ['jobs' => $this->jobs])->layout('components.frontend.main');
+        //    dd($this->jobs->items());
+        return view('livewire.jobs-component', ['jobs' => $this->jobs])->layout('components.frontend.main');
     }
 
     public function search()
     {
-
-//        dump($this->job_type);
-//        dump("Location: ", $this->location);
-//        dump($this->category);
-//        dump($this->something);
-//dd();
         $query = Opening::query()->active()->with('employer');
+
+        $keyword = trim($this->q ?: request()->query('q', ''));
+        
         // Keyword filter: search by job title or employer name
-        if ($this->q) {
-            $keyword = trim($this->q);
+        // if ($keyword !== '') {
+        //     $query->where(function ($q) use ($keyword) {
+        //         $q->where('title', 'like', "%{$keyword}%")->orWhereHas('employer', function ($q2) use ($keyword) {
+        //             $q2->where('name', 'like', "%{$keyword}%");
+        //         });
+        //     });
+        // }
+        
+        if ($keyword !== '') {
             $query->where(function ($q) use ($keyword) {
                 $q->where('title', 'like', "%{$keyword}%")
-                  ->orWhereHas('employer', function ($q2) use ($keyword) {
-                      $q2->where('name', 'like', "%{$keyword}%");
-                  });
+                    ->orWhere('slug', 'like', "%{$keyword}%")
+                    ->orWhere('job_type', 'like', "%{$keyword}%")
+                    ->orWhere('location', 'like', "%{$keyword}%");
             });
         }
+
         if ($this->location) {
-            $query->where('location', $this->location);
+            $query->where('location', ucwords(str_replace('-', ' ', $this->location)));
         }
+
         if ($this->category) {
             $query->where('job_category_id', $this->category);
         }
-        if ($this->job_type) {
-            $query->whereIn('job_type', (array)$this->job_type);
-        }
-//        if ($this->salary_range) {
-//            $query->where('salary_range', $this->salary_range);
-//        }
 
-        $this->dispatch('reinit-select2');
+        if ($this->job_type) {
+            $query->whereIn('job_type', (array) $this->job_type);
+        }
+
         return $query->paginate(10);
     }
-
-
 }

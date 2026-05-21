@@ -45,186 +45,75 @@ class JobsResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Section::make('Job Details')
-                    ->description('Fill out the details of the job')
-                    ->icon('heroicon-o-clipboard')
-                    ->schema([
-                        TextInput::make('title')
-                            ->live(onBlur: true)
-                            ->required()
-                            ->afterStateUpdated(function (string $operation, $state, Get $get, Set $set) {
-                                // Only auto-generate the slug on 'create' and if the user hasn't manually edited it.
-//                                if ($operation === 'create') {
-                                $set('slug', self::generateUniqueSlug($state));
-//                                }
-                            }),
-                        Select::make('employer_id')
-                            ->relationship(name: 'employer', titleAttribute: 'name',
-                                modifyQueryUsing: fn(Builder $query) => $query->where('is_active', true))
-                            ->preload()
-                            ->searchable()
-                            ->required(),
-                        Select::make('job_category_id')
-                            ->relationship('job_category', titleAttribute: 'name',
-                                modifyQueryUsing: fn(Builder $query) => $query->where('status', true))
-                            ->preload()
-//                            ->searchable()
-                            ->required(),
-                        TextInput::make('slug')
-                            ->unique(ignoreRecord: true)
-                            ->afterStateUpdated(fn(Set $set) => $set('has_manual_slug_change', true)),
-                        Hidden::make('has_manual_slug_change')
-                            ->default(false)
-                            ->dehydrated(false),
-                    ])->columns(2),
-                Section::make('Job Description')
-                    ->schema([
-                        RichEditor::make('description')
-                            ->toolbarButtons([
-                                'attachFiles',
-                                'blockquote',
-                                'bold',
-                                'bulletList',
-                                'codeBlock',
-                                'h1',
-                                'h2',
-                                'h3',
-                                'italic',
-                                'link',
-                                'orderedList',
-                                'redo',
-                                'strike',
-                                'underline',
-                                'undo',
-                            ])
-                            ->required(),
-                        RichEditor::make('responsibilities')
-                            ->toolbarButtons([
-                            'attachFiles',
-                            'blockquote',
-                            'bold',
-                            'bulletList',
-                            'codeBlock',
-                            'h1',
-                            'h2',
-                            'h3',
-                            'italic',
-                            'link',
-                            'orderedList',
-                            'redo',
-                            'strike',
-                            'underline',
-                            'undo',
-                        ]),
-                        RichEditor::make('skills')
-                            ->toolbarButtons([
-                                'attachFiles',
-                                'blockquote',
-                                'bold',
-                                'bulletList',
-                                'codeBlock',
-                                'h1',
-                                'h2',
-                                'h3',
-                                'italic',
-                                'link',
-                                'orderedList',
-                                'redo',
-                                'strike',
-                                'underline',
-                                'undo',
-                            ]),
-                        RichEditor::make('benefits')
-                            ->toolbarButtons([
-                                'attachFiles',
-                                'blockquote',
-                                'bold',
-                                'bulletList',
-                                'codeBlock',
-                                'h1',
-                                'h2',
-                                'h3',
-                                'italic',
-                                'link',
-                                'orderedList',
-                                'redo',
-                                'strike',
-                                'underline',
-                                'undo',
-                            ]),
-                    ]),
-                Section::make('Additional Information')
-                    ->schema([
-                        Select::make('job_type')
-                            ->label('Employment Type')
-                            ->options(EmploymentType::class)
-                            ->required(),
-                        TextInput::make('location')
-                            ->required(),
-                        TextInput::make('salary_range')
-                            ->suffix('AED/Year')
-                            ->required(),
-                        Select::make('expected_nationalities')
-                            ->multiple()
-                            ->preload()
-                            ->label('Expected Nationalities')
-                            ->required()
-                            ->options(Nationality::active()->pluck('name', 'flag')->toArray())
-                            ->native(false),
-                        Select::make('gender')
-                            ->options(['Male' => 'Male', 'Female' => 'Female', 'Other' => 'Other'])
-                            ->required(),
-                        TextInput::make('required_experience')
-                            ->suffix('Years')
-                            ->required(),
-                        Toggle::make('status')->default(true),
-                        Toggle::make('featured'),
-                    ])->columns(2),
-                Section::make('Seo Details')
-                    ->schema([
-                        TextInput::make('meta_title')
-                            ->required(),
-                        Textarea::make('meta_description'),
-                        TagsInput::make('meta_keywords')->separator(','),
-                        Textarea::make('twitter_tags')
-                            ->rows(5),
-                        Textarea::make('og_tags')->label('Open Graph Tags')->rows(5),
-//                        RichEditor::make('benefits'),
-                    ]),
-            ]);
+        return $form->schema([
+            Section::make('Job Details')
+                ->description('Fill out the details of the job')
+                ->icon('heroicon-o-clipboard')
+                ->schema([
+                    TextInput::make('title')
+                        ->live(onBlur: true)
+                        ->required()
+                        ->afterStateUpdated(function (string $operation, $state, Get $get, Set $set) {
+                            // Only auto-generate the slug on 'create' and if the user hasn't manually edited it.
+                            //                                if ($operation === 'create') {
+                            $set('slug', self::generateUniqueSlug($state));
+                            //                                }
+                        }),
+                    Select::make('employer_id')->relationship(name: 'employer', titleAttribute: 'name', modifyQueryUsing: fn(Builder $query) => $query->where('is_active', true))->preload()->searchable()->required(),
+                    Select::make('job_category_id')->relationship('job_category', titleAttribute: 'name', modifyQueryUsing: fn(Builder $query) => $query->where('status', true))->preload()//                            ->searchable()
+                    ->required(),
+                    TextInput::make('slug')->unique(ignoreRecord: true)->afterStateUpdated(fn(Set $set) => $set('has_manual_slug_change', true)),
+                    Hidden::make('has_manual_slug_change')->default(false)->dehydrated(false),
+                ])
+                ->columns(2),
+            Section::make('Job Description')->schema([
+                RichEditor::make('description')
+                    ->toolbarButtons(['attachFiles', 'blockquote', 'bold', 'bulletList', 'codeBlock', 'h1', 'h2', 'h3', 'italic', 'link', 'orderedList', 'redo', 'strike', 'underline', 'undo'])
+                    ->required(),
+                RichEditor::make('responsibilities')->toolbarButtons(['attachFiles', 'blockquote', 'bold', 'bulletList', 'codeBlock', 'h1', 'h2', 'h3', 'italic', 'link', 'orderedList', 'redo', 'strike', 'underline', 'undo']),
+                RichEditor::make('skills')->toolbarButtons(['attachFiles', 'blockquote', 'bold', 'bulletList', 'codeBlock', 'h1', 'h2', 'h3', 'italic', 'link', 'orderedList', 'redo', 'strike', 'underline', 'undo']),
+                RichEditor::make('benefits')->toolbarButtons(['attachFiles', 'blockquote', 'bold', 'bulletList', 'codeBlock', 'h1', 'h2', 'h3', 'italic', 'link', 'orderedList', 'redo', 'strike', 'underline', 'undo']),
+            ]),
+            Section::make('Additional Information')
+                ->schema([
+                    Select::make('job_type')->label('Employment Type')->options(EmploymentType::class)->required(),
+                    TextInput::make('location')->required(),
+                    TextInput::make('salary_range')->suffix('AED/Year')->required(),
+                    Select::make('expected_nationalities')
+                        ->multiple()
+                        ->preload()
+                        ->label('Expected Nationalities')
+                        ->required()
+                        ->options(Nationality::active()->pluck('name', 'flag')->toArray())
+                        ->native(false),
+                    Select::make('gender')
+                        ->options(['Male' => 'Male', 'Female' => 'Female', 'Both' => 'Both', 'Other' => 'Other'])
+                        ->required(),
+                    TextInput::make('required_experience')->suffix('Years')->required(),
+                    Toggle::make('status')->default(true),
+                    Toggle::make('featured'),
+                ])
+                ->columns(2),
+            Section::make('Seo Details')->schema([
+                TextInput::make('meta_title')->required(),
+                Textarea::make('meta_description'),
+                TagsInput::make('meta_keywords')->separator(','),
+                Textarea::make('twitter_tags')->rows(5),
+                Textarea::make('og_tags')->label('Open Graph Tags')->rows(5),
+                //                        RichEditor::make('benefits'),
+            ]),
+        ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                TextColumn::make('title')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('employer.name')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('job_type'),
-                TextColumn::make('location'),
-                TextColumn::make('salary_range'),
-                TextColumn::make('gender'),
-                ToggleColumn::make('featured')->label('Featured')->onColor('success'),
-                ToggleColumn::make('status')->label('Status')->onColor('success')->offColor('danger'),
-            ])
+            ->columns([TextColumn::make('title')->searchable()->sortable(), TextColumn::make('employer.name')->searchable()->sortable(), TextColumn::make('job_type'), TextColumn::make('location'), TextColumn::make('salary_range'), TextColumn::make('gender'), ToggleColumn::make('featured')->label('Featured')->onColor('success'), ToggleColumn::make('status')->label('Status')->onColor('success')->offColor('danger')])
             ->filters([
                 //
             ])
-            ->actions([
-                EditAction::make(),
-                DeleteAction::make()->requiresConfirmation(),
-            ])
-            ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make()->requiresConfirmation(),
-                ]),
-            ]);
+            ->actions([EditAction::make(), DeleteAction::make()->requiresConfirmation()])
+            ->bulkActions([BulkActionGroup::make([DeleteBulkAction::make()->requiresConfirmation()])]);
     }
 
     public static function getPages(): array

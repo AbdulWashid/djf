@@ -14,12 +14,7 @@ class HomepageSearch extends Component
     public function mount(): void
     {
         // Populate distinct locations from openings (non-null), deduplicated
-        $this->locations = Opening::query()
-            ->whereNotNull('location')
-            ->distinct()
-            ->pluck('location')
-            ->filter()
-            ->values();
+        $this->locations = Opening::query()->whereNotNull('location')->distinct()->pluck('location')->filter()->values();
     }
 
     public function submit()
@@ -28,10 +23,9 @@ class HomepageSearch extends Component
         // and include `q` as query string when present.
         $q = $this->q ?: null;
 
-
         if ($this->location) {
             $locationSlug = strtolower(str_replace(' ', '-', $this->location));
-            $base = route('jobs.seo', ['location' => $locationSlug]) . '/';
+            $base = route('jobs.location', ['location' => $locationSlug]) . '/';
             $url = $q !== null ? $base . ('?q=' . urlencode($q)) : $base;
             return redirect()->to($url);
         }

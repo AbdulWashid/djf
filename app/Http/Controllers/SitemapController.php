@@ -22,7 +22,7 @@ class SitemapController extends Controller
 
         return response($sitemap, 200, [
             'Content-Type' => 'application/xml',
-            'Cache-Control' => 'public, max-age=3600', // Cache for 1 hour
+            'Cache-Control' => 'public, max-age=3600',
         ]);
     }
 
@@ -33,19 +33,10 @@ class SitemapController extends Controller
         // Add static pages
         $staticPages = [
             ['url' => route('home'), 'priority' => '1.0', 'changefreq' => 'weekly'],
-            ['url' => route('about-us'), 'priority' => '0.8', 'changefreq' => 'monthly'],
+            ['url' => route('jobs'), 'priority' => '0.8', 'changefreq' => 'daily'],
             ['url' => route('blog'), 'priority' => '0.9', 'changefreq' => 'daily'],
-            ['url' => route('contact-us'), 'priority' => '0.7', 'changefreq' => 'monthly'],
+            ['url' => route('contact-us'), 'priority' => '0.8', 'changefreq' => 'monthly'],
         ];
-
-        $pages = \App\Models\StaticPage::where('status', 1)->get();
-        foreach ($pages as $page) {
-            $staticPages[] = [
-                'url' => route('page', $page->slug),
-                'priority' => '0.7',
-                'changefreq' => 'monthly'
-            ];
-        }
 
         foreach ($staticPages as $page) {
             $urls->push([
@@ -55,18 +46,45 @@ class SitemapController extends Controller
                 'priority' => $page['priority'],
             ]);
         }
+
+
+        $pages = \App\Models\StaticPage::select('slug','status','updated_at')->where('status', 1)->get();
+        foreach ($pages as $page) {
+            // $staticPages[] = [
+            //     'url' => route('page', $page->slug),
+            //     'priority' => '0.7',
+            //     'changefreq' => 'monthly'
+            // ];
+            $urls->push([
+                'loc' => route('page', $page->slug),
+                'lastmod' => $page->updated_at->toISOString(),
+                'changefreq' => 'monthly',
+                'priority' => '0.7',
+            ]);
+        }
+
+        // foreach ($staticPages as $page) {
+        //     $urls->push([
+        //         'loc' => $page['url'],
+        //         'lastmod' => now()->toISOString(),
+        //         'changefreq' => $page['changefreq'],
+        //         'priority' => $page['priority'],
+        //     ]);
+        // }
+
         // Add job categories
         JobCategory::active()->select(['slug', 'updated_at'])
             ->chunk(100, function ($cats) use ($urls) {
                 foreach ($cats as $cat) {
                     $urls->push([
-                        'loc' => route('jobs.seo', ['location' => null, 'category_slug' => $cat->slug]),
+                        'loc' => route('jobs.category', ['category' => $cat->slug]),
                         'lastmod' => $cat->updated_at->toISOString(),
                         'changefreq' => 'weekly',
                         'priority' => '0.8',
                     ]);
                 }
             });
+
         // Add unique job locations
         $locations = Opening::active()
             ->select('location', DB::raw('MAX(updated_at) as updated_at'))
@@ -75,16 +93,16 @@ class SitemapController extends Controller
             ->groupBy('location')
             ->get();
 
-
         foreach ($locations as $location) {
             $locationSlug = strtolower(str_replace(' ', '-', $location->location));
             $urls->push([
-                'loc' => route('jobs.seo', ['location' => $locationSlug, 'category_slug' => null]),
+                'loc' => route('jobs.location', ['location' => $locationSlug]),
                 'lastmod' => $location->updated_at->toISOString(),
                 'changefreq' => 'weekly',
                 'priority' => '0.8',
             ]);
         }
+
         // Add location + category combinations
         JobCategory::active()->select(['slug', 'updated_at'])
             ->chunk(100, function ($cats) use ($urls, $locations) {
@@ -92,7 +110,7 @@ class SitemapController extends Controller
                     foreach ($locations as $location) {
                         $locationSlug = strtolower(str_replace(' ', '-', $location->location));
                         $urls->push([
-                            'loc' => route('jobs.seo', ['location' => $locationSlug, 'category_slug' => $cat->slug]),
+                            'loc' => route('jobs.location.category', ['location' => $locationSlug, 'category_slug' => $cat->slug]),
                             'lastmod' => max($cat->updated_at, $location->updated_at)->toISOString(),
                             'changefreq' => 'weekly',
                             'priority' => '0.7',
@@ -100,8 +118,6 @@ class SitemapController extends Controller
                     }
                 }
             });
-
-
 
         // Add openings
        Opening::active()->select(['slug', 'updated_at'])
@@ -115,9 +131,6 @@ class SitemapController extends Controller
                     ]);
                 }
             });
-
-
-
 
         // Add blog posts
         Post::published()
@@ -133,21 +146,21 @@ class SitemapController extends Controller
                 }
             });
 
-        // Add blog categories
-//        Category::whereHas('posts', function ($query) {
-//                $query->published();
-//            })
-//            ->select(['slug', 'updated_at'])
-//            ->chunk(50, function ($categories) use ($urls) {
-//                foreach ($categories as $category) {
-//                    $urls->push([
-//                        'loc' => url('/blog?category=' . $category->slug),
-//                        'lastmod' => $category->updated_at->toISOString(),
-//                        'changefreq' => 'weekly',
-//                        'priority' => '0.6',
-//                    ]);
-//                }
-//            });
+        //  Add blog categories
+        //    Category::whereHas('posts', function ($query) {
+        //            $query->published();
+        //        })
+        //        ->select(['slug', 'updated_at'])
+        //        ->chunk(50, function ($categories) use ($urls) {
+        //            foreach ($categories as $category) {
+        //                $urls->push([
+        //                    'loc' => url('/blog?category=' . $category->slug),
+        //                    'lastmod' => $category->updated_at->toISOString(),
+        //                    'changefreq' => 'weekly',
+        //                    'priority' => '0.6',
+        //                ]);
+        //            }
+        //        });
 
         return $this->buildXml($urls);
     }
@@ -158,12 +171,12 @@ class SitemapController extends Controller
         $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
 
         foreach ($urls as $url) {
-            $xml .= '  <url>' . PHP_EOL;
-            $xml .= '    <loc>' . htmlspecialchars($url['loc']) . '</loc>' . PHP_EOL;
-            $xml .= '    <lastmod>' . $url['lastmod'] . '</lastmod>' . PHP_EOL;
-            $xml .= '    <changefreq>' . $url['changefreq'] . '</changefreq>' . PHP_EOL;
-            $xml .= '    <priority>' . $url['priority'] . '</priority>' . PHP_EOL;
-            $xml .= '  </url>' . PHP_EOL;
+        $xml .= ' <url>' . PHP_EOL;
+            $xml .= ' <loc>' . htmlspecialchars($url['loc']) . '</loc>' . PHP_EOL;
+            $xml .= ' <lastmod>' . $url['lastmod'] . '</lastmod>' . PHP_EOL;
+            $xml .= ' <changefreq>' . $url['changefreq'] . '</changefreq>' . PHP_EOL;
+            $xml .= ' <priority>' . $url['priority'] . '</priority>' . PHP_EOL;
+            $xml .= ' </url>' . PHP_EOL;
         }
 
         $xml .= '</urlset>';
