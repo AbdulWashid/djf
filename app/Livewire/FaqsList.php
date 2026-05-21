@@ -13,7 +13,6 @@ class FaqsList extends Component
     public function mount(): void
     {
         $this->faqs = Faq::active()->where('section', $this->section)->get();
-
     }
     public function render()
     {
@@ -21,9 +20,8 @@ class FaqsList extends Component
         return view('livewire.faqs-list', compact('faqsSchema'));
     }
 
-
-    protected function generateFaqSchema(){
-
+    protected function generateFaqSchema()
+    {
         $faqs = $this->faqs;
 
         if (!$faqs) {
@@ -31,22 +29,20 @@ class FaqsList extends Component
         }
         $mainEntity = [];
         foreach ($faqs as $faq) {
-
             $mainEntity[] = [
                 '@type' => 'Question',
                 'name' => $faq['question'],
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => strip_tags($faq['answer'])
-                ]
+                    'text' => strip_tags($faq['answer']),
+                ],
             ];
         }
         $schema = [
             '@context' => 'https://schema.org',
             '@type' => 'FAQPage',
-            'mainEntity' => $mainEntity
+            'mainEntity' => $mainEntity,
         ];
         return json_encode($schema);
     }
-
 }

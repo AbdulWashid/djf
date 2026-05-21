@@ -10,7 +10,7 @@ class Faqs extends Component
     public $faqs;
     public function mount(): void
     {
-            $this->faqs = Faq::active()->where('section', 'general')->get();
+        $this->faqs = Faq::active()->where('section', 'general')->get();
     }
     public function render()
     {

@@ -1,5 +1,3 @@
-
-
 @props([
     'title' => null,
     'description' => null,
@@ -13,37 +11,39 @@
     'section' => null,
     'tags' => [],
     'noindex' => false,
-    'canonical' => null
+    'canonical' => null,
 ])
 
 @php
-        $generalSettings = app(\App\Settings\GeneralSettings::class);
-        $siteSettings = app(\App\Settings\SiteSettings::class);
+    $generalSettings = app(\App\Settings\GeneralSettings::class);
+    $siteSettings = app(\App\Settings\SiteSettings::class);
 
-        $siteTitle = $generalSettings->brand_name ?? $siteSettings->name ?? config('app.name', 'Dubai Job Finder.');
-        $siteDescription = $siteSettings->description ?? 'Search Jobs in Middle East, Dubai. Post your Resume and find your dream job on Dubaijobfinder. We provide driver jobs, accountant jobs and more. Call us!';
-        $siteUrl = config('app.url');
+    $siteTitle = $generalSettings->brand_name ?? ($siteSettings->name ?? config('app.name', 'Dubai Job Finder.'));
+    $siteDescription =
+        $siteSettings->description ??
+        'Search Jobs in Middle East, Dubai. Post your Resume and find your dream job on Dubaijobfinder. We provide driver jobs, accountant jobs and more. Call us!';
+    $siteUrl = config('app.url');
 
-        $pageTitle = $title ? $title . ' - ' . $siteTitle : $siteTitle;
-        $pageDescription = $description ?? $siteDescription;
-        $pageUrl = $url ?? request()->url();
-        $pageImage = $image ?? ($siteSettings->og_image ?? null);
-        $pageKeywords = is_array($keywords) ? implode(', ', $keywords) : $keywords;
+    $pageTitle = $title ? $title . ' - ' . $siteTitle : $siteTitle;
+    $pageDescription = $description ?? $siteDescription;
+    $pageUrl = $url ?? request()->url();
+    $pageImage = $image ?? ($siteSettings->og_image ?? null);
+    $pageKeywords = is_array($keywords) ? implode(', ', $keywords) : $keywords;
 
-        // Ensure absolute URL for image
-        if ($pageImage && !str_starts_with($pageImage, 'http')) {
-            $pageImage = $siteUrl . Storage::url($pageImage);
-        }
+    // Ensure absolute URL for image
+    if ($pageImage && !str_starts_with($pageImage, 'http')) {
+        $pageImage = $siteUrl . Storage::url($pageImage);
+    }
 @endphp
 
 <!-- Primary Meta Tags -->
 <title>{{ $pageTitle }}</title>
 <meta name="title" content="{{ $pageTitle }}">
 <meta name="description" content="{{ $pageDescription }}">
-@if($pageKeywords)
+@if ($pageKeywords)
     <meta name="keywords" content="{{ $pageKeywords }}">
 @endif
-@if($author)
+@if ($author)
     <meta name="author" content="{{ $author }}">
 @endif
 
@@ -51,7 +51,7 @@
 <link rel="canonical" href="{{ $canonical ?? $pageUrl }}">
 
 <!-- Robots -->
-@if($noindex || !($generalSettings->search_engine_indexing ?? false))
+@if ($noindex || !($generalSettings->search_engine_indexing ?? false))
     <meta name="robots" content="noindex, nofollow">
 @else
     <meta name="robots" content="index, follow">
@@ -63,25 +63,25 @@
 <meta property="og:title" content="{{ $pageTitle }}">
 <meta property="og:description" content="{{ $pageDescription }}">
 <meta property="og:site_name" content="{{ $siteTitle }}">
-@if($pageImage)
+@if ($pageImage)
     <meta property="og:image" content="{{ $pageImage }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="{{ $title ?? $siteTitle }}">
 @endif
-@if($publishedTime)
+@if ($publishedTime)
     <meta property="article:published_time" content="{{ $publishedTime }}">
 @endif
-@if($modifiedTime)
+@if ($modifiedTime)
     <meta property="article:modified_time" content="{{ $modifiedTime }}">
 @endif
-@if($author)
+@if ($author)
     <meta property="article:author" content="{{ $author }}">
 @endif
-@if($section)
+@if ($section)
     <meta property="article:section" content="{{ $section }}">
 @endif
-@foreach($tags as $tag)
+@foreach ($tags as $tag)
     <meta property="article:tag" content="{{ $tag }}">
 @endforeach
 
@@ -90,11 +90,11 @@
 <meta property="twitter:url" content="{{ $pageUrl }}">
 <meta property="twitter:title" content="{{ $pageTitle }}">
 <meta property="twitter:description" content="{{ $pageDescription }}">
-@if($pageImage)
+@if ($pageImage)
     <meta property="twitter:image" content="{{ $pageImage }}">
 @endif
-@if($siteSettings->twitter_handle ?? null)
-    <meta property="twitter:site" content="@{{ $siteSettings->twitter_handle }}">
+@if ($siteSettings->twitter_handle ?? null)
+    <meta property="twitter:site" content="@{{ $siteSettings - > twitter_handle }}">
 @endif
 
 <!-- Additional SEO Meta -->
@@ -103,8 +103,8 @@
 <meta name="theme-color" content="#2D2B8D">
 
 <!-- Structured Data -->
-@if($type === 'article' && $publishedTime)
-<script type="application/ld+json">
+@if ($type === 'article' && $publishedTime)
+    <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -148,7 +148,7 @@
 }
 </script>
 @else
-<script type="application/ld+json">
+    <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "WebSite",

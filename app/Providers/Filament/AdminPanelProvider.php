@@ -46,30 +46,11 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(fn(GeneralSettings $settings) => Storage::url($settings->brand_logo))
             ->brandLogoHeight(fn(GeneralSettings $settings) => $settings->brand_logoHeight)
             ->colors(fn(GeneralSettings $settings) => $settings->site_theme)
-            ->databaseNotifications()->databaseNotificationsPolling('30s')
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('30s')
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->sidebarCollapsibleOnDesktop()
-            ->navigationGroups([
-                Navigation\NavigationGroup::make()
-                    ->label('Jobs'),
-                Navigation\NavigationGroup::make()
-                    ->label('Blog'),
-                Navigation\NavigationGroup::make()
-                    ->label(__('menu.nav_group.content'))
-                    ->collapsible(false),
-                Navigation\NavigationGroup::make()
-                    ->label(__('menu.nav_group.access'))
-                    ->collapsible(false),
-                Navigation\NavigationGroup::make()
-                    ->label(__('menu.nav_group.sites'))
-                    ->collapsed(),
-                Navigation\NavigationGroup::make()
-                    ->label(__('menu.nav_group.systems'))
-                    ->collapsed(),
-                Navigation\NavigationGroup::make()
-                    ->label(__('menu.nav_group.activities'))
-                    ->collapsed(),
-            ])
+            ->navigationGroups([Navigation\NavigationGroup::make()->label('Jobs'), Navigation\NavigationGroup::make()->label('Blog'), Navigation\NavigationGroup::make()->label(__('menu.nav_group.content'))->collapsible(false), Navigation\NavigationGroup::make()->label(__('menu.nav_group.access'))->collapsible(false), Navigation\NavigationGroup::make()->label(__('menu.nav_group.sites'))->collapsed(), Navigation\NavigationGroup::make()->label(__('menu.nav_group.systems'))->collapsed(), Navigation\NavigationGroup::make()->label(__('menu.nav_group.activities'))->collapsed()])
             ->navigationItems([
                 Navigation\NavigationItem::make(__('menu.nav_group.item.log_viewer'))
                     ->visible(fn(): bool => auth()->user()->can('access_log_viewer'))
@@ -80,41 +61,23 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->resources([
-                config('filament-logger.activity_resource')
-            ])
+            ->resources([config('filament-logger.activity_resource')])
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
-            ->pages([
-                Pages\Dashboard::class,
-            ])
+            ->pages([Pages\Dashboard::class])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-//                Widgets\FilamentInfoWidget::class,
+                //                Widgets\FilamentInfoWidget::class,
             ])
             ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\\Filament\\Clusters')
-            ->middleware([
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartSession::class,
-                AuthenticateSession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                SubstituteBindings::class,
-                DisableBladeIconComponents::class,
-                DispatchServingFilamentEvent::class,
-                FilamentRobotsMiddleware::class
-            ])
-            ->authMiddleware([
-                Authenticate::class,
-            ])
+            ->middleware([EncryptCookies::class, AddQueuedCookiesToResponse::class, StartSession::class, AuthenticateSession::class, ShareErrorsFromSession::class, VerifyCsrfToken::class, SubstituteBindings::class, DisableBladeIconComponents::class, DispatchServingFilamentEvent::class, FilamentRobotsMiddleware::class])
+            ->authMiddleware([Authenticate::class])
             ->plugins([
-                \TomatoPHP\FilamentMediaManager\FilamentMediaManagerPlugin::make()
-                    ->allowSubFolders(),
+                \TomatoPHP\FilamentMediaManager\FilamentMediaManagerPlugin::make()->allowSubFolders(),
                 \BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin::make(),
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
                     ->gridColumns([
                         'default' => 2,
-                        'sm' => 1
+                        'sm' => 1,
                     ])
                     ->sectionColumnSpan(1)
                     ->checkboxListColumns([
@@ -127,13 +90,7 @@ class AdminPanelProvider extends PanelProvider
                         'sm' => 2,
                     ]),
                 BreezyCore::make()
-                    ->myProfile(
-                        shouldRegisterUserMenu: true,
-                        shouldRegisterNavigation: false,
-                        navigationGroup: 'Settings',
-                        hasAvatars: true,
-                        slug: 'my-profile'
-                    )
+                    ->myProfile(shouldRegisterUserMenu: true, shouldRegisterNavigation: false, navigationGroup: 'Settings', hasAvatars: true, slug: 'my-profile')
                     ->myProfileComponents([
                         'personal_info' => MyProfileExtended::class,
                     ]),
@@ -145,19 +102,19 @@ class AdminPanelProvider extends PanelProvider
                         'footer-3' => 'Footer 3',
                         'footer-4' => 'Footer 4',
                     ])
-                    ->usingResource(MenuResource::class)
-//                    ->addMenuPanels([
-//                        \Datlechin\FilamentMenuBuilder\MenuPanel\StaticMenuPanel::make()
-//                            ->addMany([
-//                                'Home' => url('/'),
-//                                'Blog' => url('/blog'),
-//                                'Contact Us' => url('/contact-us'),
-//                            ])
-//                            ->description('Default menus')
-//                            ->collapsed(true)
-//                            ->collapsible(true)
-//                            ->paginate(perPage: 5, condition: true)
-//                    ])
+                    ->usingResource(MenuResource::class),
+                //                    ->addMenuPanels([
+                //                        \Datlechin\FilamentMenuBuilder\MenuPanel\StaticMenuPanel::make()
+                //                            ->addMany([
+                //                                'Home' => url('/'),
+                //                                'Blog' => url('/blog'),
+                //                                'Contact Us' => url('/contact-us'),
+                //                            ])
+                //                            ->description('Default menus')
+                //                            ->collapsed(true)
+                //                            ->collapsible(true)
+                //                            ->paginate(perPage: 5, condition: true)
+                //                    ])
             ]);
     }
 }

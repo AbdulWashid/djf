@@ -1,21 +1,17 @@
 <div>
     <div class="form-find mt-60 wow animate__animated animate__fadeInUp" data-wow-delay=".2s">
-        <form wire:submit.prevent="submit">
-            <input type="text"
-                   class="form-input input-keysearch mr-10"
-                   placeholder="Job title, Company... "
-                   name="q"
-                   wire:model.defer="q" />
+        <form id="homepage-search-form" action="{{ route('jobs') }}" method="GET">
+            <input type="text" class="form-input input-keysearch mr-10" placeholder="Job title, Company... "
+                name="q" />
 
             <div wire:ignore class="mr-2">
-                <select class="form-input mr-10 select-active" id="location-select"  wire:model.defer="location">
+                <select class="form-input mr-10 select-active" id="location-select" name="location">
                     <option value="">Location</option>
-                    @foreach($locations as $loc)
+                    @foreach ($locations as $loc)
                         <option value="{{ $loc }}">{{ $loc }}</option>
                     @endforeach
                 </select>
             </div>
-
 
             <button type="submit" class="btn btn-default btn-find">Find now</button>
         </form>
@@ -34,17 +30,36 @@
 @push('js')
     <script>
         document.addEventListener('livewire:initialized', () => {
+            const homepageSearchForm = document.getElementById('homepage-search-form');
+
             function initSelect2() {
                 $('#location-select').select2({
                     placeholder: 'Select Location',
-                    allowClear: true
-                }).on('change', function (e) {
-                    @this.set('location', $(this).val());
+                    allowClear: true,
+                    width: '100%'
                 });
 
             }
 
             initSelect2();
+
+            if (homepageSearchForm) {
+                homepageSearchForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const location = $('#location-select').val();
+                    const q = homepageSearchForm.querySelector('input[name="q"]').value.trim();
+                    let targetUrl = @json(route('jobs.location', '__LOCATION__')).replace('__LOCATION__', encodeURIComponent(
+                        String(location).trim().toLowerCase().replace(/\s+/g, '-').replace(
+                            /[^a-z0-9-]/g, '')));
+
+                    if (q) {
+                        targetUrl += (targetUrl.includes('?') ? '&' : '?') + 'q=' + encodeURIComponent(q);
+                    }
+
+                    window.location.assign(targetUrl);
+                    return false;
+                });
+            }
 
             Livewire.on('reinit-select2', () => {
                 initSelect2();

@@ -11,10 +11,8 @@
         <div class="row">
 
             <div class="col-lg-8">
-                    <livewire:faqs-list section="general" />
+                <livewire:faqs-list section="general" />
             </div>
         </div>
     </div>
 </section>
-
-
