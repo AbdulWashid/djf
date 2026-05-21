@@ -1,2 +1,82 @@
+# =========================
+# DubaiJobFinder.net Robots.txt
+# =========================
+
+# Allowed AI Search Crawlers
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# Allowed Search Engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Block Aggressive AI Training Crawlers
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: AI2Bot
+Disallow: /
+
+User-agent: Meta-WebIndexer
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+User-agent: TikTokSpider
+Disallow: /
+
+# Global Rules
 User-agent: *
-Disallow: /cdn-cgi/
+
+# Allow Main Website
+Allow: /
+
+# Block Low-Value Dynamic URLs
+Disallow: /*?filter=
+Disallow: /*?sort=
+Disallow: /*?job_type=
+Disallow: /*?salary=
+Disallow: /*?location=
+Disallow: /*?page=
+
+# Block Internal Areas
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://dubaijobfinder.net/sitemap.xml
