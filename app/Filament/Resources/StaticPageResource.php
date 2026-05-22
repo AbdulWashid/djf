@@ -51,70 +51,43 @@ class StaticPageResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                TextInput::make('title')
-                    ->live(onBlur: true)
-                    ->required()
-                    ->afterStateUpdated(function (string $operation, $state, Get $get, Set $set) {
-                        // Only auto-generate the slug on 'create' and if the user hasn't manually edited it.
-                        if ($operation === 'create' && !$get('has_manual_slug_change')) {
-                            $set('slug', self::generateUniqueSlug($state));
-                        }
-                    }),
-                TextInput::make('slug')
+        return $form->schema([
+            TextInput::make('title')
+                ->live(onBlur: true)
+                ->required()
+                ->afterStateUpdated(function (string $operation, $state, Get $get, Set $set) {
+                    // Only auto-generate the slug on 'create' and if the user hasn't manually edited it.
+                    if ($operation === 'create' && !$get('has_manual_slug_change')) {
+                        $set('slug', self::generateUniqueSlug($state));
+                    }
+                }),
+            TextInput::make('slug')
+            ->unique(StaticPage::class, 'slug', fn($record) => $record),
+            //                    ->afterStateUpdated(fn(Set $set) => $set('has_manual_slug_change', true)),
+            //                Hidden::make('has_manual_slug_change')
+            //                    ->default(false)
+            //                    ->dehydrated(false),
+            Section::make('Content')->schema([RichEditor::make('content')->label('')->required()]),
 
-                    ->unique(StaticPage::class, 'slug', fn($record) => $record),
-//                    ->afterStateUpdated(fn(Set $set) => $set('has_manual_slug_change', true)),
-//                Hidden::make('has_manual_slug_change')
-//                    ->default(false)
-//                    ->dehydrated(false),
-                Section::make('Content')
-                        ->schema([
-                            RichEditor::make('content')
-                                ->label('')
-                                ->required(),
-                        ]),
+            Section::make('Seo Details')->schema([TextInput::make('meta_title')->required(), Textarea::make('meta_description'), TagsInput::make('meta_keywords')->separator(','), Textarea::make('twitter_tags')->rows(5), Textarea::make('og_tags')->label('Open Graph Tags')->rows(5)]),
 
-                Section::make('Seo Details')
-                    ->schema([
-                        TextInput::make('meta_title')
-                            ->required(),
-                        Textarea::make('meta_description'),
-                        TagsInput::make('meta_keywords')->separator(','),
-                        Textarea::make('twitter_tags')
-                        ->rows(5),
-                        Textarea::make('og_tags')->label('Open Graph Tags')->rows(5),
+            Section::make('Frequently asked questions')
+                ->collapsible()
+                ->description('Add frequently asked questions to this page')
+                ->icon('heroicon-o-question-mark-circle')
+                ->schema([
+                    TextInput::make('faq_title')->label('FAQ Title'),
+                    Repeater::make('faqs')
+                        ->schema([TextInput::make('question')->required()->maxLength(255)->placeholder('Enter question'), RichEditor::make('answer')->required()->maxLength(65535)->placeholder('Enter answer')])
+                        ->reorderableWithButtons()
+                        ->collapsible()
+                        ->cloneable()
+                        ->addActionLabel('Add FAQ')
+                        ->columns(2),
+                ]),
 
-                    ]),
-
-                 Section::make('Frequently asked questions')
-                     ->collapsible()
-                    ->description('Add frequently asked questions to this page')
-                    ->icon('heroicon-o-question-mark-circle')
-                    ->schema([
-                        TextInput::make('faq_title')->label('FAQ Title'),
-                        Repeater::make('faqs')
-                            ->schema([
-                                TextInput::make('question')
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->placeholder('Enter question'),
-                                RichEditor::make('answer')
-                                    ->required()
-                                    ->maxLength(65535)
-                                    ->placeholder('Enter answer'),
-
-                            ])
-                            ->reorderableWithButtons()
-                            ->collapsible()
-                            ->cloneable()
-                            ->addActionLabel('Add FAQ')
-                            ->columns(2)
-                    ]),
-
-                Toggle::make('status')->default(true),
-            ]);
+            Toggle::make('status')->default(true),
+        ]);
     }
     protected static function generateUniqueSlug(?string $title): string
     {
@@ -123,7 +96,7 @@ class StaticPageResource extends Resource
         $count = 1;
         while (StaticPage::where('slug', $slug)->exists()) {
             $count++;
-            $slug =  $originalSlug . '-' . $count;
+            $slug = $originalSlug . '-' . $count;
         }
         return $slug;
     }
@@ -131,37 +104,27 @@ class StaticPageResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('title')
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make('title')->searchable()->sortable(),
                 TextColumn::make('slug')
-//                    ->prefix('pages/')
+                    //                    ->prefix('pages/')
                     ->copyable()
                     ->searchable()
                     ->sortable(),
                 ToggleColumn::make('status'),
             ])
-            ->filters([
-                TrashedFilter::make(),
-            ])
+            ->filters([TrashedFilter::make()])
             ->actions([
                 Action::make('view_custom')
                     ->label('View')
                     ->icon('heroicon-o-link')
-                    ->url(fn ($record): string =>route('page', ['slug' => $record->slug])) // Direct URL, opens in new tab (true)
+                    ->url(fn($record): string => route('page', ['slug' => $record->slug])) // Direct URL, opens in new tab (true)
                     ->openUrlInNewTab(),
                 EditAction::make(),
                 DeleteAction::make(),
                 RestoreAction::make(),
                 ForceDeleteAction::make(),
             ])
-            ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                ]),
-            ]);
+            ->bulkActions([BulkActionGroup::make([DeleteBulkAction::make(), RestoreBulkAction::make(), ForceDeleteBulkAction::make()])]);
     }
 
     public static function getPages(): array
@@ -175,10 +138,7 @@ class StaticPageResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
+        return parent::getEloquentQuery()->withoutGlobalScopes([SoftDeletingScope::class]);
     }
 
     public static function getGloballySearchableAttributes(): array

@@ -12,6 +12,7 @@ class JobCategory extends Model
     protected $fillable = [
         'name',
         'slug',
+        'logo',
         'status',
     ];
     protected $casts = [

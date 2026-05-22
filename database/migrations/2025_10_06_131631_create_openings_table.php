@@ -17,9 +17,9 @@ return new class extends Migration {
             $table->text('responsibilities')->nullable();
             $table->text('skills')->nullable();
             $table->text('benefits')->nullable();
-            $table->string('meta_title', 60)->nullable();
+            $table->string('meta_title', 255)->nullable();
             $table->json('meta_keywords')->nullable();
-            $table->string('meta_description', 160)->nullable();
+            $table->string('meta_description', 255)->nullable();
             $table->string('job_type');
             $table->string('location');
             $table->string('salary_range');

@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('slug');
+            $table->string('logo')->nullable();
             $table->string('status');
             $table->timestamps();
             $table->softDeletes();

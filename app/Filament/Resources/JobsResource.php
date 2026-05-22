@@ -87,7 +87,7 @@ class JobsResource extends Resource
                         ->options(Nationality::active()->pluck('name', 'flag')->toArray())
                         ->native(false),
                     Select::make('gender')
-                        ->options(['Male' => 'Male', 'Female' => 'Female', 'Both' => 'Both', 'Other' => 'Other'])
+                        ->options(['Male' => 'Male', 'Female' => 'Female', 'Both (Male/Female)' => 'Both (Male/Female)', 'Other' => 'Other'])
                         ->required(),
                     TextInput::make('required_experience')->suffix('Years')->required(),
                     Toggle::make('status')->default(true),

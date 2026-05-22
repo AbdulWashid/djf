@@ -291,7 +291,7 @@
         <footer class="footer mt-50 pt-50 bg-[#EEE]">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-5 col-sm-12">
+                    <div class="col-md-2 col-sm-12">
                         <a href="{{ route('home') }}">
                             @php
                                 $brandLogo = $generalSettings->brand_logo ?? null;
@@ -306,8 +306,10 @@
                                     height="auto" />
                             @endif
                         </a>
-                        <div class="mt-20 mb-20 w-3/4">The #1 portal for UAE careers. Explore latest vacancies, salary
-                            guides, and recruitment news. The easiest way to get hired in Dubai. Join!</div>
+                        <div class="mt-20 mb-20 w-3/4">
+                            The #1 portal for UAE careers. Explore latest vacancies, salary guides, and recruitment
+                            news. The easiest way to get hired in Dubai. Join!
+                        </div>
                     </div>
                     <div class="col-md-2 col-xs-6">
                         <p class="h6">Company</p>
@@ -333,20 +335,14 @@
                             @endif
                         </ul>
                     </div>
-
-
                     <div class="col-md-2 col-xs-6">
-                        <p class="h6">Support</p>
+                        <p class="h6">Location</p>
                         @php
-
-                            $footerOther = Menu::location('footer-2');
+                            $footerLocations = Menu::location('footer-2');
                         @endphp
-
-
                         <ul class="menu-footer mt-20">
-
-                            @if ($footerOther)
-                                @foreach ($footerOther->menuItems as $item)
+                            @if ($footerLocations)
+                                @foreach ($footerLocations->menuItems as $item)
                                     <li>
                                         <a href="{{ $item->url }}"
                                             @if ($item->target) target="{{ $item->target }}" @endif>
@@ -354,14 +350,46 @@
                                         </a>
                                     </li>
                                 @endforeach
-
                             @endif
-
-
                         </ul>
                     </div>
-
-                    <div class="col-md-3 col-xs-6">
+                    <div class="col-md-2 col-xs-6">
+                        <p class="h6">Category</p>
+                        @php
+                            $footerCategories = Menu::location('footer-3');
+                        @endphp
+                        <ul class="menu-footer mt-20">
+                            @if ($footerCategories)
+                                @foreach ($footerCategories->menuItems as $item)
+                                    <li>
+                                        <a href="{{ $item->url }}"
+                                            @if ($item->target) target="{{ $item->target }}" @endif>
+                                            {{ $item->title }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            @endif
+                        </ul>
+                    </div>
+                    <div class="col-md-2 col-xs-6">
+                        <p class="h6">Support</p>
+                        @php
+                            $footerSupport = Menu::location('footer-4');
+                        @endphp
+                        <ul class="menu-footer mt-20">
+                            @if ($footerSupport)
+                                @foreach ($footerSupport->menuItems as $item)
+                                    <li>
+                                        <a href="{{ $item->url }}"
+                                            @if ($item->target) target="{{ $item->target }}" @endif>
+                                            {{ $item->title }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            @endif
+                        </ul>
+                    </div>
+                    <div class="col-md-2 col-xs-6">
                         <p class="h6">Contact Info</p>
                         <ul class="menu-footer mt-20">
                             <li><span class="fw-bold">Address:</span> {{ $siteSettings->company_address ?? '' }}</li>
@@ -381,7 +409,6 @@
                             </li>
                         </ul>
                     </div>
-
                 </div>
                 <div class="footer-bottom mt-50">
                     <div class="row">

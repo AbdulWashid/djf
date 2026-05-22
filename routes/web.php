@@ -8,6 +8,7 @@ use App\Livewire\Remainder;
 use App\Livewire\SuperDuper\BlogList;
 use App\Livewire\SuperDuper\BlogDetails;
 use App\Livewire\SuperDuper\Pages\ContactUs;
+use App\Models\HomePageMeta;
 use App\Models\StaticPage;
 use Illuminate\Support\Facades\Route;
 use Lab404\Impersonate\Services\ImpersonateManager;
@@ -23,7 +24,11 @@ use Lab404\Impersonate\Services\ImpersonateManager;
 |
 */
 Route::get('/', function () {
-    return view('components.superduper.pages.newhome');
+    $homeMeta = HomePageMeta::query()->latest()->first();
+
+    return view('components.superduper.pages.newhome', [
+        'homeMeta' => $homeMeta,
+    ]);
 })->name('home');
 
 Route::get('/about-us', function () {
@@ -34,13 +39,15 @@ Route::get('/about-us', function () {
     //  return view('components.superduper.pages.about');
 })->name('about-us');
 
-
 Route::get('/jobs', JobsComponent::class)->name('jobs');
 Route::get('/jobs/{location}', JobsComponent::class)->name('jobs.location');
 Route::get('/jobs/{category}', JobsComponent::class)->name('jobs.category');
 Route::get('/jobs/{location}/{category_slug}', JobsComponent::class)->name('jobs.location.category');
 // Route::get('/jobs/{location}/category/{category}', JobsComponent::class)->name('jobs.location.category');
 
+Route::get('/job-categories', function () {
+    return view('components.superduper.pages.job-categories');
+})->name('job-categories');
 
 Route::get('/employers/', Employers::class)->name('employers');
 Route::get('/blogs', BlogList::class)->name('blog');
@@ -103,4 +110,6 @@ Route::get('/{slug}', function ($slug) {
     }
     // If no page with that slug exists, let the route fall through
     // to the next, which is the fallback route.
-})->where('slug', '^(?!about|contact).*$')->name('page');
+})
+    ->where('slug', '^(?!about|contact).*$')
+    ->name('page');
