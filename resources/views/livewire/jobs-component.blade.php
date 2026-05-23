@@ -275,9 +275,10 @@
                     history.pushState(null, '', data[0].url);
                 });
 
-                Livewire.on('reinit-select2', () => {
-                    console.log('reinit-select2');
-                    initSelect2();
+                Livewire.on('reset-select2', () => {
+                    // clear select2 selections visually and notify Livewire
+                    $('#location-select').val(null).trigger('change');
+                    $('#category-select').val(null).trigger('change');
                 });
             });
         </script>
