@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\FaqResource\Pages;
 use App\Models\Faq;
-use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -12,6 +11,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Forms\Get;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
@@ -43,7 +43,6 @@ class FaqResource extends Resource
     {
         return $form
             ->schema([
-
                 TextInput::make('question')
                     ->suffix("?")
                     ->required(),
@@ -51,11 +50,23 @@ class FaqResource extends Resource
                 RichEditor::make('answer')
                     ->required(),
                 Select::make('section')
-                        ->options([
-                            'homepage'=> 'Homepage',
-                            'jobs'=> 'Jobs',
-                            'general' =>'General'
-                        ])->required(),
+                    ->options([
+                        'homepage' => 'Homepage',
+                        'jobs' => 'Jobs',
+                        'general' => 'General',
+                    ])
+                    ->live()
+                    ->required(),
+                Select::make('type')
+                    ->options(Faq::typeOptions())
+                    ->default(Faq::TYPE_DEFAULT)
+                    ->visible(fn (Get $get): bool => $get('section') === 'jobs')
+                    ->helperText('Use placeholders like {category-name} and {place-name} in question or answer.')
+                    ->required(fn (Get $get): bool => $get('section') === 'jobs'),
+                Placeholder::make('job_faq_placeholder_note')
+                    ->label('Job FAQ placeholders')
+                    ->content('Available tokens: {category-name}, {place-name}. They will be replaced from the current job context.')
+                    ->visible(fn (Get $get): bool => $get('section') === 'jobs'),
                 Toggle::make('status')->default(true),
 
             ])->columns(1);
@@ -67,17 +78,22 @@ class FaqResource extends Resource
             ->columns([
                 TextColumn::make('question'),
                 TextColumn::make('section'),
+                TextColumn::make('type')
+                    ->badge()
+                    ->sortable(),
                 ToggleColumn::make('status'),
             ])
             ->filters([
                 TrashedFilter::make(),
                 SelectFilter::make('section')
-                ->options([
-                    'homepage'=> 'Homepage',
-                    'jobs'=> 'Jobs',
-                    'general' =>'General'
+                    ->options([
+                        'homepage' => 'Homepage',
+                        'jobs' => 'Jobs',
+                        'general' => 'General',
 
-                ])
+                    ]),
+                SelectFilter::make('type')
+                    ->options(Faq::typeOptions()),
             ])
             ->actions([
                 EditAction::make(),

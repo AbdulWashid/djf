@@ -401,8 +401,9 @@
                             </li>
                             <li><span class="fw-bold">Contact:</span>
                                 @if ($siteSettings->company_phone)
-                                    <a
-                                        href="tel:{{ $siteSettings->company_phone }}">{{ $siteSettings->company_phone }}</a>
+                                    <a href="tel:{{ $siteSettings->company_phone }}">
+                                        <div>{{ $siteSettings->company_phone }}</div>
+                                    </a>
                                 @else
                                     {{ '' }}
                                 @endif

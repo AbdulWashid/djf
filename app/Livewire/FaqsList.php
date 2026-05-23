@@ -8,11 +8,23 @@ use Livewire\Component;
 class FaqsList extends Component
 {
     public $section;
+    public $category;
+    public $location;
     public $faqs;
 
     public function mount(): void
     {
-        $this->faqs = Faq::active()->where('section', $this->section)->get();
+        if($this->location && $this->category){
+            $type = Faq::TYPE_BOTH;
+        }else if($this->location){
+            $type = Faq::TYPE_LOCATION;
+        }else if($this->category){
+            $type = Faq::TYPE_CATEGORY;
+        }else{
+            $type = Faq::TYPE_DEFAULT;
+        }
+        
+        $this->faqs = Faq::active()->where('section', $this->section)->where('type',$type)->get();
     }
     public function render()
     {

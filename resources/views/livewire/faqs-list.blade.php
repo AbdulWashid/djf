@@ -8,14 +8,15 @@
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#flush-collapseOne{{ $faq->id }}" aria-expanded="false"
                     aria-controls="flush-collapseOne{{ $faq->id }}">
-                    {{ $faq->question }}
+
+                    {{ strtr($faq->question, ['{category-name}' => $category ?? '', '{place-name}' => $location ?? '']) }}
                 </button>
             </p>
             <div id="flush-collapseOne{{ $faq->id }}" class="accordion-collapse collapse"
                 aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample-{{ $rand }}">
                 <div class="accordion-body">
                     <div class="mb-15">
-                        {!! $faq->answer !!}
+                        {!! strtr($faq->answer, ['{category-name}' => $category ?? '', '{place-name}' => $location ?? '']) !!}
                     </div>
                 </div>
             </div>
@@ -26,11 +27,13 @@
 
     @if (isset($faqsSchema))
         @push('js')
+            <script>
+                ques = $('.accordion-button');
+                ans = $('.accordion-body');
+            </script>
             <script type="application/ld+json">
                     {!! $faqsSchema !!}
-                </script>
+            </script>
         @endpush
     @endif
-
-
 </div>

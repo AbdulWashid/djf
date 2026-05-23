@@ -12,6 +12,7 @@ class JobCategories extends Component
     use WithPagination;
 
     public bool $showAll = false;
+    public int $categoryCount = 0;
 
     public function mount(bool $showAll = false): void
     {
@@ -20,10 +21,18 @@ class JobCategories extends Component
 
     public function render()
     {
+        $this->categoryCount = Cache::remember('job_categories_active_count', now()->addMinutes(30), function () {
+            return JobCategory::query()
+                ->active()
+                ->count();
+        });
+
         if ($this->showAll) {
             $categories = JobCategory::query()
                 ->active()
                 ->select('id', 'name', 'slug', 'logo')
+                ->withCount('openings')
+                ->orderByDesc('openings_count')
                 ->orderBy('name')
                 ->paginate(12);
         } else {
@@ -31,6 +40,8 @@ class JobCategories extends Component
                 return JobCategory::query()
                     ->active()
                     ->select('id', 'name', 'slug', 'logo')
+                    ->withCount('openings')
+                    ->orderByDesc('openings_count')
                     ->orderBy('name')
                     ->limit(7)
                     ->get();

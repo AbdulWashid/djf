@@ -22,9 +22,10 @@
                     <div class="card-grid hover-up wow animate__animated animate__fadeInUp">
                         <div class="text-center">
                             <a href="{{ route('jobs.category', ['category' => $category->slug]) }}">
-                                <figure class="card-grid-image">
+                                <figure class="d-flex justify-content-center">
                                     <img alt="{{ $category->name }}"
-                                        src="{{ $category->logo ? \Illuminate\Support\Facades\Storage::url($category->logo) : 'http://placehold.co/170x100?text=' . $category->slug }}" />
+                                        src="{{ $category->logo ? \Illuminate\Support\Facades\Storage::url($category->logo) : 'http://placehold.co/125x125?text=' . $category->slug }}"
+                                        height="125" width="125" />
                                 </figure>
                             </a>
                         </div>
@@ -32,18 +33,21 @@
                             <a
                                 href="{{ route('jobs.category', ['category' => $category->slug]) }}">{{ $category->name }}</a>
                         </h5>
-                        <p class="text-center text-stroke-40 mt-20">156 Available Vacancy</p>
+                        <p class="text-center text-stroke-40 mt-20">
+                            {{ number_format($category->openings_count) }}
+                            {{ \Illuminate\Support\Str::plural('Available Vacancy', $category->openings_count) }}
+                        </p>
                     </div>
                 </div>
             @endforeach
 
             @unless ($showAll)
                 <div class="col-lg-3 col-md-6 col-sm-12 col-12">
-                    <div class="card-grid hover-up wow animate__animated animate__fadeInUp h-100">
+                    <div class="card-grid hover-up wow animate__animated animate__fadeInUp" data-wow-delay=".3s">
                         <div class="text-center mt-15">
-                            <h3>All</h3>
+                            <h3 class="mb-0">All</h3>
                         </div>
-                        <p class="text-center mt-30 text-stroke-40">Jobs are waiting for you</p>
+                        <p class="text-center mt-20 text-stroke-40">{{ number_format($categoryCount) }} Categories</p>
                         <div class="text-center mt-30">
                             <div class="box-button-shadow">
                                 <a href="{{ route('job-categories') }}" class="btn btn-default">Explore more</a>
@@ -56,7 +60,8 @@
 
         @if ($showAll)
             <div class="mt-50">
-                {{ $categories->links('livewire.custom-pagination') }}
+                {{ $categories->links() }}
+                {{-- {{ $categories->links('livewire.custom-pagination') }} --}}
             </div>
         @endif
     </div>

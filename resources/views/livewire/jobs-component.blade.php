@@ -39,7 +39,6 @@
                                 </div> 
                         </div>  --}}
                         <div class="row job-listing-grid-2">
-
                             @forelse($jobs as $job)
                                 <div class="col-lg-4 col-md-6">
                                     <div class="card-grid-2 hover-up wow animate__animated animate__fadeIn"
@@ -106,7 +105,6 @@
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-12 col-sm-12 col-12">
-
                     <div class="sidebar-shadow none-shadow mb-30">
                         <div class="sidebar-filters">
                             <div class="filter-block mb-30">
@@ -128,7 +126,8 @@
                             <div class="filter-block mb-30">
                                 <h5 class="medium-heading mb-15">Category</h5>
                                 <div class="form-group select-style select-style-icon" wire:ignore>
-                                    <select id="category-select" wire:model="category" class="form-control form-icons">
+                                    <select id="category-select" wire:model.live="category"
+                                        class="form-control form-icons">
                                         <option value="">Select Category</option>
                                         @foreach ($categories as $cat_id => $categ)
                                             <option value="{{ $cat_id }}">{{ $categ }}</option>
@@ -144,12 +143,11 @@
                                         @foreach ($job_types as $enum_key => $jobType)
                                             <li>
                                                 <label class="cb-container">
-                                                    <input type="checkbox" wire:model="job_type"
+                                                    <input type="checkbox" wire:model.live="job_type"
                                                         value="{{ $enum_key }}"> <span
                                                         class="text-small">{{ $jobType }}</span>
                                                     <span class="checkmark"></span>
                                                 </label>
-
                                             </li>
                                         @endforeach
                                     </ul>
@@ -189,8 +187,9 @@
                                 </div> 
                             </div>  --}}
                             <div class="buttons-filter">
-                                <button class="btn btn-default" wire:click="search()" type="button">Apply
-                                    filter</button>
+                                <button class="btn btn-default" wire:click="search()" type="button">
+                                    Apply filter
+                                </button>
                                 <button class="btn" wire:click="clear()">Reset filter</button>
                             </div>
                         </div>
