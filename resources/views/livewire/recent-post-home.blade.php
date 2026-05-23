@@ -43,7 +43,7 @@
                                             </h3>
                                             <div class="d-flex justify-content-between text-muted small mb-2">
                                                 <span>{{ $recentPost->published_at?->format('M Y') ?? '' }}</span>
-                                                <span>{{ $recentPost->author->username ?? 'Anonymous' }}</span>
+                                                <span>{{ $recentPost->author->firstname ?? 'Anonymous' }}</span>
                                             </div>
                                             <p class="mb-2 text-muted">
                                                 {{ \Illuminate\Support\Str::limit(strip_tags($recentPost->content ?? ($recentPost->excerpt ?? '')), 200) }}
