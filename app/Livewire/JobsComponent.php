@@ -26,6 +26,8 @@ class JobsComponent extends Component
     public $job_types;
     public $salary_ranges;
     public $q;
+    public $pageTitle = 'Urgent {Category} Jobs in {location} | Dubaijobfinder';
+    public $pageDescription = 'Find the latest {Category} jobs in {location}. Apply online for urgent vacancies and career opportunities on Dubaijobfinder.';
 
     public function mount($location = null, $category_slug = null): void
     {
@@ -99,6 +101,18 @@ class JobsComponent extends Component
         }
 
         $this->dispatch('url-updated', ['url' => $url]);
+        $this->dispatch('seo-updated', [
+            'title' => str_replace(
+                ['{location}', '{Category}'],
+                [Str::title($this->location ?? 'Dubai'), $this->category ? JobCategory::find($this->category)?->name ?? '' : ''],
+                $this->pageTitle
+            ),
+            'description' => str_replace(
+                ['{location}', '{Category}'],
+                [Str::title($this->location ?? 'Dubai'), $this->category ? JobCategory::find($this->category)?->name ?? '' : ''],
+                $this->pageDescription
+            ),
+        ]);
     }
 
     public function clear()
@@ -119,7 +133,10 @@ class JobsComponent extends Component
     {
         $this->jobs = $this->search();
         //    dd($this->jobs->items());
-        return view('livewire.jobs-component', ['jobs' => $this->jobs])->layout('components.frontend.main');
+        return view('livewire.jobs-component', ['jobs' => $this->jobs])->layout('components.frontend.main', [
+            'pageTitle' => str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? JobCategory::find($this->category)->name : ''], $this->pageTitle),
+            'pageDescription' => str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? JobCategory::find($this->category)->name : ''], $this->pageDescription),
+        ]);
     }
 
     public function search()
@@ -127,7 +144,7 @@ class JobsComponent extends Component
         $query = Opening::query()->active()->with('employer');
 
         $keyword = trim($this->q ?: request()->query('q', ''));
-        
+
         // Keyword filter: search by job title or employer name
         // if ($keyword !== '') {
         //     $query->where(function ($q) use ($keyword) {
@@ -136,7 +153,7 @@ class JobsComponent extends Component
         //         });
         //     });
         // }
-        
+
         if ($keyword !== '') {
             $query->where(function ($q) use ($keyword) {
                 $q->where('title', 'like', "%{$keyword}%")

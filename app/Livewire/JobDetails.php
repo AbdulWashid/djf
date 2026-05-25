@@ -40,8 +40,8 @@ class JobDetails extends Component
     public function render()
     {
         return view('livewire.job-details')->layout('components.frontend.main', [
-            'pageTitle' => $this->job->meta_title,
-            'pageDescription' => $this->job->meta_description,
+            'pageTitle' => $this->job->meta_title ?? 'Jobs in '. $this->job->location .' | '. $this->job->title.' | Apply Now - Dubaijobfinder',
+            'pageDescription' => $this->job->meta_description ?? 'Find the latest '. $this->job->title.' jobs in '. $this->job->location .'. Apply online for urgent vacancies and career opportunities on Dubaijobfinder.',
             'metaKeywords' => $this->job->meta_keywords,
             'ogTags' => $this->job->og_tags,
             'twitterTags' => $this->job->twitter_tags,

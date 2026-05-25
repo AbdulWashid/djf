@@ -275,6 +275,26 @@
                     history.pushState(null, '', data[0].url);
                 });
 
+                Livewire.on('seo-updated', (data) => {
+                    const payload = data[0] || {};
+
+                    if (payload.title) {
+                        document.title = payload.title;
+                    }
+
+                    if (payload.description) {
+                        let metaDescription = document.querySelector('meta[name="description"]');
+
+                        if (!metaDescription) {
+                            metaDescription = document.createElement('meta');
+                            metaDescription.setAttribute('name', 'description');
+                            document.head.appendChild(metaDescription);
+                        }
+
+                        metaDescription.setAttribute('content', payload.description);
+                    }
+                });
+
                 Livewire.on('reset-select2', () => {
                     // clear select2 selections visually and notify Livewire
                     $('#location-select').val(null).trigger('change');
