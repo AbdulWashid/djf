@@ -12,6 +12,7 @@ use App\Settings\GeneralSettings;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
 use Filament\Navigation;
 use Filament\Pages;
 use Filament\Panel;
@@ -50,6 +51,13 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotificationsPolling('30s')
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->sidebarCollapsibleOnDesktop()
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Clear Cache')
+                    ->icon('heroicon-o-arrow-path')
+                    ->postAction(fn () => route('admin.cache.clear'))
+                    ->sort(95),
+            ])
             ->navigationGroups([Navigation\NavigationGroup::make()->label('Jobs'), Navigation\NavigationGroup::make()->label('Blog'), Navigation\NavigationGroup::make()->label(__('menu.nav_group.content'))->collapsible(false), Navigation\NavigationGroup::make()->label(__('menu.nav_group.access'))->collapsible(false), Navigation\NavigationGroup::make()->label(__('menu.nav_group.sites'))->collapsed(), Navigation\NavigationGroup::make()->label(__('menu.nav_group.systems'))->collapsed(), Navigation\NavigationGroup::make()->label(__('menu.nav_group.activities'))->collapsed()])
             ->navigationItems([
                 Navigation\NavigationItem::make(__('menu.nav_group.item.log_viewer'))

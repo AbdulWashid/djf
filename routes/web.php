@@ -10,6 +10,8 @@ use App\Livewire\SuperDuper\BlogDetails;
 use App\Livewire\SuperDuper\Pages\ContactUs;
 use App\Models\HomePageMeta;
 use App\Models\StaticPage;
+use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Lab404\Impersonate\Services\ImpersonateManager;
 
@@ -67,6 +69,19 @@ Route::get('/coming-soon', function () {
     return view('components.superduper.pages.coming-soon');
 })->name('coming-soon');
 Route::post('/contact', [App\Http\Controllers\ContactController::class, 'submit'])->name('contact.submit');
+
+Route::post('/admin/cache-clear', function () {
+    Artisan::call('optimize:clear');
+    // Artisan::call('filament:optimize-clear');
+    // Artisan::call('filament-icons:clear-cache');
+
+    Notification::make()->title('Application cache cleared successfully.')->success()->send();
+
+    return back()->with('status', 'Application cache cleared successfully.');
+})
+    ->middleware('auth')
+    ->name('admin.cache.clear');
+
 Route::get('impersonate/leave', function () {
     if (!app(ImpersonateManager::class)->isImpersonating()) {
         return redirect('/');
