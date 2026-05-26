@@ -1,4 +1,29 @@
-<section class="section-box mt-50">
+<section class="section-box mt-50 recent-post-slider">
+    <style>
+        .recent-post-slider .swiper-slide {
+            height: auto;
+            display: flex;
+        }
+
+        .recent-post-slider .card-grid-3 {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .recent-post-slider .card-body {
+            flex: 1;
+        }
+
+        .recent-post-slider .swiper-button-next {
+            right: -50px;
+        }
+
+        .recent-post-slider .swiper-button-prev {
+            left: -50px;
+        }
+    </style>
     <div class="container">
         <div class="row align-items-end">
             <div class="col-lg-7 col-md-7">
@@ -21,10 +46,10 @@
         <div class="row mt-70">
             <div class="box-swiper">
                 <div class="swiper-container swiper-group-3">
-                    <div class="swiper-wrapper pb-70 pt-5">
+                    <div class="swiper-wrapper pb-70 pt-5 align-items-stretch">
                         @foreach ($posts as $recentPost)
                             <div class="swiper-slide">
-                                <div class="card-grid-3 hover-up">
+                                <div class="card-grid-3 hover-up h-100">
                                     <div class="card-image mb-3 overflow-hidden">
                                         <a href="{{ $recentPost->getUrl() }}">
                                             @if ($recentPost->hasFeaturedImage())
@@ -38,7 +63,7 @@
                                             @endif
                                         </a>
                                     </div>
-                                    <div class="card-body p-3">
+                                    <div class="card-body p-3 d-flex flex-column">
                                         <div class="d-flex justify-content-between flex-column text-muted small mb-3">
                                             <span>{{ $recentPost->published_at?->format('M d, Y') ?? '' }}</span>
                                             <span>{{ $recentPost->author->firstname ?? 'Anonymous' }}</span>
