@@ -40,14 +40,9 @@ class BlogDetails extends Component
 
         if ($isPreview) {
             // Load post without published restriction for preview
-            $this->post = Post::with([
-                'category',
-                'author',
-                'tags',
-                'media'
-            ])
-            ->where('slug', $this->slug)
-            ->firstOrFail();
+            $this->post = Post::with(['category', 'author', 'tags', 'media'])
+                ->where('slug', $this->slug)
+                ->firstOrFail();
 
             // Verify preview token
             $expectedToken = hash('sha256', $this->post->id . config('app.key'));
@@ -58,15 +53,10 @@ class BlogDetails extends Component
             // Don't track views for preview
         } else {
             // Normal published post loading
-            $this->post = Post::with([
-                'category',
-                'author',
-                'tags',
-                'media'
-            ])
-            ->where('slug', $this->slug)
-            ->published()
-            ->firstOrFail();
+            $this->post = Post::with(['category', 'author', 'tags', 'media'])
+                ->where('slug', $this->slug)
+                ->published()
+                ->firstOrFail();
 
             // Track view for published posts only
             $this->post->trackView();
@@ -87,7 +77,6 @@ class BlogDetails extends Component
         view()->share('twitterTags', $this->post->twitter_tags);
         view()->share('ogTags', $this->post->og_tags);
         view()->share('faqSchema', $this->generateFaqSchema());
-
     }
 
     protected function loadSidebarData()
@@ -97,9 +86,12 @@ class BlogDetails extends Component
             return Post::published()
                 ->where('id', '!=', $this->post->id)
                 ->select(['id', 'title', 'slug', 'blog_category_id', 'published_at', 'content_overview'])
-                ->with(['category:id,name,slug', 'media' => function($query) {
-                    $query->where('collection_name', 'featured');
-                }])
+                ->with([
+                    'category:id,name,slug',
+                    'media' => function ($query) {
+                        $query->where('collection_name', 'featured');
+                    },
+                ])
                 ->orderBy('published_at', 'desc')
                 ->limit(3)
                 ->get();
@@ -108,9 +100,11 @@ class BlogDetails extends Component
         // Get categories with post counts
         $this->categories = Cache::remember('active_categories', now()->addHours(3), function () {
             return Category::active()
-                ->withCount(['posts' => function($query) {
-                    $query->published();
-                }])
+                ->withCount([
+                    'posts' => function ($query) {
+                        $query->published();
+                    },
+                ])
                 ->having('posts_count', '>', 0)
                 ->orderBy('name')
                 ->get();
@@ -122,9 +116,8 @@ class BlogDetails extends Component
             // Use a more efficient query with proper indexing
             $rawTags = DB::table('taggables')
                 ->join('tags', 'taggables.tag_id', '=', 'tags.id')
-                ->join('blog_posts', function($join) {
-                    $join->on('taggables.taggable_id', '=', 'blog_posts.id')
-                        ->where('taggables.taggable_type', Post::class);
+                ->join('blog_posts', function ($join) {
+                    $join->on('taggables.taggable_id', '=', 'blog_posts.id')->where('taggables.taggable_type', Post::class);
                 })
                 ->where('blog_posts.status', 'published')
                 ->where('blog_posts.published_at', '<=', now())
@@ -134,29 +127,30 @@ class BlogDetails extends Component
                 ->limit(10)
                 ->get();
 
-            return $rawTags->map(function ($tag) use ($locale) {
-                $name = $tag->name;
+            return $rawTags
+                ->map(function ($tag) use ($locale) {
+                    $name = $tag->name;
 
-                if (isset($name[0]) && $name[0] === '{') {
-                    try {
-                        $decoded = json_decode($name, true, 512, JSON_THROW_ON_ERROR);
-                        $name = $decoded[$locale] ?? reset($decoded) ?? $name;
-                    } catch (\JsonException $e) {
-                        // Fallback to original name if JSON parsing fails
+                    if (isset($name[0]) && $name[0] === '{') {
+                        try {
+                            $decoded = json_decode($name, true, 512, JSON_THROW_ON_ERROR);
+                            $name = $decoded[$locale] ?? (reset($decoded) ?? $name);
+                        } catch (\JsonException $e) {
+                            // Fallback to original name if JSON parsing fails
+                        }
                     }
-                }
 
-                return [
-                    'name' => $name,
-                    'count' => $tag->count
-                ];
-            })->toArray();
+                    return [
+                        'name' => $name,
+                        'count' => $tag->count,
+                    ];
+                })
+                ->toArray();
         });
     }
 
-
-    protected function generateFaqSchema(){
-
+    protected function generateFaqSchema()
+    {
         $faqs = $this->post->faqs;
 
         if (!$faqs) {
@@ -164,20 +158,19 @@ class BlogDetails extends Component
         }
         $mainEntity = [];
         foreach ($faqs as $faq) {
-
             $mainEntity[] = [
                 '@type' => 'Question',
                 'name' => $faq['question'],
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => strip_tags($faq['answer'])
-                ]
+                    'text' => strip_tags($faq['answer']),
+                ],
             ];
         }
         $schema = [
             '@context' => 'https://schema.org',
             '@type' => 'FAQPage',
-            'mainEntity' => $mainEntity
+            'mainEntity' => $mainEntity,
         ];
         return json_encode($schema);
     }
@@ -203,7 +196,7 @@ class BlogDetails extends Component
                 'logo' => [
                     '@type' => 'ImageObject',
                     'url' => asset('path/to/your/logo.png'),
-                ]
+                ],
             ],
             'mainEntityOfPage' => [
                 '@type' => 'WebPage',
@@ -252,13 +245,11 @@ class BlogDetails extends Component
             'authorName' => $this->post->author->name ?? '',
             'publishDate' => $this->post->published_at,
             'pageDescription' => $this->post->meta_description ?: $this->post->content_overview,
-            'metaKeywords' =>$this->post->meta_keywords  ,
+            'metaKeywords' => $this->post->meta_keywords,
             'ogTags' => $this->post->og_tags,
             'twitterTags' => $this->post->twitter_tags,
             'canonicalUrl' => $this->post->getCanonicalUrl(),
-            'ogImage' => $this->post->hasFeaturedImage()
-                ? $this->post->getFeaturedImageUrl('large')
-                : null,
+            'ogImage' => $this->post->hasFeaturedImage() ? $this->post->getFeaturedImageUrl('large') : null,
         ]);
     }
 }

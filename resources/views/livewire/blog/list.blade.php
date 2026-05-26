@@ -6,18 +6,25 @@
                 <li><a href="{{ route('home') }}">Home</a></li>
 
                 @php
-                    $cat_items = $activeCategory ? [['label' => 'Blogs', 'url' => route('blog')], ['label' => $categories->firstWhere('id', $activeCategory)?->name]] : [];
-                    $pg_title = $activeCategory ? ($categories->firstWhere('id', $activeCategory)?->name . ' Articles') : 'Blogs';
+                    $cat_items = $activeCategory
+                        ? [
+                            ['label' => 'Blogs', 'url' => route('blog')],
+                            ['label' => $categories->firstWhere('id', $activeCategory)?->name],
+                        ]
+                        : [];
+                    $pg_title = $activeCategory
+                        ? $categories->firstWhere('id', $activeCategory)?->name . ' Articles'
+                        : 'Blogs';
                 @endphp
 
-                @foreach($cat_items as $item)
-                    @if(isset($item['url']))
+                @foreach ($cat_items as $item)
+                    @if (isset($item['url']))
                         <li><a href="{{ $item['url'] }}">{{ $item['label'] }}</a></li>
                     @else
                         <li>{{ $item['label'] }}</li>
                     @endif
                 @endforeach
-                @if(count($cat_items) === 0)
+                @if (count($cat_items) === 0)
                     <li>{{ $pg_title }}</li>
                 @endif
             </ul>
@@ -26,9 +33,8 @@
     <div class="archive-header pt-50 pb-50 text-center">
         <div class="container">
             <h3 class="mb-30 text-center w-75 mx-auto">
-                {{$pg_title }}
+                {{ $pg_title }}
             </h3>
-
         </div>
     </div>
     <div class="post-loop-grid">
@@ -40,13 +46,13 @@
                             class="flex flex-col items-start justify-between p-4 mb-6 bg-white rounded-lg shadow-sm sm:flex-row sm:items-center">
                             <!-- Search Status -->
                             <div class="mb-3 sm:mb-0">
-                                @if($search)
+                                @if ($search)
                                     <div class="text-gray-700">
                                         <span class="font-medium">Search results for:</span>
                                         <span
                                             class="px-2 py-1 rounded bg-color-blue/10 text-primary-600">{{ $search }}</span>
 
-                                        @if($posts->total() > 0)
+                                        @if ($posts->total() > 0)
                                             <span class="ml-2 text-gray-600">
                                                 ({{ $posts->total() }} {{ Str::plural('result', $posts->total()) }})
                                             </span>
@@ -68,7 +74,7 @@
                                         </span>
 
                                         <button wire:click="filterByCategory(null)"
-                                                class="ml-2 text-primary-600 hover:underline">
+                                            class="ml-2 text-primary-600 hover:underline">
                                             Clear
                                         </button>
                                     </div>
@@ -80,7 +86,7 @@
                                         </span>
 
                                         <button wire:click="toggleFeatured"
-                                                class="ml-2 text-primary-600 hover:underline">
+                                            class="ml-2 text-primary-600 hover:underline">
                                             Show All
                                         </button>
                                     </div>
@@ -93,79 +99,71 @@
                             <div class="flex items-center space-x-2">
                                 <span class="text-sm text-gray-600">Sort by:</span>
                                 <div class="flex overflow-hidden border rounded">
-                                    <button
-                                        wire:click="sortBy('published_at')"
-                                        class="flex items-center px-3 py-1.5 text-sm {{ $sortField === 'published_at' ? 'btn-primary' : 'bg-white text-gray-700 hover:bg-gray-50' }}"
-                                    >
+                                    <button wire:click="sortBy('published_at')"
+                                        class="flex items-center px-3 py-1.5 text-sm {{ $sortField === 'published_at' ? 'btn-primary' : 'bg-white text-gray-700 hover:bg-gray-50' }}">
                                         Date
-                                        @if($sortField === 'published_at')
-                                            <i class="fi-ts-angle-small-{{ $sortDirection === 'desc' ? 'down' : 'up' }} ml-1 text-xs"></i>
+                                        @if ($sortField === 'published_at')
+                                            <i
+                                                class="fi-ts-angle-small-{{ $sortDirection === 'desc' ? 'down' : 'up' }} ml-1 text-xs"></i>
                                         @endif
                                     </button>
-                                    <button
-                                        wire:click="sortBy('view_count')"
-                                        class="flex items-center px-3 py-1.5 text-sm border-l {{ $sortField === 'view_count' ? 'btn-primary' : 'bg-white text-gray-700 hover:bg-gray-50' }}"
-                                    >
+                                    <button wire:click="sortBy('view_count')"
+                                        class="flex items-center px-3 py-1.5 text-sm border-l {{ $sortField === 'view_count' ? 'btn-primary' : 'bg-white text-gray-700 hover:bg-gray-50' }}">
                                         Popular
-                                        @if($sortField === 'view_count')
-                                            <i class="fi-ts-angle-small-{{ $sortDirection === 'desc' ? 'down' : 'up' }} ml-1 text-xs"></i>
+                                        @if ($sortField === 'view_count')
+                                            <i
+                                                class="fi-ts-angle-small-{{ $sortDirection === 'desc' ? 'down' : 'up' }} ml-1 text-xs"></i>
                                         @endif
                                     </button>
                                 </div>
                             </div>
                         </div>
                         <!--end .card-blog-1-->
-                        <div wire:loading.delay
-                             wire:target="filterByCategory, search, toggleFeatured, sortBy, nextPage, previousPage, gotoPage"
-                             class="absolute inset-0 z-10 bg-white rounded-lg bg-opacity-40">
-                        </div>
+                        {{-- <div wire:loading.delay
+                            wire:target="filterByCategory, search, toggleFeatured, sortBy, nextPage, previousPage, gotoPage"
+                            class="absolute inset-0 z-10 bg-white rounded-lg bg-opacity-40">
+                        </div> --}}
                         @forelse($posts as $post)
                             <div class="card-blog-1 mb-30 post-list hover-up wow
-                        animate__animated animate__fadeIn" data-wow-delay=".0s" wire:key="post-{{ $post->id }}"
-                                 @if($post->is_featured)
+                        animate__animated animate__fadeIn"
+                                data-wow-delay=".0s" wire:key="post-{{ $post->id }}"
+                                @if ($post->is_featured) style="border-color: #FFC107;" @endif>
 
-                                     style="border-color: #FFC107;"
-
-
-                                @endif
-                            >
-
-                                <figure class="post-thumb">
-
+                                <figure class="post-thumb overflow-hidden rounded-xl">
                                     <a href="{{ $post->getUrl() }}" wire:click="trackView('{{ $post->id }}')">
-                                        @if($post->hasFeaturedImage())
+                                        @if ($post->hasFeaturedImage())
                                             <img src="{{ $post->getFeaturedImageUrl('square_thumb') }}"
-                                                 alt="{{ $post->title }}" width="450" height="450"
-                                                 class="object-cover w-full h-auto transition-all duration-300 scale-100 group-hover:scale-105"/>
+                                                alt="{{ $post->title }}" width="450" height="450"
+                                                class="object-cover w-full h-[320px] transition-all duration-300 scale-100 group-hover:scale-105" />
                                         @else
                                             <img src="https://placehold.co/450x450?text={{ urlencode($post->title) }}"
-                                                 alt="{{ $post->title }}" width="450" height="450"
-                                                 class="object-cover w-full h-auto transition-all duration-300 scale-100 group-hover:scale-105"/>
+                                                alt="{{ $post->title }}" width="450" height="450"
+                                                class="object-cover w-full h-[320px] transition-all duration-300 scale-100 group-hover:scale-105" />
                                         @endif
                                     </a>
                                 </figure>
                                 <div class="card-block-info">
 
                                     <h3 class="post-title mb-15"><a href="{{ $post->getUrl() }}"
-                                                                    wire:click="trackView('{{ $post->id }}')">{{ $post->title }}</a>
+                                            wire:click="trackView('{{ $post->id }}')">{{ $post->title }}</a>
                                     </h3>
 
                                     <div class="post-meta text d-flex align-items-center mb-15">
                                         <div class="author d-flex align-items-center mr-30">
-                                            @if($post->author && $post->author->profile_photo_path)
+                                            @if ($post->author && $post->author->profile_photo_path)
                                                 <img src="{{ Storage::url($post->author->profile_photo_path) }}"
-                                                     alt="{{ $post->author->name }}" width="45" height="45"
-                                                     class="rounded-[50%]"/>
+                                                    alt="{{ $post->author->name }}" width="45" height="45"
+                                                    class="rounded-[50%]" />
                                             @else
-                                                <img
-                                                    src="https://placehold.co/45x45?text={{ substr($post->author->name ?? 'A', 0, 1) }}"
-                                                    alt="{{ $post->author->name ?? 'Author' }}" width="45" height="45"
-                                                    class="rounded-[50%]"/>
+                                                <img src="https://placehold.co/45x45?text={{ substr($post->author->name ?? 'A', 0, 1) }}"
+                                                    alt="{{ $post->author->name ?? 'Author' }}" width="45"
+                                                    height="45" class="rounded-[50%]" />
                                             @endif
                                             <span>{{ $post->author->name ?? 'Anonymous' }}</span>
                                         </div>
                                         <div class="date">
-                                            <span><i class="fi-rr-edit mr-5 text-grey-6"></i>{{ $post->published_at->format('M d, Y') }}</span>
+                                            <span><i
+                                                    class="fi-rr-edit mr-5 text-grey-6"></i>{{ $post->published_at->format('M d, Y') }}</span>
                                         </div>
                                     </div>
                                     <p class="post-excerpt text d-none d-lg-block line-clamp-2">
@@ -175,13 +173,13 @@
                                         <div class="d-flex align-items-center justify-content-between">
                                             <div class="keep-reading">
                                                 <a href="{{ $post->getUrl() }}"
-                                                   wire:click="trackView('{{ $post->id }}')"
-                                                   class="btn btn-border btn-brand-hover">Read More</a>
+                                                    wire:click="trackView('{{ $post->id }}')"
+                                                    class="btn btn-border btn-brand-hover">Read More</a>
                                             </div>
                                             <div class="tags text-lg-end">
                                                 <a href="#"
-                                                   wire:click.prevent="filterByCategory('{{ $post->category->id }}')"
-                                                   class="btn btn-tags-sm mb-10 mr-5"> {{ $post->category->name }}</a>
+                                                    wire:click.prevent="filterByCategory('{{ $post->category->id }}')"
+                                                    class="btn btn-tags-sm mb-10 mr-5"> {{ $post->category->name }}</a>
 
 
                                             </div>
@@ -195,14 +193,14 @@
                             <div class="w-full p-10 text-center bg-white rounded-[10px] shadow-sm">
                                 <div class="flex flex-col items-center justify-center py-12">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mb-4 text-gray-300"
-                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                     </svg>
                                     <p class="text-lg font-medium text-gray-500">No articles found</p>
                                     <p class="mb-6 text-gray-400">Try changing your search criteria</p>
-                                    <button wire:click="filterByCategory(null)"
-                                            class="inline-block rounded-[50px] bg-color-blue px-6 py-3 text-white hover:bg-blue-700 transition">
+                                    <button wire:click="clearFilters"
+                                        class="inline-block rounded-[50px] bg-color-blue px-6 py-3 text-white hover:bg-blue-700 transition">
                                         View All Posts
                                     </button>
                                 </div>
@@ -211,71 +209,70 @@
 
                     </div>
 
-                    @if($posts->hasPages())
-
+                    @if ($posts->hasPages())
                         <div class="paginations wow animate__animated animate__fadeIn">
                             <ul class="pager">
                                 <li>
                                     <button wire:click="previousPage"
-                                            @if(!$posts->onFirstPage()) wire:loading.attr="disabled"
-                                            @endif @if($posts->onFirstPage()) disabled
-                                            @endif  class="pager-prev  {{ $posts->onFirstPage() ? 'active': ''}}"></button>
+                                        @if (!$posts->onFirstPage()) wire:loading.attr="disabled" @endif
+                                        @if ($posts->onFirstPage()) disabled @endif
+                                        class="pager-prev  {{ $posts->onFirstPage() ? 'active' : '' }}"></button>
                                 </li>
-                                @foreach($posts->getUrlRange(1, $posts->lastPage()) as $page => $url)
+                                @foreach ($posts->getUrlRange(1, $posts->lastPage()) as $page => $url)
                                     <li>
                                         <button wire:click="gotoPage({{ $page }})"
-                                                class="pager-number {{ $page == $posts->currentPage() ? 'active': ''}} ">{{ $page }}</button>
+                                            class="pager-number {{ $page == $posts->currentPage() ? 'active' : '' }} ">{{ $page }}</button>
                                     </li>
                                 @endforeach
 
 
                                 <li>
                                     <button wire:click="nextPage"
-                                            @if(!$posts->hasMorePages()) wire:loading.attr="disabled"
-                                            @endif @if(!$posts->hasMorePages()) disabled
-                                            @endif class="pager-next  {{ !$posts->hasMorePages() ? 'active' : '' }} "></button>
+                                        @if (!$posts->hasMorePages()) wire:loading.attr="disabled" @endif
+                                        @if (!$posts->hasMorePages()) disabled @endif
+                                        class="pager-next  {{ !$posts->hasMorePages() ? 'active' : '' }} "></button>
                                 </li>
                             </ul>
                         </div>
                     @endif
                 </div>
+
                 <div class="col-lg-4 col-md-12 col-sm-12 col-12 pl-40 pl-lg-15 mt-lg-30">
                     <div class="widget_search mb-40">
                         <div class="search-form">
                             <form wire:submit.prevent="$refresh" role="search" aria-labelledby="search-heading">
-                                <input id="blog-search-input"
-                                       type="search"
-                                       wire:model.debounce.500ms="search"
-                                       placeholder="Type to search..."
-                                       class="h-full w-full rounded-[50px] border border-[#E1E1E1] bg-white py-[15px] pl-16 pr-12 text-lg text-color-black outline-none transition-all placeholder:text-color-black focus:border-color-blue focus:ring-2 focus:ring-color-blue/20"
-                                       aria-describedby="search-description"/>
+                                <input id="blog-search-input" type="search" wire:model.debounce.500ms="search"
+                                    placeholder="Type to search..."
+                                    class="h-full w-full rounded-[50px] border border-[#E1E1E1] bg-white py-[15px] pl-16 pr-12 text-lg text-color-black outline-none transition-all placeholder:text-color-black focus:border-color-blue focus:ring-2 focus:ring-color-blue/20"
+                                    aria-describedby="search-description" />
                                 <button type="submit"><i class="fi-rr-search"></i></button>
-                                <div wire:loading wire:target="search" class="ml-2 text-primary-600" aria-live="polite">
+                                <div wire:loading wire:target="search" class="ml-2 text-primary-600"
+                                    aria-live="polite">
                                     <span class="sr-only">Searching...</span>
-                                    <svg class="w-5 h-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                         viewBox="0 0 24 24" aria-hidden="true">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                                stroke-width="4"></circle>
+                                    <svg class="w-5 h-5 animate-spin" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10"
+                                            stroke="currentColor" stroke-width="4"></circle>
                                         <path class="opacity-75" fill="currentColor"
-                                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
                                     </svg>
                                 </div>
                             </form>
-                            @if($search)
+                            @if ($search)
                                 <div class="flex items-center justify-between mt-2 text-sm text-gray-600"
-                                     aria-live="polite">
+                                    aria-live="polite">
                                     <div>
-                                        @if($posts->total() > 0)
-                                            Found {{ $posts->total() }} {{ Str::plural('result', $posts->total()) }} for
+                                        @if ($posts->total() > 0)
+                                            Found {{ $posts->total() }} {{ Str::plural('result', $posts->total()) }}
+                                            for
                                             "{{ $search }}"
                                         @else
                                             No results found for "{{ $search }}"
                                         @endif
                                     </div>
-                                    <button
-                                        wire:click="clearSearch"
-                                        class="px-2 rounded text-primary-600 hover:underline focus:outline-none focus:ring-2 focus:ring-color-blue/40"
-                                    >
+                                    <button wire:click="clearSearch"
+                                        class="px-2 rounded text-primary-600 hover:underline focus:outline-none focus:ring-2 focus:ring-color-blue/40">
                                         Clear search
                                     </button>
                                 </div>
@@ -284,88 +281,74 @@
                     </div>
                     <div class="sidebar-shadow widget-categories">
                         <h5 class="sidebar-title">Category</h5>
-                        <ul>
-                            <li class="border-b border-color-black/10 pb-[14px] pt-[14px] first:pt-0 last:border-b-0 last:pb-0">
-                                <button wire:click="filterByCategory(null)"
-                                    {{ is_null($activeCategory) ? 'fw-bold' : '' }}
-                                >
-                                    All Categories
-                                </button>
-                            </li>
 
-                            @foreach($categories as $category)
-                                <li class="d-flex justify-content-between align-items-center">
-                                    <button wire:click="filterByCategory('{{ $category->id }}')"
-                                            class="w-full text-left {{ $activeCategory === $category->id ? 'fw-bold' : '' }}">
+                        <div class="form-group select-style select-style-icon" wire:ignore>
+                            <select id="category-select" class="form-control form-icons">
+                                <option value="">All Categories</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}"
+                                        {{ $activeCategory == $category->id ? 'selected' : '' }}>
                                         {{ $category->name }}
-                                    </button>
+                                    </option>
+                                @endforeach
+                            </select>
+                            <i class="fi-rr-list"></i>
+                        </div>
 
-
-                                </li>
-                            @endforeach
-
-                            <li class="d-flex justify-content-between align-items-center">
-                                <button wire:click="toggleFeatured"
-                                        class="w-full text-left flex items-center {{ $featuredOnly ? 'text-primary-600 font-semibold' : 'hover:text-primary-600' }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24"
-                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                         stroke-linejoin="round">
-                                        <polygon
-                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        <div class="mt-3">
+                            <button wire:click="toggleFeatured"
+                                class="w-full text-left flex items-center {{ $featuredOnly ? 'text-primary-600 font-semibold' : 'hover:text-primary-600' }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                    </polygon>
+                                </svg>
+                                Featured Only
+                                <span wire:loading.delay wire:target="toggleFeatured" class="ml-2 text-primary-600">
+                                    <svg class="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10"
+                                            stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2-647z">
+                                        </path>
                                     </svg>
-                                    Featured Only
-                                    <span wire:loading.delay wire:target="toggleFeatured" class="ml-2 text-primary-600">
-                                            <svg class="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg"
-                                                 fill="none" viewBox="0 0 24 24">
-                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                                        stroke-width="4"></circle>
-                                                <path class="opacity-75" fill="currentColor"
-                                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                            </svg>
-                                        </span>
-                                </button>
-                            </li>
-
-                        </ul>
+                                </span>
+                            </button>
+                        </div>
                     </div>
                     <div class="sidebar-shadow sidebar-news-small">
                         <h5 class="sidebar-title">Latest news</h5>
                         <div class="post-list-small">
-
-
-                            @foreach($recentPosts as $recentPost)
-
+                            @foreach ($recentPosts as $recentPost)
                                 <div class="post-list-small-item d-flex align-items-center">
                                     <figure class="thumb mr-15">
-                                        @if($recentPost->hasFeaturedImage())
+                                        @if ($recentPost->hasFeaturedImage())
                                             <img src="{{ $recentPost->getFeaturedImageUrl('square_thumb') }}"
-                                                 alt="{{ $recentPost->title }}"/>
+                                                alt="{{ $recentPost->title }}" />
                                         @else
-
-                                            <img
-                                                src="https://placehold.co/150x150?text={{ substr($recentPost->title, 0, 10) }}"
-                                                alt="{{ $recentPost->title }}"/>
+                                            <img src="https://placehold.co/150x150?text={{ substr($recentPost->title, 0, 10) }}"
+                                                alt="{{ $recentPost->title }}" />
                                         @endif
                                     </figure>
                                     <div class="content">
                                         <h5><a href="{{ $recentPost->getUrl() }}"
-                                               wire:click="trackView('{{ $recentPost->id }}')">{{ $recentPost->title }}</a>
+                                                wire:click="trackView('{{ $recentPost->id }}')">{{ $recentPost->title }}</a>
                                         </h5>
-                                        <div class="post-meta text d-flex align-items-center mb-15">
-                                            <div class="author d-flex align-items-center mr-20">
-
+                                        <div class="post-meta text d-flex align-items-end flex-column">
+                                            <div class="author">
                                                 <span>{{ $recentPost->author->name ?? 'Anonymous' }}</span>
                                             </div>
+
                                             <div class="date">
                                                 <span>{{ $recentPost->published_at->format('M d, Y') }}</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                             @endforeach
-
-
                         </div>
                     </div>
                     <div class="sidebar-shadow">
@@ -374,10 +357,10 @@
 
                             @forelse($popularTags as $tag)
                                 <button wire:click="searchByTag('{{ is_object($tag) ? $tag->name : $tag['name'] }}')"
-                                        class="btn btn-tags-sm mb-10 mr-5">
+                                    class="btn btn-tags-sm mb-10 mr-5">
 
                                     <span>
-                                        @if(is_object($tag) && isset($tag->name) && is_string($tag->name))
+                                        @if (is_object($tag) && isset($tag->name) && is_string($tag->name))
                                             {{ $tag->name }}
                                         @elseif(is_object($tag) && isset($tag->name) && is_object($tag->name))
                                             {{ $tag->name->{app()->getLocale()} ?? '' }}
@@ -396,10 +379,10 @@
                                 No tags found
                             @endforelse
 
-                            @if($search && count($popularTags) > 0)
+                            @if ($search && count($popularTags) > 0)
                                 <div class="mt-4 text-sm text-gray-600">
                                     <button wire:click="clearSearch"
-                                            class="flex items-center text-primary-600 hover:underline">
+                                        class="flex items-center text-primary-600 hover:underline">
                                         <i class="mr-1 text-xs fa-solid fa-arrow-left"></i>
                                         View all tags
                                     </button>
@@ -411,10 +394,58 @@
 
                 </div>
             </div>
-
-
         </div>
     </div>
-    <livewire:subscribe/>
+    @push('js')
+        <script>
+            document.addEventListener('livewire:initialized', () => {
+                function initCategorySelect() {
+                    if (typeof $ === 'undefined' || !$.fn || !$.fn.select2) return;
+                    const select = $('#category-select');
+
+                    if (select.hasClass('select2-hidden-accessible')) {
+                        select.select2('destroy');
+                    }
+
+                    select.select2({
+                        placeholder: 'Select Category',
+                        allowClear: true,
+                        width: '100%'
+                    }).off('change.blogCategory').on('change.blogCategory', function() {
+                        @this.call('filterByCategory', $(this).val() || null);
+                    });
+                }
+
+                initCategorySelect();
+
+                Livewire.on('seo-updated', (data) => {
+                    const payload = data[0] || {};
+
+                    if (payload.title) {
+                        document.title = payload.title;
+                    }
+
+                    if (payload.description) {
+                        let metaDescription = document.querySelector('meta[name="description"]');
+
+                        if (!metaDescription) {
+                            metaDescription = document.createElement('meta');
+                            metaDescription.setAttribute('name', 'description');
+                            document.head.appendChild(metaDescription);
+                        }
+
+                        metaDescription.setAttribute('content', payload.description);
+                    }
+                });
+
+                Livewire.on('reset-select2', () => {
+                    $('#category-select').val(null).trigger('change.select2');
+                });
+            });
+        </script>
+    @endpush
+
+    <livewire:subscribe />
 </div>
+<!-- End Content -->
 <!-- End Content -->

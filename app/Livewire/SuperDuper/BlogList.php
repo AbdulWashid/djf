@@ -4,6 +4,7 @@ namespace App\Livewire\SuperDuper;
 
 use App\Models\Blog\Post;
 use App\Models\Blog\Category;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\App;
@@ -25,6 +26,8 @@ class BlogList extends Component
     public $recentPosts = [];
     public $popularTags = [];
     public $isSearching = false;
+    public $pageTitle = 'Blogs';
+    public $pageDescription = 'Discover our latest insights, tips, and updates...';
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -39,10 +42,12 @@ class BlogList extends Component
         // Get all active categories with post counts
         $this->categories = cache()->remember('active_categories', now()->addHours(3), function () {
             return Category::active()
-                ->withCount(['posts' => function($query) {
-                    $query->published();
-                }])
-                ->having('posts_count', '>', 0)
+                ->withCount([
+                    'posts' => function ($query) {
+                        $query->published();
+                    },
+                ])
+                // ->having('posts_count', '>', 0)
                 ->orderBy('name')
                 ->get();
         });
@@ -51,9 +56,13 @@ class BlogList extends Component
         $this->recentPosts = cache()->remember('recent_posts', now()->addMinutes(30), function () {
             return Post::published()
                 ->select(['id', 'title', 'slug', 'blog_author_id', 'blog_category_id', 'published_at', 'content_overview'])
-                ->with(['category:id,name,slug', 'media' => function($query) {
-                    $query->where('collection_name', 'featured');
-                }, 'author'])
+                ->with([
+                    'category:id,name,slug',
+                    'media' => function ($query) {
+                        $query->where('collection_name', 'featured');
+                    },
+                    'author',
+                ])
                 ->orderBy('published_at', 'desc')
                 ->limit(5)
                 ->get();
@@ -65,9 +74,8 @@ class BlogList extends Component
         $this->popularTags = cache()->remember('popular_tags_' . $locale, now()->addHours(6), function () use ($locale) {
             $rawTags = DB::table('taggables')
                 ->join('tags', 'taggables.tag_id', '=', 'tags.id')
-                ->join('blog_posts', function($join) {
-                    $join->on('taggables.taggable_id', '=', 'blog_posts.id')
-                        ->where('taggables.taggable_type', Post::class);
+                ->join('blog_posts', function ($join) {
+                    $join->on('taggables.taggable_id', '=', 'blog_posts.id')->where('taggables.taggable_type', Post::class);
                 })
                 ->where('blog_posts.status', 'published')
                 ->where('blog_posts.published_at', '<=', now())
@@ -77,28 +85,32 @@ class BlogList extends Component
                 ->limit(10)
                 ->get();
 
-            return $rawTags->map(function ($tag) use ($locale) {
-                $name = $tag->name;
+            return $rawTags
+                ->map(function ($tag) use ($locale) {
+                    $name = $tag->name;
 
-                if (isset($name[0]) && $name[0] === '{') {
-                    try {
-                        $decoded = json_decode($name, true, 512, JSON_THROW_ON_ERROR);
-                        $name = $decoded[$locale] ?? reset($decoded) ?? $name;
-                    } catch (\JsonException $e) {
-                        // Fallback to original name if JSON parsing fails
+                    if (isset($name[0]) && $name[0] === '{') {
+                        try {
+                            $decoded = json_decode($name, true, 512, JSON_THROW_ON_ERROR);
+                            $name = $decoded[$locale] ?? (reset($decoded) ?? $name);
+                        } catch (\JsonException $e) {
+                            // Fallback to original name if JSON parsing fails
+                        }
                     }
-                }
 
-                return [
-                    'name' => $name,
-                    'count' => $tag->count
-                ];
-            })->toArray();
+                    return [
+                        'name' => $name,
+                        'count' => $tag->count,
+                    ];
+                })
+                ->toArray();
         });
 
         if ($this->activeCategory) {
             $this->activeCategory = $this->categories->firstWhere('id', $this->activeCategory)?->id ?? null;
         }
+
+        $this->syncSeo();
     }
 
     // Reset pagination when updating search
@@ -108,11 +120,21 @@ class BlogList extends Component
         $this->isSearching = true;
     }
 
+    public function updatedSearch()
+    {
+        $this->syncSeo();
+    }
+
     // Filter by category
     public function filterByCategory($categoryId = null)
     {
-        $this->activeCategory = $categoryId;
+        $this->activeCategory = filled($categoryId) ? $categoryId : null;
         $this->resetPage();
+        $this->syncSeo();
+
+        if (blank($this->activeCategory)) {
+            $this->dispatch('reset-select2');
+        }
     }
 
     // Toggle featured posts filter
@@ -120,6 +142,7 @@ class BlogList extends Component
     {
         $this->featuredOnly = !$this->featuredOnly;
         $this->resetPage();
+        $this->syncSeo();
     }
 
     // Sort posts by field
@@ -133,6 +156,7 @@ class BlogList extends Component
         }
 
         $this->resetPage();
+        $this->syncSeo();
     }
 
     // Track post views
@@ -150,6 +174,20 @@ class BlogList extends Component
         $this->search = '';
         $this->resetPage();
         $this->isSearching = false;
+        $this->syncSeo();
+    }
+
+    public function clearFilters()
+    {
+        $this->search = '';
+        $this->activeCategory = null;
+        $this->featuredOnly = false;
+        $this->sortField = 'published_at';
+        $this->sortDirection = 'desc';
+        $this->resetPage();
+        $this->isSearching = false;
+        $this->syncSeo();
+        $this->dispatch('reset-select2');
     }
 
     /**
@@ -173,17 +211,39 @@ class BlogList extends Component
         }
 
         $this->resetPage();
+        $this->syncSeo();
+    }
+
+    private function syncSeo(): void
+    {
+        $categoryName = $this->activeCategory
+            ? $this->categories->firstWhere('id', $this->activeCategory)?->name
+            : null;
+
+        if (!empty($this->search)) {
+            $this->pageTitle = 'Search results for "' . $this->search . '" | Blogs';
+            $this->pageDescription = 'Search results for "' . $this->search . '" on Blogs.';
+        } elseif ($categoryName) {
+            $this->pageTitle = $categoryName . ' Articles | Blogs';
+            $this->pageDescription = 'Browse the latest ' . $categoryName . ' articles on Blogs.';
+        } elseif ($this->featuredOnly) {
+            $this->pageTitle = 'Featured Blog Posts | Blogs';
+            $this->pageDescription = 'Explore featured blog posts, insights, tips, and updates on Blogs.';
+        } else {
+            $this->pageTitle = 'Blogs';
+            $this->pageDescription = 'Discover our latest insights, tips, and updates...';
+        }
+
+        $this->dispatch('seo-updated', [
+            'title' => $this->pageTitle,
+            'description' => $this->pageDescription,
+        ]);
     }
 
     public function render()
     {
         $query = Post::query()
-            ->with([
-                'category',
-                'author',
-                'media',
-                'tags'
-            ])
+            ->with(['category', 'author', 'media', 'tags'])
             ->published()
             ->locale(App::getLocale());
 
@@ -191,14 +251,14 @@ class BlogList extends Component
             $searchTerm = '%' . $this->search . '%';
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('title', 'like', $searchTerm)
-                  ->orWhere('content_raw', 'like', $searchTerm)
-                  ->orWhere('content_overview', 'like', $searchTerm)
-                  ->orWhereHas('tags', function($q) use ($searchTerm) {
-                      $q->where('name', 'like', $searchTerm);
-                  })
-                  ->orWhereHas('category', function($q) use ($searchTerm) {
-                      $q->where('name', 'like', $searchTerm);
-                  });
+                    ->orWhere('content_raw', 'like', $searchTerm)
+                    ->orWhere('content_overview', 'like', $searchTerm)
+                    ->orWhereHas('tags', function ($q) use ($searchTerm) {
+                        $q->where('name', 'like', $searchTerm);
+                    })
+                    ->orWhereHas('category', function ($q) use ($searchTerm) {
+                        $q->where('name', 'like', $searchTerm);
+                    });
             });
         }
 
@@ -210,8 +270,7 @@ class BlogList extends Component
             $query->where('blog_category_id', $this->activeCategory);
         }
 
-        $posts = $query->orderBy($this->sortField, $this->sortDirection)
-            ->paginate($this->perPage);
+        $posts = $query->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage);
 
         return view('livewire.blog.list', [
             'posts' => $posts,
@@ -220,7 +279,7 @@ class BlogList extends Component
             'categoryName' => 'Blogs',
             'pageTitle' => 'Blogs',
             'pageDescription' => 'Discover our latest insights, tips, and updates...',
-            'metaKeywords' => 'blog, articles, insights, technology news'
+            'metaKeywords' => 'blog, articles, insights, technology news',
         ]);
     }
 }
