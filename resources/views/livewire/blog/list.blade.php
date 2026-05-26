@@ -101,7 +101,7 @@
                                 <div class="flex overflow-hidden border rounded">
                                     <button wire:click="sortBy('published_at')"
                                         class="flex items-center px-3 py-1.5 text-sm {{ $sortField === 'published_at' ? 'btn-primary' : 'bg-white text-gray-700 hover:bg-gray-50' }}">
-                                        Date
+                                        Latest
                                         @if ($sortField === 'published_at')
                                             <i
                                                 class="fi-ts-angle-small-{{ $sortDirection === 'desc' ? 'down' : 'up' }} ml-1 text-xs"></i>

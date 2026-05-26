@@ -203,8 +203,7 @@
     $(".swiper-group-3").each(function () {
         var swiper_3_items = new Swiper(this, {
             spaceBetween: 30,
-            slidesPerView: 3,
-            spaceBetween: 30,
+            slidesPerView: 4,
             slidesPerGroup: 1,
             loop: true,
             navigation: {
@@ -231,16 +230,16 @@
                 delay: 10000
             },
             breakpoints: {
-                1199: {
+                1400: {
+                    slidesPerView: 4
+                },
+                1024: {
                     slidesPerView: 3
                 },
-                800: {
+                768: {
                     slidesPerView: 2
                 },
                 400: {
-                    slidesPerView: 1
-                },
-                350: {
                     slidesPerView: 1
                 }
             }

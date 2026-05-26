@@ -93,6 +93,7 @@ Route::get('impersonate/leave', function () {
     ->middleware('web');
 // SEO Routes
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+Route::get('/sitemap.html', [App\Http\Controllers\SitemapController::class, 'html'])->name('sitemap.html');
 // Route::get('/robots.txt', [App\Http\Controllers\SitemapController::class, 'robots'])->name('robots');
 
 Route::get('/{slug}', function ($slug) {

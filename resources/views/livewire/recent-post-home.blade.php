@@ -25,31 +25,31 @@
                         @foreach ($posts as $recentPost)
                             <div class="swiper-slide">
                                 <div class="card-grid-3 hover-up">
-                                    <div class="row g-0">
-                                        <div class="col-md-5 d-flex align-items-center">
-                                            <a href="{{ $recentPost->getUrl() }}">
-                                                @if ($recentPost->hasFeaturedImage())
-                                                    <img src="{{ $recentPost->getFeaturedImageUrl('medium') }}"
-                                                        alt="{{ $recentPost->title }}" class="img-fluid w-100" />
-                                                @else
-                                                    <img src="https://placehold.co/460x260?text={{ urlencode(substr($recentPost->title, 0, 20)) }}"
-                                                        alt="{{ $recentPost->title }}" class="img-fluid w-100" />
-                                                @endif
-                                            </a>
+                                    <div class="card-image mb-3 overflow-hidden">
+                                        <a href="{{ $recentPost->getUrl() }}">
+                                            @if ($recentPost->hasFeaturedImage())
+                                                <img src="{{ $recentPost->getFeaturedImageUrl('medium') }}"
+                                                    alt="{{ $recentPost->title }}" class="img-fluid w-100"
+                                                    style="height: 200px; object-fit: cover;" />
+                                            @else
+                                                <img src="https://placehold.co/460x200?text={{ urlencode(substr($recentPost->title, 0, 20)) }}"
+                                                    alt="{{ $recentPost->title }}" class="img-fluid w-100"
+                                                    style="height: 200px; object-fit: cover;" />
+                                            @endif
+                                        </a>
+                                    </div>
+                                    <div class="card-body p-3">
+                                        <div class="d-flex justify-content-between flex-column text-muted small mb-3">
+                                            <span>{{ $recentPost->published_at?->format('M d, Y') ?? '' }}</span>
+                                            <span>{{ $recentPost->author->firstname ?? 'Anonymous' }}</span>
                                         </div>
-                                        <div class="col-md-7 p-3">
-                                            <h3 class="h5 text-primary">
-                                                <a href="{{ $recentPost->getUrl() }}">{{ $recentPost->title }}</a>
-                                            </h3>
-                                            <div class="d-flex justify-content-between text-muted small mb-2">
-                                                <span>{{ $recentPost->published_at?->format('M Y') ?? '' }}</span>
-                                                <span>{{ $recentPost->author->firstname ?? 'Anonymous' }}</span>
-                                            </div>
-                                            <p class="mb-2 text-muted">
-                                                {{ \Illuminate\Support\Str::limit(strip_tags($recentPost->content ?? ($recentPost->excerpt ?? '')), 200) }}
-                                                <a href="{{ $recentPost->getUrl() }}">...Read more</a>
-                                            </p>
-                                        </div>
+                                        <h3 class="h5 text-primary mb-2">
+                                            <a href="{{ $recentPost->getUrl() }}"
+                                                class="text-decoration-none">{{ $recentPost->title }}</a>
+                                        </h3>
+                                        <p class="mb-0 text-muted small">
+                                            {{ \Illuminate\Support\Str::limit(strip_tags($recentPost->content ?? ($recentPost->excerpt ?? '')), 100) }}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -97,8 +97,8 @@
                     </div>
                     <div class="swiper-pagination swiper-pagination3"></div>
                 </div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next mr-4"></div>
+                <div class="swiper-button-prev ml-4"></div>
             </div>
         </div>
     </div>

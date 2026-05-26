@@ -26,7 +26,26 @@ class SitemapController extends Controller
         ]);
     }
 
-    private function generateSitemap(): string
+    public function html(): Response
+    {
+        $html = Cache::remember('sitemap_html', 3600, function () {
+            $urls = $this->gatherUrls();
+
+            return view('sitemap.index', ['urls' => $urls])->render();
+        });
+
+        return response($html, 200, [
+            'Content-Type' => 'text/html',
+            'Cache-Control' => 'public, max-age=3600',
+        ]);
+    }
+
+    /**
+     * Build collection of sitemap URLs for reuse (XML and HTML views).
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    private function gatherUrls(): \Illuminate\Support\Collection
     {
         $urls = collect();
 
@@ -47,14 +66,8 @@ class SitemapController extends Controller
             ]);
         }
 
-
-        $pages = \App\Models\StaticPage::select('slug','status','updated_at')->where('status', 1)->get();
+        $pages = \App\Models\StaticPage::select('slug', 'status', 'updated_at')->where('status', 1)->get();
         foreach ($pages as $page) {
-            // $staticPages[] = [
-            //     'url' => route('page', $page->slug),
-            //     'priority' => '0.7',
-            //     'changefreq' => 'monthly'
-            // ];
             $urls->push([
                 'loc' => route('page', $page->slug),
                 'lastmod' => $page->updated_at->toISOString(),
@@ -63,16 +76,6 @@ class SitemapController extends Controller
             ]);
         }
 
-        // foreach ($staticPages as $page) {
-        //     $urls->push([
-        //         'loc' => $page['url'],
-        //         'lastmod' => now()->toISOString(),
-        //         'changefreq' => $page['changefreq'],
-        //         'priority' => $page['priority'],
-        //     ]);
-        // }
-
-        // Add job categories
         JobCategory::active()->select(['slug', 'updated_at'])
             ->chunk(100, function ($cats) use ($urls) {
                 foreach ($cats as $cat) {
@@ -85,7 +88,6 @@ class SitemapController extends Controller
                 }
             });
 
-        // Add unique job locations
         $locations = Opening::active()
             ->select('location', DB::raw('MAX(updated_at) as updated_at'))
             ->whereNotNull('location')
@@ -103,7 +105,6 @@ class SitemapController extends Controller
             ]);
         }
 
-        // Add location + category combinations
         JobCategory::active()->select(['slug', 'updated_at'])
             ->chunk(100, function ($cats) use ($urls, $locations) {
                 foreach ($cats as $cat) {
@@ -119,7 +120,6 @@ class SitemapController extends Controller
                 }
             });
 
-        // Add openings
        Opening::active()->select(['slug', 'updated_at'])
             ->chunk(100, function ($jobs) use ($urls) {
                 foreach ($jobs as $job) {
@@ -132,7 +132,6 @@ class SitemapController extends Controller
                 }
             });
 
-        // Add blog posts
         Post::published()
             ->select(['slug', 'updated_at', 'published_at'])
             ->chunk(100, function ($posts) use ($urls) {
@@ -146,23 +145,12 @@ class SitemapController extends Controller
                 }
             });
 
-        //  Add blog categories
-        //    Category::whereHas('posts', function ($query) {
-        //            $query->published();
-        //        })
-        //        ->select(['slug', 'updated_at'])
-        //        ->chunk(50, function ($categories) use ($urls) {
-        //            foreach ($categories as $category) {
-        //                $urls->push([
-        //                    'loc' => url('/blog?category=' . $category->slug),
-        //                    'lastmod' => $category->updated_at->toISOString(),
-        //                    'changefreq' => 'weekly',
-        //                    'priority' => '0.6',
-        //                ]);
-        //            }
-        //        });
+        return $urls;
+    }
 
-        return $this->buildXml($urls);
+    private function generateSitemap(): string
+    {
+        return $this->buildXml($this->gatherUrls());
     }
 
     private function buildXml($urls): string
