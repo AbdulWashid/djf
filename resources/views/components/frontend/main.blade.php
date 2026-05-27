@@ -291,7 +291,7 @@
         <footer class="footer mt-50 pt-50 bg-[#EEE]">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-2 col-sm-12">
+                    <div class="col-xl-2 col-sm-12">
                         <a href="{{ route('home') }}">
                             @php
                                 $brandLogo = $generalSettings->brand_logo ?? null;
@@ -311,7 +311,7 @@
                             news. The easiest way to get hired in Dubai. Join!
                         </div>
                     </div>
-                    <div class="col-md-2 col-xs-6">
+                    <div class="col-xl-2 col-sm-4">
                         <p class="h6">Company</p>
 
                         @php
@@ -335,7 +335,7 @@
                             @endif
                         </ul>
                     </div>
-                    <div class="col-md-2 col-xs-6">
+                    <div class="col-xl-2 col-sm-4">
                         <p class="h6">Location</p>
                         @php
                             $footerLocations = Menu::location('footer-2');
@@ -353,7 +353,7 @@
                             @endif
                         </ul>
                     </div>
-                    <div class="col-md-2 col-xs-6">
+                    <div class="col-xl-2 col-sm-4">
                         <p class="h6">Category</p>
                         @php
                             $footerCategories = Menu::location('footer-3');
@@ -371,7 +371,7 @@
                             @endif
                         </ul>
                     </div>
-                    <div class="col-md-2 col-xs-6">
+                    <div class="col-xl-2 col-sm-4">
                         <p class="h6">Support</p>
                         @php
                             $footerSupport = Menu::location('footer-4');
@@ -389,20 +389,22 @@
                             @endif
                         </ul>
                     </div>
-                    <div class="col-md-2 col-xs-6">
+                    <div class="col-xl-2 col-sm-8">
                         <p class="h6">Contact Info</p>
                         <ul class="menu-footer mt-20">
                             <li><span class="fw-bold">Address:</span> {{ $siteSettings->company_address ?? '' }}</li>
-                            <li><span class="fw-bold">Email:</span>
+                            <li class="text-nowrap">
+                                <span class="fw-bold">Email:</span>
                                 @if ($siteSettings->company_email)
                                     <a
                                         href="mailto:{{ $siteSettings->company_email }}">{{ $siteSettings->company_email }}</a>
                                 @endif
                             </li>
-                            <li><span class="fw-bold">Contact:</span>
+                            <li class="text-nowrap">
+                                <span class="fw-bold">Contact:</span>
                                 @if ($siteSettings->company_phone)
                                     <a href="tel:{{ $siteSettings->company_phone }}">
-                                        <div>{{ $siteSettings->company_phone }}</div>
+                                        {{ $siteSettings->company_phone }}
                                     </a>
                                 @else
                                     {{ '' }}

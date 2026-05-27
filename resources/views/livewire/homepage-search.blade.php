@@ -1,5 +1,5 @@
 <div>
-    <div class="form-find mt-60 wow animate__animated animate__fadeInUp" data-wow-delay=".2s">
+    <div class="form-find mt-60 wow animate__animated animate__fadeInUp" data-wow-delay=".2s" style="width: 100%;">
         <form id="homepage-search-form" action="{{ route('jobs') }}" method="GET">
             <input type="text" class="form-input input-keysearch mr-10" placeholder="Job title, Company... "
                 name="q" />
@@ -24,7 +24,6 @@
         <a href="{{ route('jobs', ['q' => 'Engineer']) }}">Engineer</a>,
         <a href="{{ route('jobs', ['q' => 'Senior']) }}">Senior</a>,
     </div>
-
 </div>
 
 @push('js')

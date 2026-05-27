@@ -58,10 +58,18 @@ class AdminPanelProvider extends PanelProvider
                     ->postAction(fn () => route('admin.cache.clear'))
                     ->sort(95),
             ])
-            ->navigationGroups([Navigation\NavigationGroup::make()->label('Jobs'), Navigation\NavigationGroup::make()->label('Blog'), Navigation\NavigationGroup::make()->label(__('menu.nav_group.content'))->collapsible(false), Navigation\NavigationGroup::make()->label(__('menu.nav_group.access'))->collapsible(false), Navigation\NavigationGroup::make()->label(__('menu.nav_group.sites'))->collapsed(), Navigation\NavigationGroup::make()->label(__('menu.nav_group.systems'))->collapsed(), Navigation\NavigationGroup::make()->label(__('menu.nav_group.activities'))->collapsed()])
+            ->navigationGroups([
+                Navigation\NavigationGroup::make()->label('Jobs'),
+                Navigation\NavigationGroup::make()->label('Blog'),
+                Navigation\NavigationGroup::make()->label(__('menu.nav_group.content'))->collapsible(false),
+                Navigation\NavigationGroup::make()->label(__('menu.nav_group.access'))->collapsible(false),
+                Navigation\NavigationGroup::make()->label(__('menu.nav_group.sites'))->collapsed(),
+                Navigation\NavigationGroup::make()->label(__('menu.nav_group.systems'))->collapsed(),
+                Navigation\NavigationGroup::make()->label(__('menu.nav_group.activities'))->collapsed(),
+            ])
             ->navigationItems([
                 Navigation\NavigationItem::make(__('menu.nav_group.item.log_viewer'))
-                    ->visible(fn(): bool => auth()->user()->can('access_log_viewer'))
+                    ->visible(fn (): bool => auth()->user()->can('access_log_viewer'))
                     ->url(config('app.url') . '/' . config('log-viewer.route_path'), shouldOpenInNewTab: true)
                     ->icon('fluentui-document-bullet-list-multiple-20-o')
                     ->group(__('menu.nav_group.activities'))
@@ -77,10 +85,20 @@ class AdminPanelProvider extends PanelProvider
                 //                Widgets\FilamentInfoWidget::class,
             ])
             ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\\Filament\\Clusters')
-            ->middleware([EncryptCookies::class, AddQueuedCookiesToResponse::class, StartSession::class, AuthenticateSession::class, ShareErrorsFromSession::class, VerifyCsrfToken::class, SubstituteBindings::class, DisableBladeIconComponents::class, DispatchServingFilamentEvent::class, FilamentRobotsMiddleware::class])
+            ->middleware([
+                EncryptCookies::class,
+                AddQueuedCookiesToResponse::class,
+                StartSession::class,
+                AuthenticateSession::class,
+                ShareErrorsFromSession::class,
+                VerifyCsrfToken::class,
+                SubstituteBindings::class,
+                DisableBladeIconComponents::class,
+                DispatchServingFilamentEvent::class,
+                FilamentRobotsMiddleware::class,
+            ])
             ->authMiddleware([Authenticate::class])
             ->plugins([
-                \TomatoPHP\FilamentMediaManager\FilamentMediaManagerPlugin::make()->allowSubFolders(),
                 \BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin::make(),
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
                     ->gridColumns([
@@ -123,6 +141,7 @@ class AdminPanelProvider extends PanelProvider
                 //                            ->collapsible(true)
                 //                            ->paginate(perPage: 5, condition: true)
                 //                    ])
+            \TomatoPHP\FilamentMediaManager\FilamentMediaManagerPlugin::make(),
             ]);
     }
 }

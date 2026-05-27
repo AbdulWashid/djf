@@ -56,11 +56,17 @@
                                                 </div>
                                             </div>
 
-                                            <div class="mt-15">
-                                                <span class="text-sm text-mutted-2 mr-20"><i class="fi-rr-marker"></i>
-                                                    {{ $job->location }}</span>
-                                                <span class="text-sm text-mutted-2"><i class="fi-rr-briefcase"></i>
-                                                    {{ $job->job_type->getLabel() }}</span>
+                                            <div class="mt-15 text-sm text-mutted-2 d-flex align-items-center">
+                                                <span class="flex-shrink-1 text-truncate"
+                                                    style="min-width:0; max-width:50%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                                                    <i class="fi-rr-marker"></i>
+                                                    {{ $job->location }}
+                                                </span>
+                                                <span class="flex-shrink-1 text-truncate ms-3"
+                                                    style="min-width:0; max-width:50%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                                                    <i class="fi-rr-briefcase"></i>
+                                                    {{ $job->job_type->getLabel() }}
+                                                </span>
                                             </div>
 
                                             <div class="text-small mt-15">

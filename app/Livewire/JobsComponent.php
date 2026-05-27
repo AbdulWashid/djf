@@ -175,6 +175,6 @@ class JobsComponent extends Component
             $query->whereIn('job_type', (array) $this->job_type);
         }
 
-        return $query->paginate(10);
+        return $query->paginate(12);
     }
 }

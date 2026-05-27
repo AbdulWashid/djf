@@ -28,8 +28,9 @@
                         <div class="col-lg-8">
                             <div class="block-banner">
                                 <span
-                                    class="text-small-primary text-small-primary--disk text-uppercase wow animate__animated animate__fadeInUp">Best
-                                    jobs place</span>
+                                    class="text-small-primary text-small-primary--disk text-uppercase wow animate__animated animate__fadeInUp">
+                                    Best jobs place
+                                </span>
                                 {{-- <h1 class="heading-banner wow animate__animated animate__fadeInUp"> --}}
                                 <h1 class="heading-banner">
                                     The Easiest Way to Get Your New Job
@@ -41,13 +42,11 @@
 
                                 <livewire:homepage-search />
 
-
-
-                                {{--                                <div class="list-tags-banner mt-60 wow animate__animated animate__fadeInUp" --}}
-                                {{--                                     data-wow-delay=".3s"> --}}
-                                {{--                                    <a class="btn btn-default btn-find text-white" href="{{route('jobs')}}" --}}
-                                {{--                                       role="button">Find now</a> --}}
-                                {{--                                </div> --}}
+                                {{-- <div class="list-tags-banner mt-60 wow animate__animated animate__fadeInUp"
+                                    data-wow-delay=".3s">
+                                    <a class="btn btn-default btn-find text-white" href="{{ route('jobs') }}"
+                                        role="button">Find now</a>
+                                </div> --}}
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-6">
@@ -165,6 +164,9 @@
 
         <div class="section-box">
             <div class="container">
+                <h2 class="section-title text-center mb-15 wow animate__animated animate__fadeInUp">Jobs By Top
+                    Employers</h2>
+
                 <ul class="list-partners">
                     <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay="0s">
                         <a href="#">
