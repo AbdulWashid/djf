@@ -6,15 +6,23 @@
                 <li><a href="{{ route('home') }}">Home</a></li>
 
                 @php
-                    $cat_items = $activeCategory
-                        ? [
-                            ['label' => 'Blogs', 'url' => route('blog')],
-                            ['label' => $categories->firstWhere('id', $activeCategory)?->name],
-                        ]
-                        : [];
-                    $pg_title = $activeCategory
-                        ? $categories->firstWhere('id', $activeCategory)?->name . ' Articles'
-                        : 'Blogs';
+                    $cat_items = [];
+                    $pg_title = 'Blog';
+
+                    if ($search) {
+                        $pg_title = 'Search results for "' . $search . '"';
+                        $cat_items = [['label' => 'Blog', 'url' => route('blog')], ['label' => 'Search']];
+                    } elseif ($activeCategory) {
+                        $activeCategoryName = $categories->firstWhere('id', $activeCategory)?->name;
+                        $pg_title = $activeCategoryName ? $activeCategoryName . ' Articles' : 'Blog';
+                        $cat_items = [
+                            ['label' => 'Blog', 'url' => route('blog')],
+                            ['label' => $activeCategoryName ?? 'Category'],
+                        ];
+                    } elseif ($featuredOnly) {
+                        $pg_title = 'Featured Blog Posts';
+                        $cat_items = [['label' => 'Blog', 'url' => route('blog')], ['label' => 'Featured']];
+                    }
                 @endphp
 
                 @foreach ($cat_items as $item)
@@ -24,9 +32,6 @@
                         <li>{{ $item['label'] }}</li>
                     @endif
                 @endforeach
-                @if (count($cat_items) === 0)
-                    <li>{{ $pg_title }}</li>
-                @endif
             </ul>
         </div>
     </div>
@@ -173,10 +178,32 @@
                                         <div class="d-flex align-items-center justify-content-between">
                                             <div class="keep-reading">
                                                 <a href="{{ $post->getUrl() }}"
-                                                    wire:click="trackView('{{ $post->id }}')"
-                                                    class="btn btn-border btn-brand-hover">Read More</a>
-                                            </div>
-                                            <div class="tags text-lg-end">
+                                                    @php
+$breadcrumbTitle = 'Blog';
+                                        $breadcrumbItems = [];
+
+                                        if ($search) {
+                                            $breadcrumbTitle = 'Search results for "' . $search . '"';
+                                            $breadcrumbItems = [
+                                                ['label' => 'Blog', 'url' => route('blog')],
+                                                ['label' => 'Search'],
+                                            ];
+                                        } elseif ($activeCategory) {
+                                            $activeCategoryName = $categories->firstWhere('id', $activeCategory)?->name;
+                                            $breadcrumbTitle = $activeCategoryName ? $activeCategoryName . ' Articles' : 'Blog';
+                                            $breadcrumbItems = [
+                                                ['label' => 'Blog', 'url' => route('blog')],
+                                                ['label' => $activeCategoryName ?? 'Category'],
+                                            ];
+                                        } elseif ($featuredOnly) {
+                                            $breadcrumbTitle = 'Featured Blog Posts';
+                                            $breadcrumbItems = [
+                                                ['label' => 'Blog', 'url' => route('blog')],
+                                                ['label' => 'Featured'],
+                                            ];
+                                        } @endphp
+                                                    <x-superduper.components.breadcrumb title="{{ $breadcrumbTitle }}"
+                                                    :items="$breadcrumbItems" />
                                                 <a href="#"
                                                     wire:click.prevent="filterByCategory('{{ $post->category->id }}')"
                                                     class="btn btn-tags-sm mb-10 mr-5"> {{ $post->category->name }}</a>

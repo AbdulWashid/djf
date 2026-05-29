@@ -247,6 +247,6 @@ class ContactUs extends Component
     public function render()
     {
         return view('livewire.superduper.pages.contact-us')
-            ->layout('components.frontend.main', ['pageTitle' => 'Contact Us', 'pageDescription' => 'Contact Us', 'metaKeywords' => 'Contact Us']);
+            ->layout('components.frontend.main', ['pageType' => 'contact', 'pageTitle' => 'Contact Us', 'pageDescription' => 'Contact Us', 'metaKeywords' => 'Contact Us']);
     }
 }

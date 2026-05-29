@@ -238,6 +238,51 @@ class BlogList extends Component
             'title' => $this->pageTitle,
             'description' => $this->pageDescription,
         ]);
+
+        $this->dispatch('schema-updated', [
+            'schemas' => $this->buildSchemas($categoryName),
+        ]);
+    }
+
+    protected function buildSchemas(?string $categoryName = null): array
+    {
+        $breadcrumbItems = [
+            ['label' => 'Blog', 'url' => route('blog')],
+        ];
+
+        if (!empty($this->search)) {
+            $breadcrumbItems[] = ['label' => 'Search: ' . $this->search];
+        } elseif (!empty($categoryName)) {
+            $breadcrumbItems[] = ['label' => $categoryName];
+        } elseif ($this->featuredOnly) {
+            $breadcrumbItems[] = ['label' => 'Featured'];
+        }
+
+        return [
+            [
+                '@context' => 'https://schema.org',
+                '@type' => 'Organization',
+                'name' => config('app.name'),
+                'url' => url('/'),
+            ],
+            [
+                '@context' => 'https://schema.org',
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => collect($breadcrumbItems)->values()->map(function (array $item, int $index) {
+                    $entry = [
+                        '@type' => 'ListItem',
+                        'position' => $index + 1,
+                        'name' => $item['label'],
+                    ];
+
+                    if (!empty($item['url'])) {
+                        $entry['item'] = $item['url'];
+                    }
+
+                    return $entry;
+                })->all(),
+            ],
+        ];
     }
 
     public function render()
@@ -275,10 +320,9 @@ class BlogList extends Component
         return view('livewire.blog.list', [
             'posts' => $posts,
         ])->layout('components.frontend.main', [
-            'page_type' => 'blog',
-            'categoryName' => 'Blogs',
-            'pageTitle' => 'Blogs',
-            'pageDescription' => 'Discover our latest insights, tips, and updates...',
+            'pageType' => 'blog',
+            'pageTitle' => $this->pageTitle,
+            'pageDescription' => $this->pageDescription,
             'metaKeywords' => 'blog, articles, insights, technology news',
         ]);
     }

@@ -72,8 +72,6 @@ class BlogDetails extends Component
         view()->share('metaTitle', $this->post->meta_title ?: $this->post->title);
         view()->share('metaDescription', $this->post->meta_description ?: $this->post->content_overview);
 
-        // Add schema.org metadata for SEO
-        view()->share('schemaData', $this->generateSchemaData());
         view()->share('twitterTags', $this->post->twitter_tags);
         view()->share('ogTags', $this->post->og_tags);
         view()->share('faqSchema', $this->generateFaqSchema());
@@ -176,9 +174,9 @@ class BlogDetails extends Component
     }
 
     // Generate Schema.org structured data
-    protected function generateSchemaData()
+    protected function generateSchemaData(): array
     {
-        $schema = [
+        return [
             '@context' => 'https://schema.org',
             '@type' => 'BlogPosting',
             'headline' => $this->post->title,
@@ -203,8 +201,6 @@ class BlogDetails extends Component
                 '@id' => $this->post->getCanonicalUrl(),
             ],
         ];
-
-        return json_encode($schema);
     }
 
     // Share post to social media
@@ -235,7 +231,6 @@ class BlogDetails extends Component
             'recentPosts' => $this->recentPosts,
             'categories' => $this->categories,
             'popularTags' => $this->popularTags,
-            'schemaData' => $this->generateSchemaData(),
             'isPreview' => $this->isPreview,
             'faqSchema' => $this->generateFaqSchema(),
         ])->layout('components.frontend.main', [
@@ -250,6 +245,7 @@ class BlogDetails extends Component
             'twitterTags' => $this->post->twitter_tags,
             'canonicalUrl' => $this->post->getCanonicalUrl(),
             'ogImage' => $this->post->hasFeaturedImage() ? $this->post->getFeaturedImageUrl('large') : null,
+            'schemaData' => [$this->generateSchemaData()],
         ]);
     }
 }

@@ -29,6 +29,8 @@
     'canonicalUrl' => null, // Override canonical URL
     'ogImage' => null, // Override OG image
     'twitterImage' => null, // Override Twitter image
+    'schemaData' => null, // Extra structured data payload(s)
+    'breadcrumbItems' => [], // Breadcrumb schema items
     'noIndex' => false, // Add noindex meta tag
 ])
 
@@ -111,6 +113,125 @@
             $title = $siteName;
         }
 
+        $breadcrumbItems = is_array($breadcrumbItems) ? $breadcrumbItems : [];
+
+        if (empty($breadcrumbItems)) {
+            switch ($page_type) {
+                case 'home':
+                    $breadcrumbItems = [['label' => $siteName]];
+                    break;
+
+                case 'blog_post':
+                    $breadcrumbItems = [['label' => 'Blog', 'url' => route('blog')], ['label' => $postTitle ?: $title]];
+                    break;
+
+                case 'blog':
+                    $breadcrumbItems = [['label' => 'Blog', 'url' => route('blog')]];
+                    break;
+
+                case 'job_posting':
+                    $breadcrumbItems = [['label' => 'Jobs', 'url' => route('jobs')], ['label' => $pageTitle ?: $title]];
+                    break;
+
+                case 'job_listing':
+                case 'jobs':
+                    $breadcrumbItems = [['label' => 'Jobs', 'url' => route('jobs')]];
+                    break;
+
+                case 'job_categories':
+                case 'category':
+                    $breadcrumbItems = [
+                        ['label' => 'Home', 'url' => route('home')],
+                        ['label' => $pageTitle ?: 'Categories'],
+                    ];
+                    break;
+
+                case 'about':
+                    $breadcrumbItems = [['label' => 'Home', 'url' => route('home')], ['label' => 'About Us']];
+                    break;
+
+                case 'contact':
+                    $breadcrumbItems = [['label' => 'Home', 'url' => route('home')], ['label' => 'Contact']];
+                    break;
+
+                default:
+                    if (!empty($pageTitle)) {
+                        $breadcrumbItems = [['label' => 'Home', 'url' => route('home')], ['label' => $pageTitle]];
+                    }
+                    break;
+            }
+        }
+
+        $buildBreadcrumbSchema = function (array $items) use ($siteName) {
+            $position = 1;
+            $listItems = [];
+
+            foreach ($items as $item) {
+                if (empty($item['label'])) {
+                    continue;
+                }
+
+                $entry = [
+                    '@type' => 'ListItem',
+                    'position' => $position++,
+                    'name' => $item['label'],
+                ];
+
+                if (!empty($item['url'])) {
+                    $entry['item'] = $item['url'];
+                }
+
+                $listItems[] = $entry;
+            }
+
+            if (empty($listItems)) {
+                $listItems[] = [
+                    '@type' => 'ListItem',
+                    'position' => 1,
+                    'name' => $siteName,
+                    'item' => url('/'),
+                ];
+            }
+
+            return [
+                '@context' => 'https://schema.org',
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => $listItems,
+            ];
+        };
+
+        $structuredData = [];
+
+        $organizationSchema = array_filter(
+            [
+                '@context' => 'https://schema.org',
+                '@type' => $seoSettings->schema_type ?: 'Organization',
+                'name' => $seoSettings->schema_name ?: $siteName,
+                'url' => url('/'),
+                'logo' =>
+                    $seoSettings->schema_logo ??
+                    ($brandLogo ? Storage::url($brandLogo) : asset('superduper/img/favicon.png')),
+                'description' =>
+                    $seoSettings->schema_description ??
+                    ($siteSettings->description ??
+                        'Dubai Job Finder provides everything you need to jumpstart your web project with pre-built components, layouts, and tools that enhance development efficiency and productivity.'),
+            ],
+            fn($value) => filled($value),
+        );
+
+        $structuredData[] = $organizationSchema;
+
+        if (!empty($breadcrumbItems) && is_array($breadcrumbItems)) {
+            $structuredData[] = $buildBreadcrumbSchema($breadcrumbItems);
+        }
+
+        if (!empty($schemaData)) {
+            if (is_array($schemaData) && array_is_list($schemaData)) {
+                $structuredData = array_merge($structuredData, $schemaData);
+            } else {
+                $structuredData[] = $schemaData;
+            }
+        }
     @endphp
 
 
@@ -232,27 +353,33 @@
     @endif
 
     <!--  structured data (JSON-LD) -->
-    <script type="application/ld+json">
-        {
-        "@context": "https://schema.org",
-        "@type": "{{ $seoSettings->schema_type ?? '' }}",
-        "name": "{{ $seoSettings->schema_name ?? $siteName }}",
-        "url": "{{ url('/') }}",
-        "logo": "{{ $seoSettings->schema_logo ?? ($brandLogo ? Storage::url($brandLogo) : asset('superduper/img/favicon.png')) }}",
-        "description": "{{ $seoSettings->schema_description ?? $siteSettings->description ?? 'Dubai Job Finder provides everything you need to jumpstart your web project with pre-built components, layouts, and tools that enhance development efficiency and productivity.' }}",
-        "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "{{ explode(',', $siteSettings->company_address)[0] ?? '' }}",
-            "addressRegion": "{{ explode(',', $siteSettings->company_address)[1] ?? '' }}",
-            "addressCountry": "{{ explode(',', $siteSettings->company_address)[2] ?? 'ID' }}"
-        },
-        "contactPoint": {
-            "@type": "ContactPoint",
-            "telephone": "{{ $siteSettings->company_phone ?? '' }}",
-            "contactType": "customer service",
-            "email": "{{ $siteSettings->company_email ?? '' }}"
-        }
-        }
+    @if (!empty($structuredData))
+        <script id="structured-data-jsonld" type="application/ld+json">
+            {!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+        </script>
+    @endif
+
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            const schemaScript = document.getElementById('structured-data-jsonld');
+
+            Livewire.on('schema-updated', (data) => {
+                const payload = data[0] || {};
+
+                if (!schemaScript) {
+                    return;
+                }
+
+                const schemas = Array.isArray(payload.schemas) ?
+                    payload.schemas :
+                    (payload.schema ? [payload.schema] : []);
+
+                schemaScript.textContent = JSON.stringify(schemas);
+
+                // console.log('Structured data updated:', JSON.stringify(schemas));
+            });
+            // console.log(schemaScript.textContent);
+        });
     </script>
 </head>
 

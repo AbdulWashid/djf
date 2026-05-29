@@ -113,6 +113,51 @@ class JobsComponent extends Component
                 $this->pageDescription
             ),
         ]);
+
+        $this->dispatch('schema-updated', [
+            'schemas' => $this->buildSchemas(),
+        ]);
+    }
+
+    protected function buildSchemas(): array
+    {
+        $breadcrumbItems = [
+            ['label' => 'Jobs', 'url' => route('jobs')],
+        ];
+
+        if (!empty($this->location)) {
+            $breadcrumbItems[] = ['label' => Str::title($this->location)];
+        }
+
+        if (!empty($this->category)) {
+            $breadcrumbItems[] = ['label' => JobCategory::find($this->category)?->name ?? 'Category'];
+        }
+
+        return [
+            [
+                '@context' => 'https://schema.org',
+                '@type' => 'Organization',
+                'name' => config('app.name'),
+                'url' => url('/'),
+            ],
+            [
+                '@context' => 'https://schema.org',
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => collect($breadcrumbItems)->values()->map(function (array $item, int $index) {
+                    $entry = [
+                        '@type' => 'ListItem',
+                        'position' => $index + 1,
+                        'name' => $item['label'],
+                    ];
+
+                    if (!empty($item['url'])) {
+                        $entry['item'] = $item['url'];
+                    }
+
+                    return $entry;
+                })->all(),
+            ],
+        ];
     }
 
     public function clear()
@@ -134,6 +179,7 @@ class JobsComponent extends Component
         $this->jobs = $this->search();
         //    dd($this->jobs->items());
         return view('livewire.jobs-component', ['jobs' => $this->jobs])->layout('components.frontend.main', [
+            'pageType' => 'job_listing',
             'pageTitle' => str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? JobCategory::find($this->category)->name : ''], $this->pageTitle),
             'pageDescription' => str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? JobCategory::find($this->category)->name : ''], $this->pageDescription),
         ]);

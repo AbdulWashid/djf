@@ -16,10 +16,11 @@
                         <meta property="og:image" content="https://dubaijobfinder.net/storage/sites/01K6J2R1QT4H6FZR7FDMM0MVY7.png" />';
 @endphp
 
-<x-frontend.main :page-title="$homeMeta?->meta_title ?: $defaultHomeTitle" :page-description="$homeMeta?->meta_description ?: $defaultHomeDescription" :meta-keywords="is_array($homeMeta?->meta_keywords)
+<x-frontend.main page-type="home" :page-title="$homeMeta?->meta_title ?: $defaultHomeTitle" :page-description="$homeMeta?->meta_description ?: $defaultHomeDescription" :meta-keywords="is_array($homeMeta?->meta_keywords)
     ? implode(', ', $homeMeta->meta_keywords)
     : ($homeMeta?->meta_keywords ?:
-        null)" :twitter-tags="$homeMeta?->twitter_tags ?: $defaultTwitterTags" :og-tags="$homeMeta?->og_tags ?: $defaultOgTags">
+        null)" :twitter-tags="$homeMeta?->twitter_tags ?: $defaultTwitterTags"
+    :og-tags="$homeMeta?->og_tags ?: $defaultOgTags">
     <div>
         <section class="section-box">
             <div class="banner-hero hero-1">
