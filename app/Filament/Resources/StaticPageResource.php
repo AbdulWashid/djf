@@ -67,7 +67,28 @@ class StaticPageResource extends Resource
             //                Hidden::make('has_manual_slug_change')
             //                    ->default(false)
             //                    ->dehydrated(false),
-            Section::make('Content')->schema([RichEditor::make('content')->label('')->required()]),
+            Section::make('Content')->schema([
+                RichEditor::make('content')
+                    ->label('')
+                    ->required()
+                    ->toolbarButtons([
+                        'attachFiles',
+                        'blockquote',
+                        'bold',
+                        'bulletList',
+                        'codeBlock',
+                        'h1',
+                        'h2',
+                        'h3',
+                        'italic',
+                        'link',
+                        'orderedList',
+                        'redo',
+                        'strike',
+                        'underline',
+                        'undo',
+                    ]),
+            ]),
 
             Section::make('Seo Details')->schema([TextInput::make('meta_title')->required(), Textarea::make('meta_description'), TagsInput::make('meta_keywords')->separator(','), Textarea::make('twitter_tags')->rows(5), Textarea::make('og_tags')->label('Open Graph Tags')->rows(5)]),
 
@@ -78,7 +99,29 @@ class StaticPageResource extends Resource
                 ->schema([
                     TextInput::make('faq_title')->label('FAQ Title'),
                     Repeater::make('faqs')
-                        ->schema([TextInput::make('question')->required()->maxLength(255)->placeholder('Enter question'), RichEditor::make('answer')->required()->maxLength(65535)->placeholder('Enter answer')])
+                        ->schema([
+                            TextInput::make('question')->required()->maxLength(255)->placeholder('Enter question'),
+                            RichEditor::make('answer')
+                                ->required()
+                                ->maxLength(65535)
+                                ->placeholder('Enter answer')
+                                ->toolbarButtons([
+                                    'bold',
+                                    'blockquote',
+                                    'bulletList',
+                                    'codeBlock',
+                                    'h1',
+                                    'h2',
+                                    'h3',
+                                    'italic',
+                                    'link',
+                                    'orderedList',
+                                    'redo',
+                                    'strike',
+                                    'underline',
+                                    'undo',
+                                ]),
+                        ])
                         ->reorderableWithButtons()
                         ->collapsible()
                         ->cloneable()
