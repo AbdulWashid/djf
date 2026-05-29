@@ -28,36 +28,23 @@ class NationalitiesResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                TextInput::make('name')
-                    ->required(),
-                TextInput::make('flag')
-                    ->required(),
-                Toggle::make('status'),
-            ]);
+        return $form->schema([TextInput::make('name')->required(), TextInput::make('flag')->required(), Toggle::make('status')]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('flag'),
-                ToggleColumn::make('status')->default(true),
-            ])
+            ->columns([TextColumn::make('name')->searchable()->sortable(), TextColumn::make('flag'), ToggleColumn::make('status')->default(true)])
             ->filters([
                 //
             ])
             ->actions([
                 EditAction::make(),
-//                DeleteAction::make(),
+                // DeleteAction::make(),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
-//                    DeleteBulkAction::make()->,
+                    //DeleteBulkAction::make()->,
                 ]),
             ]);
     }
@@ -66,8 +53,8 @@ class NationalitiesResource extends Resource
     {
         return [
             'index' => Pages\ListNationalities::route('/'),
-//            'create' => Pages\CreateNationalities::route('/create'),
-//            'edit' => Pages\EditNationalities::route('/{record}/edit'),
+            //            'create' => Pages\CreateNationalities::route('/create'),
+            //            'edit' => Pages\EditNationalities::route('/{record}/edit'),
         ];
     }
 

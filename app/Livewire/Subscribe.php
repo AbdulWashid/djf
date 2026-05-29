@@ -9,8 +9,6 @@ class Subscribe extends Component
 {
     public $email;
 
-
-
     protected $rules = [
         'email' => 'required|email|unique:subscribers,email',
     ];
