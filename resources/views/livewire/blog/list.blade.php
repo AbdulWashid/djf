@@ -198,12 +198,14 @@
                                     <div class="card-2-bottom mt-30">
                                         <div class="d-flex align-items-center justify-content-between">
                                             <div class="keep-reading">
-
-
-                                                <a href="#"
-                                                    wire:click.prevent="filterByCategory('{{ $post->category->id }}')"
-                                                    class="btn btn-tags-sm mb-10 mr-5"> {{ $post->category->name }}
-                                                </a>
+                                                @if ($post->category)
+                                                    <a href="#"
+                                                        wire:click.prevent="filterByCategory('{{ $post->category->id }}')"
+                                                        class="btn btn-tags-sm mb-10 mr-5"> {{ $post->category->name }}
+                                                    </a>
+                                                @else
+                                                    <span class="btn btn-tags-sm mb-10 mr-5">Uncategorized</span>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
