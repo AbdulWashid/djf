@@ -49,9 +49,13 @@
                                     {{ $siteSettings->description ?? '' }}
                                 </div>
 
-                                <a href="mailto:{{ $siteSettings->company_email ?? 'yourdemo@email.com' }}"
+                                @php
+                                    $footerEmail = $siteSettings->company_email ?? 'yourdemo@email.com';
+                                    [$footerEmailUser, $footerEmailDomain] = explode('@', $footerEmail, 2);
+                                @endphp
+                                <a href="#" data-email-user="{{ $footerEmailUser }}"
+                                    data-email-domain="{{ $footerEmailDomain }}"
                                     class="block my-6 transition-all duration-300 underline-offset-4 hover:underline">
-                                    {{ $siteSettings->company_email ?? 'yourdemo@email.com' }}
                                 </a>
 
                                 <div class="flex flex-wrap gap-5">

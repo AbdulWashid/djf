@@ -523,8 +523,11 @@
                             <li class="text-nowrap">
                                 <span class="fw-bold">Email:</span>
                                 @if ($siteSettings->company_email)
-                                    <a
-                                        href="mailto:{{ $siteSettings->company_email }}">{{ $siteSettings->company_email }}</a>
+                                    @php
+                                        [$emailUser, $emailDomain] = explode('@', $siteSettings->company_email, 2);
+                                    @endphp
+                                    <a href="#" data-email-user="{{ $emailUser }}"
+                                        data-email-domain="{{ $emailDomain }}"></a>
                                 @endif
                             </li>
                             <li class="text-nowrap">
@@ -666,6 +669,14 @@
             {!! $scriptSettings->custom_js !!}
         </script>
     @endif
+
+    <script>
+        document.querySelectorAll('[data-email-user][data-email-domain]').forEach((element) => {
+            const email = `${element.dataset.emailUser}@${element.dataset.emailDomain}`;
+            element.href = `mailto:${email}`;
+            element.textContent = email;
+        });
+    </script>
 
     <!-- Footer scripts -->
     @if (isset($scriptSettings->footer_scripts))

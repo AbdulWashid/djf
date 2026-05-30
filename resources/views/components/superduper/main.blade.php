@@ -323,6 +323,14 @@
 
     @livewireScripts
 
+    <script>
+        document.querySelectorAll('[data-email-user][data-email-domain]').forEach((element) => {
+            const email = `${element.dataset.emailUser}@${element.dataset.emailDomain}`;
+            element.href = `mailto:${email}`;
+            element.textContent = email;
+        });
+    </script>
+
     <!-- Custom JS -->
     @if(isset($scriptSettings->custom_js))
         <script>

@@ -96,9 +96,13 @@
                                     </h3>
                                     <p class="mt-1 ml-4 text-gray-600">
                                         Drop us an email at
-                                        <a href="mailto:{{ $siteSettings->company_email ?? 'contact@starter-kit.com' }}"
+                                        @php
+                                            $contactEmail = $siteSettings->company_email ?? 'contact@starter-kit.com';
+                                            [$contactEmailUser, $contactEmailDomain] = explode('@', $contactEmail, 2);
+                                        @endphp
+                                        <a href="#" data-email-user="{{ $contactEmailUser }}"
+                                           data-email-domain="{{ $contactEmailDomain }}"
                                            class="font-semibold underline text-primary-600 hover:text-primary-800 underline-offset-4">
-                                            {{ $siteSettings->company_email ?? 'contact@starter-kit.com' }}
                                         </a>
                                         and you'll receive a reply within 24 hours.
                                     </p>
