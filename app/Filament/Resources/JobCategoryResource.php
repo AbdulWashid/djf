@@ -62,9 +62,6 @@ class JobCategoryResource extends Resource
                 ->collection('job-categories')
                 ->image()
                 ->imagePreviewHeight('150')
-                ->imageResizeMode('cover')
-                ->imageResizeTargetWidth('400')
-                ->imageResizeTargetHeight('400')
                 ->helperText('Upload category logo image.'),
 
             Toggle::make('status')->default(true)->required(),

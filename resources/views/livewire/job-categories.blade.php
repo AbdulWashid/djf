@@ -24,7 +24,7 @@
                             <a href="{{ route('jobs.category', ['category' => $category->slug]) }}">
                                 <figure class="d-flex justify-content-center">
                                     <img alt="{{ $category->name }}"
-                                        src="{{ $category->logo ? \Illuminate\Support\Facades\Storage::url($category->logo) : 'http://placehold.co/125x125?text=' . $category->slug }}"
+                                        src="{{ $category->logo ?: 'http://placehold.co/125x125?text=' . $category->slug }}"
                                         height="125" width="125" />
                                 </figure>
                             </a>
