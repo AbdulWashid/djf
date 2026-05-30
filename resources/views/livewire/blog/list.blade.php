@@ -1,5 +1,26 @@
 <!-- Content -->
 <div>
+
+    @php
+        $breadcrumbTitle = 'Blog';
+        $breadcrumbItems = [];
+
+        if ($search) {
+            $breadcrumbTitle = 'Search results for "' . $search . '"';
+            $breadcrumbItems = [['label' => 'Blog', 'url' => route('blog')], ['label' => 'Search']];
+        } elseif ($activeCategory) {
+            $activeCategoryName = $categories->firstWhere('id', $activeCategory)?->name;
+            $breadcrumbTitle = $activeCategoryName ? $activeCategoryName . ' Articles' : 'Blog';
+            $breadcrumbItems = [
+                ['label' => 'Blog', 'url' => route('blog')],
+                ['label' => $activeCategoryName ?? 'Category'],
+            ];
+        } elseif ($featuredOnly) {
+            $breadcrumbTitle = 'Featured Blog Posts';
+            $breadcrumbItems = [['label' => 'Blog', 'url' => route('blog')], ['label' => 'Featured']];
+        }
+    @endphp
+
     <div class="breacrumb-cover">
         <div class="container">
             <ul class="breadcrumbs">
@@ -177,40 +198,13 @@
                                     <div class="card-2-bottom mt-30">
                                         <div class="d-flex align-items-center justify-content-between">
                                             <div class="keep-reading">
-                                                <a href="{{ $post->getUrl() }}"
-                                                    @php
-$breadcrumbTitle = 'Blog';
-                                        $breadcrumbItems = [];
 
-                                        if ($search) {
-                                            $breadcrumbTitle = 'Search results for "' . $search . '"';
-                                            $breadcrumbItems = [
-                                                ['label' => 'Blog', 'url' => route('blog')],
-                                                ['label' => 'Search'],
-                                            ];
-                                        } elseif ($activeCategory) {
-                                            $activeCategoryName = $categories->firstWhere('id', $activeCategory)?->name;
-                                            $breadcrumbTitle = $activeCategoryName ? $activeCategoryName . ' Articles' : 'Blog';
-                                            $breadcrumbItems = [
-                                                ['label' => 'Blog', 'url' => route('blog')],
-                                                ['label' => $activeCategoryName ?? 'Category'],
-                                            ];
-                                        } elseif ($featuredOnly) {
-                                            $breadcrumbTitle = 'Featured Blog Posts';
-                                            $breadcrumbItems = [
-                                                ['label' => 'Blog', 'url' => route('blog')],
-                                                ['label' => 'Featured'],
-                                            ];
-                                        } @endphp
-                                                    <x-superduper.components.breadcrumb title="{{ $breadcrumbTitle }}"
-                                                    :items="$breadcrumbItems" />
+
                                                 <a href="#"
                                                     wire:click.prevent="filterByCategory('{{ $post->category->id }}')"
-                                                    class="btn btn-tags-sm mb-10 mr-5"> {{ $post->category->name }}</a>
-
-
+                                                    class="btn btn-tags-sm mb-10 mr-5"> {{ $post->category->name }}
+                                                </a>
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
@@ -474,5 +468,4 @@ $breadcrumbTitle = 'Blog';
 
     <livewire:subscribe />
 </div>
-<!-- End Content -->
 <!-- End Content -->

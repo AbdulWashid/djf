@@ -18,21 +18,28 @@
                                     </figure>
                                 </div>
                                 <div class="card-job-top--info">
-                                    <h6 class="card-job-top--info-heading"><a
-                                            href="{{ route('jobs.show', $job->slug) }}">{{ $job->title }}</a></h6>
+                                    <h6 class="card-job-top--info-heading">
+                                        <a href="{{ route('jobs.show', $job->slug) }}">{{ $job->title }}</a>
+                                    </h6>
                                     <div class="row">
-                                        <div class="col-lg-7">
+                                        <div class="">
                                             <span class="card-job-top--company">{{ $job->employer->name }}</span> &nbsp;
-                                            <span class="card-job-top--location text-sm"><i class="fi-rr-marker"></i>
-                                                {{ $job->location }}</span>
-                                            <span class="card-job-top--type-job text-sm"><i class="fi-rr-briefcase"></i>
-                                                {{ $job->job_type->getLabel() }}</span>
-                                            <span class="card-job-top--post-time text-sm"><i class="fi-rr-clock"></i>
-                                                {{ $job->created_at->format('M d, Y') }}</span>
+                                            <span class="card-job-top--location text-sm">
+                                                <i class="fi-rr-marker"></i>
+                                                {{ $job->location }}
+                                            </span>
+                                            <span class="card-job-top--type-job text-sm">
+                                                <i class="fi-rr-briefcase"></i>
+                                                {{ $job->job_type->getLabel() }}
+                                            </span>
+                                            <span class="card-job-top--post-time text-sm">
+                                                <i class="fi-rr-clock"></i>
+                                                {{ $job->created_at->format('M d, Y') }}
+                                            </span>
                                         </div>
-                                        <div class="col-lg-5 text-lg-end">
+                                        <div class="text-nowrap mt-3">
                                             <span class="card-job-top--price">{{ $job->salary_range }}<span>
-                                                    AED/Year</span></span>
+                                                    AED/Year
                                         </div>
                                     </div>
                                 </div>

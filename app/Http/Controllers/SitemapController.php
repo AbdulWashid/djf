@@ -11,6 +11,7 @@ use DB;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class SitemapController extends Controller
 {
@@ -54,6 +55,7 @@ class SitemapController extends Controller
             ['url' => route('home'), 'priority' => '1.0', 'changefreq' => 'weekly'],
             ['url' => route('jobs'), 'priority' => '0.8', 'changefreq' => 'daily'],
             ['url' => route('blog'), 'priority' => '0.9', 'changefreq' => 'daily'],
+            ['url' => route('faqs'), 'priority' => '0.9', 'changefreq' => 'daily'],
             ['url' => route('contact-us'), 'priority' => '0.8', 'changefreq' => 'monthly'],
         ];
 
@@ -96,7 +98,7 @@ class SitemapController extends Controller
             ->get();
 
         foreach ($locations as $location) {
-            $locationSlug = strtolower(str_replace(' ', '-', $location->location));
+            $locationSlug = Str::slug($location->location);
             $urls->push([
                 'loc' => route('jobs.location', ['location' => $locationSlug]),
                 'lastmod' => $location->updated_at->toISOString(),
@@ -109,7 +111,7 @@ class SitemapController extends Controller
             ->chunk(100, function ($cats) use ($urls, $locations) {
                 foreach ($cats as $cat) {
                     foreach ($locations as $location) {
-                        $locationSlug = strtolower(str_replace(' ', '-', $location->location));
+                        $locationSlug = Str::slug($location->location);
                         $urls->push([
                             'loc' => route('jobs.location.category', ['location' => $locationSlug, 'category_slug' => $cat->slug]),
                             'lastmod' => max($cat->updated_at, $location->updated_at)->toISOString(),

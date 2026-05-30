@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\JobCategoryResource\Pages;
 use App\Models\JobCategory;
-use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -47,27 +47,24 @@ class JobCategoryResource extends Resource
                 ->live(onBlur: true)
                 ->afterStateUpdated(function (string $operation, $state, Get $get, Set $set) {
                     // Only auto-generate the slug on 'create' and if the user hasn't manually edited it.
-
                     $set('slug', Str::slug($state));
                 })
                 ->required(),
+
             // Slug
             TextInput::make('slug')
                 ->label('Slug')
-
                 ->required()
                 ->unique(ignoreRecord: true),
 
-            FileUpload::make('logo')
+            SpatieMediaLibraryFileUpload::make('logo')
                 ->label('Logo')
+                ->collection('job-categories')
                 ->image()
-                ->directory('job-categories')
-                ->visibility('public')
                 ->imagePreviewHeight('150')
                 ->imageResizeMode('cover')
                 ->imageResizeTargetWidth('400')
                 ->imageResizeTargetHeight('400')
-                ->acceptedFileTypes(['image/*'])
                 ->helperText('Upload category logo image.'),
 
             Toggle::make('status')->default(true)->required(),
@@ -77,10 +74,7 @@ class JobCategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                TextColumn::make('name')->searchable()->sortable(),
-                ToggleColumn::make('status'),
-            ])
+            ->columns([TextColumn::make('name')->searchable()->sortable(), ToggleColumn::make('status')])
             ->filters([TrashedFilter::make()])
             ->actions([EditAction::make()])
             ->bulkActions([BulkActionGroup::make([])]);
@@ -90,8 +84,8 @@ class JobCategoryResource extends Resource
     {
         return [
             'index' => Pages\ListJobCategories::route('/'),
-            //            'create' => Pages\CreateJobCategory::route('/create'),
-            //            'edit' => Pages\EditJobCategory::route('/{record}/edit'),
+            //'create' => Pages\CreateJobCategory::route('/create'),
+            //'edit' => Pages\EditJobCategory::route('/{record}/edit'),
         ];
     }
 
