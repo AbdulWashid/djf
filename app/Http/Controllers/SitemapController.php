@@ -78,26 +78,41 @@ class SitemapController extends Controller
             ]);
         }
 
-        JobCategory::active()->select(['slug', 'updated_at'])
-            ->chunk(100, function ($cats) use ($urls) {
-                foreach ($cats as $cat) {
-                    $urls->push([
-                        'loc' => route('jobs.category', ['category' => $cat->slug]),
-                        'lastmod' => $cat->updated_at->toISOString(),
-                        'changefreq' => 'weekly',
-                        'priority' => '0.8',
-                    ]);
-                }
-            });
+        $activeCategories = JobCategory::active()->select(['id', 'slug', 'updated_at'])->get()->keyBy('id');
+
+        $categoriesWithJobs = Opening::active()
+            ->select('job_category_id', DB::raw('MAX(updated_at) as updated_at'), DB::raw('COUNT(*) as jobs_count'))
+            ->whereNotNull('job_category_id')
+            ->groupBy('job_category_id')
+            ->get();
+
+        foreach ($categoriesWithJobs as $categoryStats) {
+            $category = $activeCategories->get($categoryStats->job_category_id);
+
+            if (!$category || (int) $categoryStats->jobs_count === 0) {
+                continue;
+            }
+
+            $urls->push([
+                'loc' => route('jobs.category', ['category' => $category->slug]),
+                'lastmod' => max($category->updated_at, $categoryStats->updated_at)->toISOString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.8',
+            ]);
+        }
 
         $locations = Opening::active()
-            ->select('location', DB::raw('MAX(updated_at) as updated_at'))
+            ->select('location', DB::raw('MAX(updated_at) as updated_at'), DB::raw('COUNT(*) as jobs_count'))
             ->whereNotNull('location')
             ->where('location', '!=', '')
             ->groupBy('location')
             ->get();
 
         foreach ($locations as $location) {
+            if ((int) $location->jobs_count === 0) {
+                continue;
+            }
+
             $locationSlug = Str::slug($location->location);
             $urls->push([
                 'loc' => route('jobs.location', ['location' => $locationSlug]),
@@ -107,20 +122,39 @@ class SitemapController extends Controller
             ]);
         }
 
-        JobCategory::active()->select(['slug', 'updated_at'])
-            ->chunk(100, function ($cats) use ($urls, $locations) {
-                foreach ($cats as $cat) {
-                    foreach ($locations as $location) {
-                        $locationSlug = Str::slug($location->location);
-                        $urls->push([
-                            'loc' => route('jobs.location.category', ['location' => $locationSlug, 'category_slug' => $cat->slug]),
-                            'lastmod' => max($cat->updated_at, $location->updated_at)->toISOString(),
-                            'changefreq' => 'weekly',
-                            'priority' => '0.7',
-                        ]);
-                    }
-                }
-            });
+        $locationCategoryStats = Opening::active()
+            ->select(
+                'location',
+                'job_category_id',
+                DB::raw('MAX(updated_at) as updated_at'),
+                DB::raw('COUNT(*) as jobs_count')
+            )
+            ->whereNotNull('location')
+            ->where('location', '!=', '')
+            ->whereNotNull('job_category_id')
+            ->groupBy('location', 'job_category_id')
+            ->get();
+
+        foreach ($locationCategoryStats as $item) {
+            if ((int) $item->jobs_count === 0) {
+                continue;
+            }
+
+            $category = $activeCategories->get($item->job_category_id);
+            if (!$category) {
+                continue;
+            }
+
+            $urls->push([
+                'loc' => route('jobs.location.category', [
+                    'location' => Str::slug($item->location),
+                    'category_slug' => $category->slug,
+                ]),
+                'lastmod' => max($category->updated_at, $item->updated_at)->toISOString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.7',
+            ]);
+        }
 
        Opening::active()->select(['slug', 'updated_at'])
             ->chunk(100, function ($jobs) use ($urls) {
