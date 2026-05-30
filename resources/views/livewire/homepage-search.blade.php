@@ -18,11 +18,11 @@
     </div>
     <div class="list-tags-banner mt-60 wow animate__animated animate__fadeInUp" data-wow-delay=".3s">
         <strong>Popular Searches:</strong>
-        <a href="{{ route('jobs', ['q' => 'Designer']) }}">Designer</a>,
-        <a href="{{ route('jobs', ['q' => 'Developer']) }}">Developer</a>,
-        <a href="{{ route('jobs', ['q' => 'Web']) }}">Web</a>,
-        <a href="{{ route('jobs', ['q' => 'Engineer']) }}">Engineer</a>,
-        <a href="{{ route('jobs', ['q' => 'Senior']) }}">Senior</a>,
+        <a href="{{ route('jobs', ['q' => 'designer']) }}">Designer</a>,
+        <a href="{{ route('jobs', ['q' => 'developer']) }}">Developer</a>,
+        <a href="{{ route('jobs', ['q' => 'web']) }}">Web</a>,
+        <a href="{{ route('jobs', ['q' => 'engineer']) }}">Engineer</a>,
+        <a href="{{ route('jobs', ['q' => 'senior']) }}">Senior</a>,
     </div>
 </div>
 
@@ -46,7 +46,8 @@
                 homepageSearchForm.addEventListener('submit', function(e) {
                     e.preventDefault();
                     const location = $('#location-select').val();
-                    const q = homepageSearchForm.querySelector('input[name="q"]').value.trim();
+                    const q = homepageSearchForm.querySelector('input[name="q"]').value.trim()
+                .toLowerCase();
                     let targetUrl = @json(route('jobs.location', '__LOCATION__')).replace('__LOCATION__', encodeURIComponent(
                         String(location).trim().toLowerCase().replace(/\s+/g, '-').replace(
                             /[^a-z0-9-]/g, '')));

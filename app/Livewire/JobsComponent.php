@@ -34,7 +34,7 @@ class JobsComponent extends Component
         $this->categories = JobCategory::active()->pluck('name', 'id');
         $this->locations = Opening::distinct()->pluck('location');
         $this->job_types = EmploymentType::toOptionsArray();
-        $this->q = request()->query('q');
+        $this->q = $this->normalizeQuery(request()->query('q'));
 
         if ($location) {
             $cat = JobCategory::where('slug', Str::slug($location))->first();
@@ -63,7 +63,7 @@ class JobsComponent extends Component
 
     public function hydrate(): void
     {
-        $this->q = request()->query('q', $this->q);
+        $this->q = $this->normalizeQuery(request()->query('q', $this->q));
     }
 
     public function updatedLocation($value)
@@ -97,7 +97,7 @@ class JobsComponent extends Component
 
         $url = rtrim($url, '/') . '/';
         if (!empty($this->q)) {
-            $url .= '?q=' . urlencode(trim($this->q));
+            $url .= '?q=' . urlencode($this->normalizeQuery($this->q));
         }
 
         $this->dispatch('url-updated', ['url' => $url]);
@@ -189,7 +189,7 @@ class JobsComponent extends Component
     {
         $query = Opening::query()->active()->with('employer');
 
-        $keyword = trim($this->q ?: request()->query('q', ''));
+        $keyword = $this->normalizeQuery($this->q ?: request()->query('q', ''));
 
         // Keyword filter: search by job title or employer name
         // if ($keyword !== '') {
@@ -222,5 +222,12 @@ class JobsComponent extends Component
         }
 
         return $query->paginate(12);
+    }
+
+    private function normalizeQuery(?string $value): ?string
+    {
+        $value = trim((string) $value);
+
+        return $value === '' ? null : Str::lower($value);
     }
 }
