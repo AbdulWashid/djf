@@ -661,15 +661,19 @@
 
     {{-- <script src="{{ asset('superduper/js/main.js') }}"></script> --}}
 
-    @php
+    @livewireScripts
+
+    {{-- @php
         $livewireManifestPath = base_path('public/vendor/livewire/manifest.json');
         $livewireAssetVersion = file_exists($livewireManifestPath)
-            ? (json_decode(file_get_contents($livewireManifestPath), true)['/livewire.js'] ?? null)
+            ? json_decode(file_get_contents($livewireManifestPath), true)['/livewire.js'] ?? null
             : null;
     @endphp
 
     @livewireScriptConfig
-    <script src="{{ asset('vendor/livewire/livewire.min.js') }}@if($livewireAssetVersion)?id={{ $livewireAssetVersion }}@endif"></script>
+    <script
+        src="{{ asset('vendor/livewire/livewire.min.js') }}@if ($livewireAssetVersion) ?id={{ $livewireAssetVersion }} @endif">
+    </script> --}}
 
     <!-- Custom JS -->
     @if (isset($scriptSettings->custom_js))
@@ -698,5 +702,7 @@
 
     @stack('js')
 </body>
+
+</html>
 
 </html>

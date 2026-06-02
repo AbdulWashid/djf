@@ -320,8 +320,9 @@
     <script src="{{ asset('superduper/js/vendors/jos.min.js') }}"></script>
 
     <script src="{{ asset('superduper/js/main.js') }}"></script>
+    @livewireScripts
 
-    @php
+    {{-- @php
         $livewireManifestPath = base_path('vendor/livewire/livewire/dist/manifest.json');
         $livewireAssetVersion = file_exists($livewireManifestPath)
             ? json_decode(file_get_contents($livewireManifestPath), true)['/livewire.js'] ?? null
@@ -331,7 +332,7 @@
     @livewireScriptConfig
     <script
         src="{{ asset('vendor/livewire/livewire.min.js') }}@if ($livewireAssetVersion) ?id={{ $livewireAssetVersion }} @endif">
-    </script>
+    </script> --}}
 
     <script>
         document.querySelectorAll('[data-email-user][data-email-domain]').forEach((element) => {
