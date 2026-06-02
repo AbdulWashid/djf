@@ -1,39 +1,39 @@
 @props([
     // === Core Page Props ===
-    'pageType' => 'standard',          // Maps to $page_type in your switch statement
-    'pageTitle' => '',                 // Used in default case and meta tags
-    'pageDescription' => '',           // Used in description meta tags
-    'metaKeywords' => '',              // Used in keywords meta tag
+    'pageType' => 'standard', // Maps to $page_type in your switch statement
+    'pageTitle' => '', // Used in default case and meta tags
+    'pageDescription' => '', // Used in description meta tags
+    'metaKeywords' => '', // Used in keywords meta tag
 
     // === Blog Post Props ===
-    'postTitle' => '',                 // For blog_post page type
-    'postCategory' => '',              // For blog_post page type
-    'authorName' => '',                // For blog_post and author page types
-    'publishDate' => null,             // For blog_post page type
+    'postTitle' => '', // For blog_post page type
+    'postCategory' => '', // For blog_post page type
+    'authorName' => '', // For blog_post and author page types
+    'publishDate' => null, // For blog_post page type
 
     // === Product Props ===
-    'productName' => '',               // For product page type
-    'productCategory' => '',           // For product page type
-    'productBrand' => '',              // For product page type
-    'productPrice' => '',              // For product page type
+    'productName' => '', // For product page type
+    'productCategory' => '', // For product page type
+    'productBrand' => '', // For product page type
+    'productPrice' => '', // For product page type
 
     // === Category Props ===
-    'categoryName' => '',              // For category page type
-    'parentCategory' => '',            // For category page type
-    'productsCount' => '',             // For category page type
+    'categoryName' => '', // For category page type
+    'parentCategory' => '', // For category page type
+    'productsCount' => '', // For category page type
 
     // === Search Props ===
-    'searchTerm' => '',                // For search page type
-    'resultsCount' => '',              // For search page type
+    'searchTerm' => '', // For search page type
+    'resultsCount' => '', // For search page type
 
     // === Author Props ===
-    'postCount' => '',                 // For author page type
+    'postCount' => '', // For author page type
 
     // === Optional SEO Props ===
-    'canonicalUrl' => null,            // Override canonical URL
-    'ogImage' => null,                 // Override OG image
-    'twitterImage' => null,            // Override Twitter image
-    'noIndex' => false,                // Add noindex meta tag
+    'canonicalUrl' => null, // Override canonical URL
+    'ogImage' => null, // Override OG image
+    'twitterImage' => null, // Override Twitter image
+    'noIndex' => false, // Add noindex meta tag
 ])
 
 <!DOCTYPE html>
@@ -44,7 +44,7 @@
         $page_type = $pageType;
         $favicon = $generalSettings->site_favicon;
         $brandLogo = $generalSettings->brand_logo;
-        $siteName = $generalSettings->brand_name ?? $siteSettings->name ?? config('app.name', 'Dubai Job Finder');
+        $siteName = $generalSettings->brand_name ?? ($siteSettings->name ?? config('app.name', 'Dubai Job Finder'));
 
         $separator = $seoSettings->title_separator ?? '|';
 
@@ -65,7 +65,9 @@
                 break;
 
             case 'product':
-                $titleFormat = $seoSettings->product_title_format ?? '{product_name} {separator} {product_category} {separator} {site_name}';
+                $titleFormat =
+                    $seoSettings->product_title_format ??
+                    '{product_name} {separator} {product_category} {separator} {site_name}';
                 $variables = array_merge($_main_variables, [
                     '{product_name}' => $productName ?? '',
                     '{product_category}' => $productCategory ?? '',
@@ -84,7 +86,8 @@
                 break;
 
             case 'search':
-                $titleFormat = $seoSettings->search_title_format ?? 'Search results for "{search_term}" {separator} {site_name}';
+                $titleFormat =
+                    $seoSettings->search_title_format ?? 'Search results for "{search_term}" {separator} {site_name}';
                 $variables = array_merge($_main_variables, [
                     '{search_term}' => $searchTerm ?? '',
                     '{results_count}' => $resultsCount ?? '',
@@ -107,14 +110,14 @@
         }
 
         // Process the format by replacing placeholders
-        $title = str_replace(
-            array_keys($variables),
-            array_values($variables),
-            $titleFormat
-        );
+        $title = str_replace(array_keys($variables), array_values($variables), $titleFormat);
 
         // Clean up the title (remove double separators, eliminate leading/trailing separators)
-        $title = preg_replace('/\s*' . preg_quote($separator) . '\s*' . preg_quote($separator) . '\s*/', " $separator ", $title);
+        $title = preg_replace(
+            '/\s*' . preg_quote($separator) . '\s*' . preg_quote($separator) . '\s*/',
+            " $separator ",
+            $title,
+        );
         $title = trim($title);
         $title = trim($title, " $separator");
 
@@ -124,7 +127,7 @@
         }
     @endphp
 
-    @if($noIndex || !$generalSettings->search_engine_indexing)
+    @if ($noIndex || !$generalSettings->search_engine_indexing)
         <meta name="robots" content="noindex">
     @endif
 
@@ -134,13 +137,12 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="{{ $canonicalUrl ?? $seoSettings->canonical_url ?? url()->current() }}" />
+    <link rel="canonical" href="{{ $canonicalUrl ?? ($seoSettings->canonical_url ?? url()->current()) }}" />
 
     <!-- SEO Meta Tags -->
-    <meta name="keywords"
-        content="{{ $metaKeywords ?? $seoSettings->meta_keywords ?? '' }}" />
+    <meta name="keywords" content="{{ $metaKeywords ?? ($seoSettings->meta_keywords ?? '') }}" />
     <meta name="description"
-        content="{{ $pageDescription ?? $seoSettings->meta_description ?? $siteSettings->description ?? '' }}">
+        content="{{ $pageDescription ?? ($seoSettings->meta_description ?? ($siteSettings->description ?? '')) }}">
 
     <!-- Mobile Optimization Meta Tags -->
     <meta name="format-detection" content="telephone=no">
@@ -152,7 +154,7 @@
     <meta itemprop="name" content="{{ $title }}" />
     <meta itemprop="url" content="{{ url()->current() }}">
     <meta itemprop="description"
-        content="{{ $pageDescription ?? $seoSettings->meta_description ?? $siteSettings->description }}">
+        content="{{ $pageDescription ?? ($seoSettings->meta_description ?? $siteSettings->description) }}">
     <meta itemprop="thumbnailUrl"
         content="{{ $brandLogo ? Storage::url($brandLogo) : asset('storage/images/logo.png') }}">
     <meta itemprop="image"
@@ -164,9 +166,9 @@
     <meta name="twitter:creator" content="{{ $seoSettings->twitter_creator ?? '@superduperkit' }}" />
     <meta name="twitter:title" content="{{ $seoSettings->twitter_title ?? $title }}">
     <meta name="twitter:description"
-        content="{{ $seoSettings->twitter_description ?? $pageDescription ?? $seoSettings->meta_description }}" />
+        content="{{ $seoSettings->twitter_description ?? ($pageDescription ?? $seoSettings->meta_description) }}" />
     <meta name="twitter:image"
-        content="{{ $twitterImage ?? $seoSettings->twitter_image ?? ($brandLogo ? Storage::url($brandLogo) : asset('storage/images/logo.png')) }}">
+        content="{{ $twitterImage ?? ($seoSettings->twitter_image ?? ($brandLogo ? Storage::url($brandLogo) : asset('storage/images/logo.png'))) }}">
     <meta name="twitter:url" content="{{ url()->current() }}">
 
     <!-- Open Graph (Facebook, LinkedIn) -->
@@ -174,24 +176,24 @@
     <meta property="og:title" content="{{ $seoSettings->og_title ?? $title }}" />
     <meta property="og:type" content="{{ $seoSettings->og_type ?? 'website' }}" />
     <meta property="og:description"
-        content="{{ $seoSettings->og_description ?? $pageDescription ?? $seoSettings->meta_description }}" />
+        content="{{ $seoSettings->og_description ?? ($pageDescription ?? $seoSettings->meta_description) }}" />
     <meta property="og:url" content="{{ url()->current() }}" />
     <meta property="og:image"
-        content="{{ $ogImage ?? $seoSettings->og_image ?? ($brandLogo ? Storage::url($brandLogo) : asset('storage/images/logo.png')) }}" />
+        content="{{ $ogImage ?? ($seoSettings->og_image ?? ($brandLogo ? Storage::url($brandLogo) : asset('storage/images/logo.png'))) }}" />
     <meta property="og:image:width" content="1500">
     <meta property="og:image:height" content="1500">
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:alt" content="{{ $siteName }}" />
 
     <!-- Verification codes -->
-    @if(!empty($seoSettings->verification_codes))
-        @foreach($seoSettings->verification_codes as $verificationCode)
+    @if (!empty($seoSettings->verification_codes))
+        @foreach ($seoSettings->verification_codes as $verificationCode)
             {!! $verificationCode !!}
         @endforeach
     @endif
 
     <!-- Additional meta tags -->
-    @if($seoSettings->head_additional_meta)
+    @if ($seoSettings->head_additional_meta)
         {!! $seoSettings->head_additional_meta !!}
     @endif
 
@@ -204,12 +206,11 @@
         type="image/x-icon">
 
     <!-- Theme CSS via Vite -->
-    @vite([
-        'resources/css/app.css',
-    ])
+    @vite(['resources/css/app.css'])
 
     <!-- Icon Font -->
-    <link rel="preload" href="{{ asset('superduper/fonts/iconfonts/font-awesome/stylesheet.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="{{ asset('superduper/fonts/iconfonts/font-awesome/stylesheet.css') }}" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
         <link rel="stylesheet" href="{{ asset('superduper/fonts/iconfonts/font-awesome/stylesheet.css') }}">
     </noscript>
@@ -231,7 +232,7 @@
     @stack('css')
 
     <!-- Custom CSS -->
-    @if(isset($scriptSettings->custom_css))
+    @if (isset($scriptSettings->custom_css))
         <style>
             {!! $scriptSettings->custom_css !!}
         </style>
@@ -240,7 +241,7 @@
     @livewireStyles
 
     <!-- Header scripts -->
-    @if(isset($scriptSettings->header_scripts))
+    @if (isset($scriptSettings->header_scripts))
         {!! $scriptSettings->header_scripts !!}
     @endif
 
@@ -271,11 +272,11 @@
 
 <body>
     <!-- Body start scripts -->
-    @if(isset($scriptSettings->body_start_scripts))
+    @if (isset($scriptSettings->body_start_scripts))
         {!! $scriptSettings->body_start_scripts !!}
     @endif
 
-    @if(isset($siteSettings->is_maintenance) && $siteSettings->is_maintenance)
+    @if (isset($siteSettings->is_maintenance) && $siteSettings->is_maintenance)
         <div class="maintenance-mode">
             <div class="container">
                 <h1>Site Under Maintenance</h1>
@@ -292,12 +293,13 @@
         <x-superduper.footer />
 
         <!-- Cookie Consent -->
-        @if(isset($scriptSettings->cookie_consent_enabled) && $scriptSettings->cookie_consent_enabled)
+        @if (isset($scriptSettings->cookie_consent_enabled) && $scriptSettings->cookie_consent_enabled)
             <div class="cookie-consent js-cookie-consent" style="display: none;">
                 <div class="container">
                     <span class="cookie-consent__message">
-                        {!! $scriptSettings->cookie_consent_text ?? 'We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies.' !!}
-                        @if(isset($scriptSettings->cookie_consent_policy_url) && $scriptSettings->cookie_consent_policy_url)
+                        {!! $scriptSettings->cookie_consent_text ??
+                            'We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies.' !!}
+                        @if (isset($scriptSettings->cookie_consent_policy_url) && $scriptSettings->cookie_consent_policy_url)
                             <a href="{{ $scriptSettings->cookie_consent_policy_url }}">Learn more</a>
                         @endif
                     </span>
@@ -310,9 +312,7 @@
     @endif
 
     <!-- Vite compiled JS -->
-    @vite([
-        'resources/js/app.js',
-    ])
+    @vite(['resources/js/app.js'])
 
     <!--Vendor js-->
     <script src="{{ asset('superduper/js/vendors/swiper-bundle.min.js') }}"></script>
@@ -324,12 +324,14 @@
     @php
         $livewireManifestPath = base_path('vendor/livewire/livewire/dist/manifest.json');
         $livewireAssetVersion = file_exists($livewireManifestPath)
-            ? (json_decode(file_get_contents($livewireManifestPath), true)['/livewire.js'] ?? null)
+            ? json_decode(file_get_contents($livewireManifestPath), true)['/livewire.js'] ?? null
             : null;
     @endphp
 
     @livewireScriptConfig
-    <script src="{{ asset('livewire/livewire.min.js') }}@if($livewireAssetVersion)?id={{ $livewireAssetVersion }}@endif"></script>
+    <script
+        src="{{ asset('vendor/livewire/livewire.min.js') }}@if ($livewireAssetVersion) ?id={{ $livewireAssetVersion }} @endif">
+    </script>
 
     <script>
         document.querySelectorAll('[data-email-user][data-email-domain]').forEach((element) => {
@@ -340,19 +342,19 @@
     </script>
 
     <!-- Custom JS -->
-    @if(isset($scriptSettings->custom_js))
+    @if (isset($scriptSettings->custom_js))
         <script>
             {!! $scriptSettings->custom_js !!}
         </script>
     @endif
 
     <!-- Footer scripts -->
-    @if(isset($scriptSettings->footer_scripts))
+    @if (isset($scriptSettings->footer_scripts))
         {!! $scriptSettings->footer_scripts !!}
     @endif
 
     <!-- Body end scripts -->
-    @if(isset($scriptSettings->body_end_scripts))
+    @if (isset($scriptSettings->body_end_scripts))
         {!! $scriptSettings->body_end_scripts !!}
     @endif
 

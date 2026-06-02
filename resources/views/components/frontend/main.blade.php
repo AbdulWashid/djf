@@ -669,7 +669,7 @@
     @endphp
 
     @livewireScriptConfig
-    <script src="{{ asset('public/vendor/livewire/livewire.min.js') }}@if($livewireAssetVersion)?id={{ $livewireAssetVersion }}@endif"></script>
+    <script src="{{ asset('vendor/livewire/livewire.min.js') }}@if($livewireAssetVersion)?id={{ $livewireAssetVersion }}@endif"></script>
 
     <!-- Custom JS -->
     @if (isset($scriptSettings->custom_js))
