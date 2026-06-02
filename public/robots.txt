@@ -60,7 +60,6 @@ User-agent: TikTokSpider
 Disallow: /
 
 User-agent: *
-Disallow: /cdn-cgi/
 
 # Global Rules
 User-agent: *
@@ -76,11 +75,25 @@ Disallow: /*?salary=
 Disallow: /*?location=
 Disallow: /*?page=
 Disallow: /*?q=
+Disallow: /*?category=
 
-# Block Internal Areas
+
+# Allow main public assets so search engines can render pages correctly
+Allow: /assets/
+Allow: /storage/
+Allow: /vendor/
+Allow: /livewire/
+Allow: /css/
+Allow: /js/
+Allow: /images/
+
+# Block internal and sensitive areas
 Disallow: /admin/
 Disallow: /dashboard/
 Disallow: /api/
+
+# Block low-value dynamic URL parameters only when necessary (keep minimal)
+# If you need to block specific query-parameter combinations, add them here.
 
 # Sitemap
 Sitemap: https://dubaijobfinder.net/sitemap.xml
