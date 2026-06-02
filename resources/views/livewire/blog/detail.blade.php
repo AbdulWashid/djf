@@ -73,13 +73,14 @@
                     <span><i class="fi-rr-edit mr-5 text-grey-6"></i>
                         {{ $post->published_at->format('M d, Y') }}</span>
                 </div>
-
-                <div>
-                    <a href="{{ route('blog', ['category' => $post->category->id]) }}"
-                        class="rounded-[50px] bg-color-black/5 px-[26px] py-1.5 text-black/60 hover:bg-color-blue hover:text-white">
-                        {{ $post->category->name }}
-                    </a>
-                </div>
+                @if ($post->category)
+                    <div>
+                        <a href="{{ route('blog', ['category' => $post->category->id]) }}"
+                            class="rounded-[50px] bg-color-black/5 px-[26px] py-1.5 text-black/60 hover:bg-color-blue hover:text-white">
+                            {{ $post->category->name }}
+                        </a>
+                    </div>
+                @endif
                 @if ($post->is_featured)
                     <div>
                         <span class="rounded-[50px] bg-orange-500 px-[26px] py-1.5 text-white">

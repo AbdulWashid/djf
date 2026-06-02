@@ -132,10 +132,10 @@
                         </div>  --}}
                         <div class="row job-listing-grid-2">
                             @forelse($jobs as $job)
-                                <div class="col-xl-4 col-md-6">
-                                    <div class="card-grid-2 hover-up wow animate__animated animate__fadeIn"
+                                <div class="col-xl-4 col-md-6 mb-30">
+                                    <div class="card-grid-2 hover-up wow animate__animated animate__fadeIn h-100 d-flex flex-column"
                                         data-wow-delay=".{{ $loop->index * 0.1 }}s">
-                                        <div class="card-block-info">
+                                        <div class="card-block-info d-flex flex-column h-100">
                                             <div class="row">
                                                 <div class="col-lg-12 col-12">
                                                     <a href="{{ route('jobs.show', $job->slug) }}"
@@ -166,7 +166,7 @@
                                                 {!! Str::excerpt($job->description) !!}
                                             </div>
 
-                                            <div class="card-2-bottom mt-30">
+                                            <div class="card-2-bottom mt-auto pt-3">
                                                 <div class="row">
                                                     {{-- <div class="col-lg-6 col-8">
                                                         <span

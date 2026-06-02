@@ -55,7 +55,7 @@ Route::get('/employers/', Employers::class)->name('employers');
 Route::get('/blogs', BlogList::class)->name('blog');
 Route::get('/remainder', Remainder::class)->name('remainder');
 Route::get('/faqs', Faqs::class)->name('faqs');
-Route::get('/job/{slug}', Jobdetails::class)->name('jobs.show');
+Route::get('/job/{slug}', JobDetails::class)->name('jobs.show');
 Route::get('/blog/{slug}', BlogDetails::class)->name('blog.show');
 Route::get('/contact-us', ContactUs::class)->name('contact-us');
 //Route::get('/privacy-policy', function () {

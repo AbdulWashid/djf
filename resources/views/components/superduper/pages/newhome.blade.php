@@ -165,8 +165,9 @@
 
         <div class="section-box">
             <div class="container">
-                <h2 class="section-title text-center mb-15 wow animate__animated animate__fadeInUp">Jobs By Top
-                    Employers</h2>
+                <h2 class="section-title text-center mb-15 wow animate__animated animate__fadeInUp">
+                    Jobs By Top Employers
+                </h2>
 
                 <ul class="list-partners">
                     <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay="0s">
