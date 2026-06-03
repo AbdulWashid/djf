@@ -58,9 +58,9 @@
     </div>
     <div class="archive-header pt-50 pb-50 text-center">
         <div class="container">
-            <h3 class="mb-30 text-center w-75 mx-auto">
+            <h1 class="h1 mb-30 text-center w-75 mx-auto">
                 {{ $pg_title }}
-            </h3>
+            </h1>
         </div>
     </div>
     <div class="post-loop-grid">

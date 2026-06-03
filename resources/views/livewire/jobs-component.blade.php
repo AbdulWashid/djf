@@ -3,9 +3,9 @@
     <section class="section-box-2">
         <div class="box-head-single none-bg">
             <div class="container">
-                <h4>Currently available Jobs @if (!empty($location))
+                <h1 class="h1">Currently available Jobs @if (!empty($location))
                         in {{ Str::ucwords($location) }}
-                    @endif!</h4>
+                    @endif!</h1>
             </div>
         </div>
     </section>

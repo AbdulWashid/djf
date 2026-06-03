@@ -64,10 +64,7 @@ User-agent: *
 # Global Rules
 User-agent: *
 
-# Allow Main Website
-Allow: /
-
-# Block Low-Value Dynamic URLs
+Disallow: /cdn-cgi/l/email-protection
 Disallow: /*?filter=
 Disallow: /*?sort=
 Disallow: /*?job_type=
@@ -77,8 +74,7 @@ Disallow: /*?page=
 Disallow: /*?q=
 Disallow: /*?category=
 
-
-# Allow main public assets so search engines can render pages correctly
+Allow: /
 Allow: /assets/
 Allow: /storage/
 Allow: /vendor/

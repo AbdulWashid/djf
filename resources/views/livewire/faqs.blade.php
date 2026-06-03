@@ -3,7 +3,7 @@
         <div class="row align-items-end mb-50">
             <div class="col-lg-7">
                 <span class="text-blue wow animate__animated animate__fadeInUp">Questions</span>
-                <h3 class="mt-20 wow animate__animated animate__fadeInUp">Frequently Ask Questions</h3>
+                <h1 class="mt-20 wow animate__animated animate__fadeInUp">Frequently Ask Questions</h1>
             </div>
             <div class="col-lg-2"></div>
 
