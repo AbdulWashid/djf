@@ -241,7 +241,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="{{ $canonicalUrl ?? ($seoSettings->canonical_url ?? url()->current()) }}" />
+    {{-- <link rel="canonical" href="{{ $canonicalUrl ?? ($seoSettings->canonical_url ?? url()->current()) }}" /> --}}
+    <link rel="canonical" href="{{ url()->current() }}" />
 
     <!-- SEO Meta Tags -->
     <meta name="keywords" content="{{ $metaKeywords ?? ($seoSettings->meta_keywords ?? '') }}" />

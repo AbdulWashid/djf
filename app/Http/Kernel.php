@@ -37,14 +37,14 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\OptimizePerformance::class,
-            // \App\Http\Middleware\SecurityHeaders::class, // Uncomment for Enable SecurityHeaders Check
+            \App\Http\Middleware\SecurityHeaders::class, // Uncomment for Enable SecurityHeaders Check
         ],
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            // \App\Http\Middleware\SecurityHeaders::class, // Uncomment for Enable SecurityHeaders Check
+            \App\Http\Middleware\SecurityHeaders::class, // Uncomment for Enable SecurityHeaders Check
         ],
     ];
 
