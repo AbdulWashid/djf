@@ -242,7 +242,7 @@
 
     <!-- Canonical URL -->
     {{-- <link rel="canonical" href="{{ $canonicalUrl ?? ($seoSettings->canonical_url ?? url()->current()) }}" /> --}}
-    <link rel="canonical" href="{{ url()->current() }}" />
+    <link rel="canonical" href="{{ url()->full() }}" />
 
     <!-- SEO Meta Tags -->
     <meta name="keywords" content="{{ $metaKeywords ?? ($seoSettings->meta_keywords ?? '') }}" />
