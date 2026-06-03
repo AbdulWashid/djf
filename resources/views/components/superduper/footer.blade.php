@@ -81,7 +81,8 @@
 
                                     @foreach ($socialLinks as $platform => $url)
                                         @if (!empty($url))
-                                            <a href="{{ $url }}" target="_blank" rel="noopener noreferrer"
+                                            <a href="{{ $url }}" target="_blank"
+                                                rel="nofollow noopener noreferrer"
                                                 class="flex h-[30px] w-[30px] items-center justify-center rounded-[50%] bg-white bg-opacity-5 text-sm text-white transition-all duration-300 hover:bg-color-pale-gold hover:text-color-denim-darkblue"
                                                 aria-label="{{ $platform }}">
                                                 <i class="{{ $faIcons[$platform] ?? 'fa-brands fa-' . $platform }}"></i>

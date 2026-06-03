@@ -575,7 +575,8 @@
 
                                 @foreach ($socialLinks as $platform => $url)
                                     @if (!empty($url))
-                                        <a href="{{ $url }}" target="_blank" rel="noopener noreferrer"
+                                        <a href="{{ $url }}" target="_blank"
+                                            rel="nofollow noopener noreferrer"
                                             class="icon-socials icon-{{ $platform }}"
                                             aria-label="{{ $platform }}">
 
@@ -629,7 +630,6 @@
         <script src="{{ asset('assets/js/plugins/swiper-bundle.min.js') }}"></script>
         <!-- Template  JS -->
         <script src="{{ asset('assets/js/main.js?v=1.0') }}"></script>
-
 
 
 
@@ -703,7 +703,5 @@
 
     @stack('js')
 </body>
-
-</html>
 
 </html>

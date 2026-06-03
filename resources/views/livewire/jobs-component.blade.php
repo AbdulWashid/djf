@@ -141,7 +141,7 @@
                                                     <a href="{{ route('jobs.show', $job->slug) }}"
                                                         class="card-2-img-text card-grid-2-img-medium">
                                                         <span class="card-grid-2-img-small">
-                                                            <img
+                                                            <img alt="{{ $job->title ?? 'Dubai Job Finder' }}"
                                                                 src="{{ $job->employer->logo ? Storage::url($job->employer->logo) : Storage::url($generalSettings->site_favicon) }}" />
                                                         </span>
                                                         <span>{{ $job->title }}</span>

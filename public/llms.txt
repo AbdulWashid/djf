@@ -226,10 +226,6 @@ The core value proposition of DubaiJobFinder lies in its user-friendly interface
 
 - [Sitemap](https://dubaijobfinder.net/sitemap.html): View a sitemap of all pages on DubaiJobFinder.
 
-## Contact Email Obfuscation
-
-- [Email Protection](https://dubaijobfinder.net/cdn-cgi/l/email-protection): Protected email link for contacting the website.
-
 ---
 
 This file was generated for dubaijobfinder.net using the [LLMs.txt Generator Tool](https://llmrefs.com/tools/llms-txt-generator)

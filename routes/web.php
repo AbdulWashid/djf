@@ -98,7 +98,7 @@ Route::get('/sitemap.html', [App\Http\Controllers\SitemapController::class, 'htm
 
 Route::get('/{slug}', function ($slug) {
     // Check for a page with the matching slug
-    $page = StaticPage::where('slug', $slug)->where('status',1)->first();
+    $page = StaticPage::where('slug', $slug)->where('status', 1)->first();
     $faqSchema = '';
     // If a page is found, return its view
     if ($page) {
@@ -123,7 +123,7 @@ Route::get('/{slug}', function ($slug) {
         }
 
         return view('page', ['page' => $page, 'faqSchema' => $faqSchema]);
-    }else{
+    } else {
         // If no page is found, return a 404 response
         abort(404);
     }
