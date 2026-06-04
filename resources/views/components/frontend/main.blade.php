@@ -451,7 +451,8 @@
                                 @foreach ($footerMenu->menuItems as $item)
                                     <li>
                                         <a href="{{ $item->url }}"
-                                            @if ($item->target) target="{{ $item->target }}" @endif>
+                                            @if ($item->target) target="{{ $item->target }}" @endif
+                                            @if ($item->target && $item->target->value === '_blank') rel="noopener noreferrer" @endif>
                                             {{ $item->title }}
                                         </a>
                                     </li>
@@ -579,7 +580,6 @@
                                             rel="nofollow noopener noreferrer"
                                             class="icon-socials icon-{{ $platform }}"
                                             aria-label="{{ $platform }}">
-
                                         </a>
                                     @endif
                                 @endforeach

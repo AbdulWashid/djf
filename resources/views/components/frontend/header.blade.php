@@ -162,29 +162,35 @@
 
                     @foreach ($socialLinks as $platform => $url)
                         @if ($platform == 'facebook' && !empty($url))
-                            <a href="{{ $url }}" target="_blank"><img rel="nofollow noopener noreferrer"
-                                    src="{{ asset('assets/imgs/theme/icons/icon-facebook.svg') }}"
-                                    alt="Dubai Job Finder" /></a>
+                            <a href="{{ $url }}" target="_blank" rel="nofollow noopener noreferrer">
+                                <img src="{{ asset('assets/imgs/theme/icons/icon-facebook.svg') }}"
+                                    alt="Dubai Job Finder" />
+                            </a>
                         @elseif($platform == 'twitter' && !empty($url))
-                            <a href="{{ $url }}" target="_blank"><img rel="nofollow noopener noreferrer"
-                                    src="{{ asset('assets/imgs/theme/icons/icon-twitter.svg') }}"
-                                    alt="Dubai Job Finder" /></a>
+                            <a href="{{ $url }}" target="_blank" rel="nofollow noopener noreferrer">
+                                <img src="{{ asset('assets/imgs/theme/icons/icon-twitter.svg') }}"
+                                    alt="Dubai Job Finder" />
+                            </a>
                         @elseif($platform == 'instagram' && !empty($url))
-                            <a href="{{ $url }}" target="_blank"><img rel="nofollow noopener noreferrer"
-                                    src="{{ asset('assets/imgs/theme/icons/icon-instagram.svg') }}"
-                                    alt="Dubai Job Finder" /></a>
+                            <a href="{{ $url }}" target="_blank" rel="nofollow noopener noreferrer">
+                                <img src="{{ asset('assets/imgs/theme/icons/icon-instagram.svg') }}"
+                                    alt="Dubai Job Finder" />
+                            </a>
                         @elseif($platform == 'tiktok' && !empty($url))
-                            <a href="{{ $url }}" target="_blank"><img rel="nofollow noopener noreferrer"
-                                    src="{{ asset('assets/imgs/theme/icons/icon-tiktok.svg') }}"
-                                    alt="Dubai Job Finder" /></a>
+                            <a href="{{ $url }}" target="_blank" rel="nofollow noopener noreferrer">
+                                <img src="{{ asset('assets/imgs/theme/icons/icon-tiktok.svg') }}"
+                                    alt="Dubai Job Finder" />
+                            </a>
                         @elseif($platform == 'youtube' && !empty($url))
-                            <a href="{{ $url }}" target="_blank"><img rel="nofollow noopener noreferrer"
-                                    src="{{ asset('assets/imgs/theme/icons/icon-youtube.svg') }}"
-                                    alt="Dubai Job Finder" /></a>
+                            <a href="{{ $url }}" target="_blank" rel="nofollow noopener noreferrer">
+                                <img src="{{ asset('assets/imgs/theme/icons/icon-youtube.svg') }}"
+                                    alt="Dubai Job Finder" />
+                            </a>
                         @elseif($platform == 'linkedin' && !empty($url))
-                            <a href="{{ $url }}" target="_blank"><img rel="nofollow noopener noreferrer"
-                                    src="{{ asset('assets/imgs/theme/icons/icon-linkedin.svg') }}"
-                                    alt="Dubai Job Finder" /></a>
+                            <a href="{{ $url }}" target="_blank" rel="nofollow noopener noreferrer">
+                                <img src="{{ asset('assets/imgs/theme/icons/icon-linkedin.svg') }}"
+                                    alt="Dubai Job Finder" />
+                            </a>
                         @endif
 
                         {{--                            @if ($platform == 'tiktok') continue; --}}

@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row align-items-end">
             <div class="col-lg-7">
-                <h2 class="section-title mb-20 wow animate__animated animate__fadeInUp">Browse by category</h2>
+                <h1 class="section-title mb-20 wow animate__animated animate__fadeInUp">Browse by category</h1>
                 <p class="text-md-lh28 color-black-5 wow animate__animated animate__fadeInUp">Find the type of
                     work
                     you need, clearly defined and ready to start. Work begins as soon as you purchase and

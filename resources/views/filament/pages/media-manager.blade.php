@@ -334,8 +334,8 @@
                                 @else
                                     <article class="media-item">
                                         @if ($item['previewable'])
-                                            <a href="{{ $item['url'] }}" target="_blank" rel="noopener noreferrer"
-                                                class="media-trigger">
+                                            <a href="{{ $item['url'] }}" target="_blank"
+                                                rel="nofollow noopener noreferrer" class="media-trigger">
                                                 <div class="media-thumb">
                                                     <img src="{{ $item['url'] }}" alt="{{ $item['name'] }}" />
                                                 </div>
@@ -367,7 +367,7 @@
                                         <div class="media-actions">
                                             @if ($item['previewable'])
                                                 <a class="btn btn-secondary" href="{{ $item['url'] }}" target="_blank"
-                                                    rel="noopener noreferrer">
+                                                    rel="nofollow noopener noreferrer">
                                                     Open
                                                 </a>
                                             @else

@@ -91,12 +91,13 @@
                                     @endforeach
 
                                     @if (empty(array_filter($socialLinks)))
-                                        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"
+                                        <a href="https://twitter.com" target="_blank" rel="nofollow noopener noreferrer"
                                             class="flex h-[30px] w-[30px] items-center justify-center rounded-[50%] bg-white bg-opacity-5 text-sm text-white transition-all duration-300 hover:bg-color-pale-gold hover:text-color-denim-darkblue"
                                             aria-label="twitter">
                                             <i class="fa-brands fa-x-twitter"></i>
                                         </a>
-                                        <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer"
+                                        <a href="https://www.facebook.com/" target="_blank"
+                                            rel="nofollow noopener noreferrer"
                                             class="flex h-[30px] w-[30px] items-center justify-center rounded-[50%] bg-white bg-opacity-5 text-sm text-white transition-all duration-300 hover:bg-color-pale-gold hover:text-color-denim-darkblue"
                                             aria-label="facebook">
                                             <i class="fa-brands fa-facebook-f"></i>

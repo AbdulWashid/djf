@@ -41,7 +41,8 @@
                                                 <div class="tree-icon tree-icon--file tree-icon--small">F</div>
                                                 @if ($file['previewable'])
                                                     <a href="{{ $file['url'] }}" target="_blank"
-                                                        rel="noopener noreferrer" class="tree-file-name text-truncate">
+                                                        rel="nofollow noopener noreferrer"
+                                                        class="tree-file-name text-truncate">
                                                         {{ $file['name'] }}
                                                     </a>
                                                 @else
