@@ -790,7 +790,7 @@ class PostResource extends Resource implements HasShieldPermissions
     public static function getGlobalSearchResultDetails(Model $record): array
     {
         return [
-            'Category' => $record->category->name,
+            'Category' => $record->category ? $record->category->name : '',
             'Author' => "{$record->author->firstname} {$record->author->lastname}",
             'Status' => $record->status->getLabel(),
         ];
