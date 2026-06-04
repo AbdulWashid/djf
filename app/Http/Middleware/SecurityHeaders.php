@@ -39,10 +39,18 @@ class SecurityHeaders
 
         if (app()->environment('production')) {
             $csp = "default-src 'self'; " .
-                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://static.cloudflareinsights.com;" .
+                   "script-src 'self' 
+                                'unsafe-inline' 
+                                'unsafe-eval' 
+                                https://cdn.jsdelivr.net 
+                                https://cdnjs.cloudflare.com 
+                                https://static.cloudflareinsights.com
+                                https://www.googletagmanager.com;" .
                    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " .
                    "img-src 'self' data: https://placehold.co;".
-                   "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com; " .
+                   "font-src 'self' data: https://cdnjs.cloudflare.com 
+                                          https://fonts.gstatic.com
+                                          https://fonts.googleapis.com; " .
                    "connect-src 'self' https://www.google-analytics.com; " .
                    "media-src 'self'; " .
                    "object-src 'none'; " .
