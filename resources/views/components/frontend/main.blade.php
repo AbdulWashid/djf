@@ -354,11 +354,11 @@
     @endif
 
     <!--  structured data (JSON-LD) -->
-    @if (!empty($structuredData))
+    {{-- @if (!empty($structuredData))
         <script id="structured-data-jsonld" type="application/ld+json">
             {!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
         </script>
-    @endif
+    @endif --}}
 
     <script>
         document.addEventListener('livewire:initialized', () => {
