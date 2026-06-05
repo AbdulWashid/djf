@@ -366,6 +366,28 @@
                 {!! $json !!}
         </script>
     @endif
+
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            const schemaScript = document.getElementById('structured-data-jsonld');
+
+            Livewire.on('schema-updated', (data) => {
+                const payload = data[0] || {};
+
+                if (!schemaScript) {
+                    console.log('return ');
+                    return;
+                }
+
+                const schemas = Array.isArray(payload.schemas) ?
+                    payload.schemas :
+                    (payload.schema ? [payload.schema] : []);
+
+                schemaScript.textContent = JSON.stringify(schemas);
+
+            });
+        });
+    </script>
 </head>
 
 <body>
@@ -686,7 +708,7 @@
     @endif
 
     @stack('js')
-    <script src="{{ asset('assets/js/livewire.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/livewire.js') }}"></script> --}}
 </body>
 
 </html>

@@ -56,6 +56,7 @@ class OptimizePerformance
 
             // Cache control for static assets
             'Cache-Control' => 'public, max-age=31536000, immutable',
+            // 'Cache-Control' => 'no-cache, private'
 
             // Compression
             'Vary' => 'Accept-Encoding',
@@ -106,11 +107,11 @@ class OptimizePerformance
         }
 
         // Minify HTML by removing unnecessary whitespace
-        $content = preg_replace('/\s+/', ' ', $content);
-        $content = preg_replace('/>\s+</', '><', $content);
+        // $content = preg_replace('/\s+/', ' ', $content);
+        // $content = preg_replace('/>\s+</', '><', $content);
 
         // Remove HTML comments (but keep conditional comments)
-        $content = preg_replace('/<!--(?!\s*(?:\[if [^\]]+]|<!|>))(?:(?!-->).)*-->/s', '', $content);
+        // $content = preg_replace('/<!--(?!\s*(?:\[if [^\]]+]|<!|>))(?:(?!-->).)*-->/s', '', $content);
 
         // Optimize inline CSS and JS
         $content = $this->optimizeInlineAssets($content);
