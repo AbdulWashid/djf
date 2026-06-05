@@ -366,20 +366,22 @@
 
             Livewire.on('schema-updated', (data) => {
                 const payload = data[0] || {};
+                console.log(schemaScript, data);
 
-                if (!schemaScript) {
-                    return;
-                }
+                // if (!schemaScript) {
+                //     console.log('return ');
+                //     return;
+                // }
 
-                const schemas = Array.isArray(payload.schemas) ?
-                    payload.schemas :
-                    (payload.schema ? [payload.schema] : []);
+                // const schemas = Array.isArray(payload.schemas) ?
+                //     payload.schemas :
+                //     (payload.schema ? [payload.schema] : []);
 
-                console.log('Structured data updated:', JSON.stringify(schemas));
-                schemaScript.textContent = JSON.stringify(schemas);
+                // console.log('Structured data updated:', JSON.stringify(schemas));
+                // schemaScript.textContent = JSON.stringify(schemas);
 
             });
-            console.log(schemaScript.textContent);
+            // console.log(schemaScript.textContent);
         });
     </script>
 </head>
