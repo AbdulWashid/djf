@@ -354,36 +354,18 @@
     @endif
 
     <!--  structured data (JSON-LD) -->
-    {{-- @if (!empty($structuredData))
-        <script id="structured-data-jsonld" type="application/ld+json">
+    @if (!empty($structuredData))
+        {{-- <script id="structured-data-jsonld" type="application/ld+json">
             {!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+        </script> --}}
+        @php
+            $json = json_encode($structuredData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+        @endphp
+
+        <script type="application/ld+json" id="structured-data-jsonld">
+                {!! $json !!}
         </script>
-    @endif --}}
-
-    <script>
-        document.addEventListener('livewire:initialized', () => {
-            const schemaScript = document.getElementById('structured-data-jsonld');
-
-            Livewire.on('schema-updated', (data) => {
-                const payload = data[0] || {};
-                console.log(schemaScript, data);
-
-                // if (!schemaScript) {
-                //     console.log('return ');
-                //     return;
-                // }
-
-                // const schemas = Array.isArray(payload.schemas) ?
-                //     payload.schemas :
-                //     (payload.schema ? [payload.schema] : []);
-
-                // console.log('Structured data updated:', JSON.stringify(schemas));
-                // schemaScript.textContent = JSON.stringify(schemas);
-
-            });
-            // console.log(schemaScript.textContent);
-        });
-    </script>
+    @endif
 </head>
 
 <body>
@@ -704,6 +686,7 @@
     @endif
 
     @stack('js')
+    <script src="{{ asset('assets/js/livewire.js') }}"></script>
 </body>
 
 </html>
