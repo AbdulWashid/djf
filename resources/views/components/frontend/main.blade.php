@@ -375,11 +375,11 @@
                     payload.schemas :
                     (payload.schema ? [payload.schema] : []);
 
+                console.log('Structured data updated:', JSON.stringify(schemas));
                 schemaScript.textContent = JSON.stringify(schemas);
 
-                // console.log('Structured data updated:', JSON.stringify(schemas));
             });
-            // console.log(schemaScript.textContent);
+            console.log(schemaScript.textContent);
         });
     </script>
 </head>
