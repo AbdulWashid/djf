@@ -38,15 +38,7 @@ class SecurityHeaders
         }
 
         if (app()->environment('production')) {
-            $csp = "default-src 'self'; " . 
-                    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://static.cloudflareinsights.com https://www.googletagmanager.com; " . 
-                    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; " . 
-                    "img-src 'self' data: https://placehold.co; " . 
-                    "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://fonts.googleapis.com; " . 
-                    "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com; " . 
-                    "media-src 'self'; " .
-                    "object-src 'none'; " . 
-                    "frame-src 'self'; ";
+            $csp = "default-src 'self'; " . "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://static.cloudflareinsights.com https://www.googletagmanager.com; " . "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; " . "img-src 'self' data: https://placehold.co https://www.googletagmanager.com https://www.google-analytics.com; " . "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://fonts.googleapis.com; " . "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com; " . "media-src 'self'; " . "object-src 'none'; " . "frame-src 'self';";
         } else {
             $csp = "default-src 'self'; " . "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:* http://127.0.0.1:* http://[::1]:* https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://static.cloudflareinsights.com; " . "style-src 'self' 'unsafe-inline' http://localhost:* http://127.0.0.1:* http://[::1]:* https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " . "img-src 'self' data: https://placehold.co;" . "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com; " . "connect-src 'self' ws://localhost:* ws://127.0.0.1:* ws://[::1]:* http://localhost:* http://127.0.0.1:* http://[::1]:* https://www.google-analytics.com; " . "media-src 'self'; " . "object-src 'none'; " . "frame-src 'self';";
         }
