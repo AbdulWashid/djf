@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\JobCategory;
-use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -21,31 +20,12 @@ class JobCategories extends Component
 
     public function render()
     {
-        $this->categoryCount = Cache::remember('job_categories_active_count', now()->addMinutes(30), function () {
-            return JobCategory::query()
-                ->active()
-                ->count();
-        });
+        $this->categoryCount = rememberIfEnabled('job_categories_active_count', now()->addMinutes(30), fn() => JobCategory::query()->active()->count());
 
         if ($this->showAll) {
-            $categories = JobCategory::query()
-                ->active()
-                ->select('id', 'name', 'slug', 'logo')
-                ->withCount('openings')
-                ->orderByDesc('openings_count')
-                ->orderBy('name')
-                ->paginate(12);
+            $categories = rememberIfEnabled('job_categories_all', now()->addMinutes(30), fn() => JobCategory::query()->active()->select('id', 'name', 'slug', 'logo')->withCount('openings')->orderByDesc('openings_count')->orderBy('name')->paginate(12));
         } else {
-            $categories = Cache::remember('job_categories_home', now()->addMinutes(30), function () {
-                return JobCategory::query()
-                    ->active()
-                    ->select('id', 'name', 'slug', 'logo')
-                    ->withCount('openings')
-                    ->orderByDesc('openings_count')
-                    ->orderBy('name')
-                    ->limit(7)
-                    ->get();
-            });
+            $categories = rememberIfEnabled('job_categories_home', now()->addMinutes(30), fn() => JobCategory::query()->active()->select('id', 'name', 'slug', 'logo')->withCount('openings')->orderByDesc('openings_count')->orderBy('name')->limit(7)->get());
         }
 
         return view('livewire.job-categories', [

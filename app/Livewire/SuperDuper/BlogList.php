@@ -40,7 +40,7 @@ class BlogList extends Component
     public function mount()
     {
         // Get all active categories with post counts
-        $this->categories = cache()->remember('active_categories', now()->addHours(3), function () {
+        $this->categories = rememberIfEnabled('active_categories', now()->addMinutes(30), function () {
             return Category::active()
                 ->withCount([
                     'posts' => function ($query) {
@@ -53,7 +53,7 @@ class BlogList extends Component
         });
 
         // Get recent posts for sidebar
-        $this->recentPosts = cache()->remember('recent_posts', now()->addMinutes(30), function () {
+        $this->recentPosts = rememberIfEnabled('recent_posts', now()->addMinutes(30), function () {
             return Post::published()
                 ->select(['id', 'title', 'slug', 'blog_author_id', 'blog_category_id', 'published_at', 'content_overview'])
                 ->with([
@@ -70,8 +70,7 @@ class BlogList extends Component
 
         // Get popular tags
         $locale = app()->getLocale();
-
-        $this->popularTags = cache()->remember('popular_tags_' . $locale, now()->addHours(6), function () use ($locale) {
+        $this->recentPosts = rememberIfEnabled('popular_tags_' . $locale, now()->addHours(6), function () {
             $rawTags = DB::table('taggables')
                 ->join('tags', 'taggables.tag_id', '=', 'tags.id')
                 ->join('blog_posts', function ($join) {
@@ -216,9 +215,7 @@ class BlogList extends Component
 
     private function syncSeo(): void
     {
-        $categoryName = $this->activeCategory
-            ? $this->categories->firstWhere('id', $this->activeCategory)?->name
-            : null;
+        $categoryName = $this->activeCategory ? $this->categories->firstWhere('id', $this->activeCategory)?->name : null;
 
         if (!empty($this->search)) {
             $this->pageTitle = 'Search results for "' . $this->search . '" | Blogs';
@@ -246,9 +243,7 @@ class BlogList extends Component
 
     protected function buildSchemas(?string $categoryName = null): array
     {
-        $breadcrumbItems = [
-            ['label' => 'Blog', 'url' => route('blog')],
-        ];
+        $breadcrumbItems = [['label' => 'Blog', 'url' => route('blog')]];
 
         if (!empty($this->search)) {
             $breadcrumbItems[] = ['label' => 'Search: ' . $this->search];
@@ -268,19 +263,22 @@ class BlogList extends Component
             [
                 '@context' => 'https://schema.org',
                 '@type' => 'BreadcrumbList',
-                'itemListElement' => collect($breadcrumbItems)->values()->map(function (array $item, int $index) {
-                    $entry = [
-                        '@type' => 'ListItem',
-                        'position' => $index + 1,
-                        'name' => $item['label'],
-                    ];
+                'itemListElement' => collect($breadcrumbItems)
+                    ->values()
+                    ->map(function (array $item, int $index) {
+                        $entry = [
+                            '@type' => 'ListItem',
+                            'position' => $index + 1,
+                            'name' => $item['label'],
+                        ];
 
-                    if (!empty($item['url'])) {
-                        $entry['item'] = $item['url'];
-                    }
+                        if (!empty($item['url'])) {
+                            $entry['item'] = $item['url'];
+                        }
 
-                    return $entry;
-                })->all(),
+                        return $entry;
+                    })
+                    ->all(),
             ],
         ];
     }

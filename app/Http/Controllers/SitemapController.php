@@ -10,16 +10,13 @@ use App\Settings\GeneralSettings;
 use DB;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class SitemapController extends Controller
 {
     public function index(): Response
     {
-        $sitemap = Cache::remember('sitemap_xml', 3600, function () {
-            return $this->generateSitemap();
-        });
+        $sitemap = rememberIfEnabled('sitemap_xml', now()->addMinutes(30), fn()=>$this->generateSitemap());
 
         return response($sitemap, 200, [
             'Content-Type' => 'application/xml',
@@ -29,10 +26,12 @@ class SitemapController extends Controller
 
     public function html(): Response
     {
-        $html = Cache::remember('sitemap_html', 3600, function () {
+        $html = rememberIfEnabled('sitemap_html', now()->addMinutes(30), function () {
             $urls = $this->gatherUrls();
 
-            return view('sitemap.index', ['urls' => $urls])->render();
+            return view('sitemap.index', [
+                'urls' => $urls
+            ])->render();
         });
 
         return response($html, 200, [
@@ -210,31 +209,31 @@ class SitemapController extends Controller
 
     public function robots(): Response
     {
-        $robots = Cache::remember('robots_txt', 86400, function () {
-            $generalSettings = app(GeneralSettings::class);
-            $allowIndexing = $generalSettings->search_engine_indexing ?? false;
+        $robots = rememberIfEnabled('robots_txt', now()->addMinutes(30), function () {
+                $generalSettings = app(GeneralSettings::class);
+                $allowIndexing = $generalSettings->search_engine_indexing ?? false;
 
-            $robots = '';
+                $robots = '';
 
-            if ($allowIndexing) {
-                $robots .= "User-agent: *\n";
-                $robots .= "Allow: /\n";
-                $robots .= "Disallow: /admin/\n";
-                $robots .= "Disallow: /livewire/\n";
-                $robots .= "Disallow: /storage/livewire-tmp/\n";
-                $robots .= "\n";
-                $robots .= "Sitemap: " . route('sitemap') . "\n";
-            } else {
-                $robots .= "User-agent: *\n";
-                $robots .= "Disallow: /\n";
-            }
+                if ($allowIndexing) {
+                    $robots .= "User-agent: *\n";
+                    $robots .= "Allow: /\n";
+                    $robots .= "Disallow: /admin/\n";
+                    $robots .= "Disallow: /livewire/\n";
+                    $robots .= "Disallow: /storage/livewire-tmp/\n";
+                    $robots .= "\n";
+                    $robots .= "Sitemap: " . route('sitemap') . "\n";
+                } else {
+                    $robots .= "User-agent: *\n";
+                    $robots .= "Disallow: /\n";
+                }
 
-            return $robots;
+                return $robots;
         });
 
         return response($robots, 200, [
             'Content-Type' => 'text/plain',
-            'Cache-Control' => 'public, max-age=86400', // Cache for 24 hours
+            'Cache-Control' => 'public, max-age=86400',
         ]);
     }
 }

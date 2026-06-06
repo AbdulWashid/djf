@@ -6,7 +6,6 @@ use App\Models\Blog\Post;
 use App\Models\Blog\Category;
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
 
 class BlogDetails extends Component
 {
@@ -79,8 +78,7 @@ class BlogDetails extends Component
 
     protected function loadSidebarData()
     {
-        // Get recent posts
-        $this->recentPosts = Cache::remember('recent_posts', now()->addMinutes(30), function () {
+        $this->recentPosts = rememberIfEnabled('recent_posts', now()->addMinutes(30), function () {
             return Post::published()
                 ->where('id', '!=', $this->post->id)
                 ->select(['id', 'title', 'slug', 'blog_category_id', 'published_at', 'content_overview'])
@@ -95,8 +93,7 @@ class BlogDetails extends Component
                 ->get();
         });
 
-        // Get categories with post counts
-        $this->categories = Cache::remember('active_categories', now()->addHours(3), function () {
+        $this->categories = rememberIfEnabled('active_categories', now()->addMinutes(30), function () {
             return Category::active()
                 ->withCount([
                     'posts' => function ($query) {
@@ -110,7 +107,7 @@ class BlogDetails extends Component
 
         // Get popular tags
         $locale = app()->getLocale();
-        $this->popularTags = Cache::remember('popular_tags_' . $locale, now()->addHours(6), function () use ($locale) {
+        $this->popularTags = rememberIfEnabled('popular_tags_' . $locale, now()->addHours(6), function ($locale) {
             // Use a more efficient query with proper indexing
             $rawTags = DB::table('taggables')
                 ->join('tags', 'taggables.tag_id', '=', 'tags.id')
