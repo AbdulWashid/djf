@@ -11,7 +11,7 @@ use DB;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
-
+use App\Models\StaticPage;
 class SitemapController extends Controller
 {
     public function index(): Response
@@ -27,10 +27,11 @@ class SitemapController extends Controller
     public function html(): Response
     {
         $html = rememberIfEnabled('sitemap_html', now()->addMinutes(30), function () {
-            $urls = $this->gatherUrls();
+            $data = $this->gatherUrlsforhtml();
 
             return view('sitemap.index', [
-                'urls' => $urls
+                'groups' => $data['groups'],
+                'totalUrls' => $data['totalUrls']
             ])->render();
         });
 
@@ -38,6 +39,143 @@ class SitemapController extends Controller
             'Content-Type' => 'text/html',
             'Cache-Control' => 'public, max-age=3600',
         ]);
+    }
+
+    private function gatherUrlsforhtml(): array
+    {
+        $groups = [
+            'Main Pages'      => collect(),
+            'Static Pages'    => collect(),
+            'Job Categories'  => collect(),
+            'Job Locations'   => collect(),
+            'Jobs'            => collect(),
+            'Blogs'           => collect(),
+        ];
+
+        /*
+        |--------------------------------------------------------------------------
+        | Main Pages
+        |--------------------------------------------------------------------------
+        */
+
+        $mainPages = [
+            route('home'),
+            route('jobs'),
+            route('blog'),
+            route('faqs'),
+            route('contact-us'),
+        ];
+
+        foreach ($mainPages as $url) {
+            $groups['Main Pages']->push([
+                'title' => ucfirst(last(explode('/', trim($url, '/')))) ?: 'Home',
+                'loc'   => $url,
+            ]);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Static Pages
+        |--------------------------------------------------------------------------
+        */
+
+        StaticPage::where('status', 1)
+            ->select('slug')
+            ->chunk(100, function ($pages) use (&$groups) {
+
+                foreach ($pages as $page) {
+                    $groups['Static Pages']->push([
+                        'title' => Str::headline($page->slug),
+                        'loc'   => route('page', $page->slug),
+                    ]);
+                }
+            });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Categories
+        |--------------------------------------------------------------------------
+        */
+
+        JobCategory::active()
+            ->select('slug', 'name')
+            ->chunk(100, function ($categories) use (&$groups) {
+
+                foreach ($categories as $category) {
+                    $groups['Job Categories']->push([
+                        'title' => $category->name,
+                        'loc'   => route('jobs.category', [
+                            'category' => $category->slug
+                        ]),
+                    ]);
+                }
+            });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Locations
+        |--------------------------------------------------------------------------
+        */
+
+        Opening::active()
+            ->select('location','id')
+            ->whereNotNull('location')
+            ->distinct()
+            ->chunk(100, function ($locations) use (&$groups) {
+
+                foreach ($locations as $location) {
+
+                    $groups['Job Locations']->push([
+                        'title' => $location->location,
+                        'loc'   => route('jobs.location', [
+                            'location' => Str::slug($location->location)
+                        ]),
+                    ]);
+                }
+            });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Jobs
+        |--------------------------------------------------------------------------
+        */
+
+        Opening::active()
+            ->select('title', 'slug')
+            ->chunk(100, function ($jobs) use (&$groups) {
+
+                foreach ($jobs as $job) {
+
+                    $groups['Jobs']->push([
+                        'title' => $job->title,
+                        'loc'   => route('jobs.show', $job->slug),
+                    ]);
+                }
+            });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Blogs
+        |--------------------------------------------------------------------------
+        */
+
+        Post::published()
+            ->select('title', 'slug')
+            ->chunk(100, function ($posts) use (&$groups) {
+
+                foreach ($posts as $post) {
+
+                    $groups['Blogs']->push([
+                        'title' => $post->title,
+                        'loc'   => route('blog.show', $post->slug),
+                    ]);
+                }
+            });
+
+        return [
+            'groups' => $groups,
+            'totalUrls' => collect($groups)->sum(fn($group) => $group->count())
+        ];
     }
 
     /**
@@ -67,7 +205,7 @@ class SitemapController extends Controller
             ]);
         }
 
-        $pages = \App\Models\StaticPage::select('slug', 'status', 'updated_at')->where('status', 1)->get();
+        $pages = StaticPage::select('slug', 'status', 'updated_at')->where('status', 1)->get();
         foreach ($pages as $page) {
             $urls->push([
                 'loc' => route('page', $page->slug),
