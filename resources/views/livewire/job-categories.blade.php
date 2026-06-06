@@ -44,8 +44,8 @@
             @unless ($showAll)
                 <div class="col-lg-3 col-md-6 col-sm-12 col-12">
                     <div class="card-grid hover-up wow animate__animated animate__fadeInUp" data-wow-delay=".3s">
-                        <div class="text-center mt-15">
-                            <h3 class="mb-0">All jobs category</h3>
+                        <div class="text-center mt-45">
+                            <h2 class="mb-0 h2">All jobs category</h2>
                         </div>
                         <p class="text-center mt-20 text-stroke-40">{{ number_format($categoryCount) }} Categories</p>
                         <div class="text-center mt-30">
