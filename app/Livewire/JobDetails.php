@@ -34,7 +34,7 @@ class JobDetails extends Component
         $this->job = Opening::where('slug', $slug)->where('status', 1)->with('employer','job_category')->first();
         //dd($this->job->meta_keywords);
         if (!$this->job) {
-            return redirect()->route('home')->with('error', 'Job not found. ');
+            abort(404);
         }
     }
 
