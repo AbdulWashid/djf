@@ -59,8 +59,6 @@ Disallow: /
 User-agent: TikTokSpider
 Disallow: /
 
-User-agent: *
-
 # Global Rules
 User-agent: *
 
