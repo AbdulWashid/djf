@@ -107,7 +107,7 @@ class BlogDetails extends Component
 
         // Get popular tags
         $locale = app()->getLocale();
-        $this->popularTags = rememberIfEnabled('popular_tags_' . $locale, now()->addHours(6), function ($locale) {
+        $this->popularTags = rememberIfEnabled('popular_tags_' . $locale, now()->addHours(6), function () use ($locale) {
             // Use a more efficient query with proper indexing
             $rawTags = DB::table('taggables')
                 ->join('tags', 'taggables.tag_id', '=', 'tags.id')

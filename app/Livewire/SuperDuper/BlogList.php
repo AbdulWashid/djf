@@ -70,7 +70,7 @@ class BlogList extends Component
 
         // Get popular tags
         $locale = app()->getLocale();
-        $this->recentPosts = rememberIfEnabled('popular_tags_' . $locale, now()->addHours(6), function () {
+        $this->popularTags = rememberIfEnabled('popular_tags_' . $locale, now()->addHours(6), function () use ($locale) {
             $rawTags = DB::table('taggables')
                 ->join('tags', 'taggables.tag_id', '=', 'tags.id')
                 ->join('blog_posts', function ($join) {
