@@ -187,37 +187,6 @@
                                 @endif
                             </ul>
                         </div>
-
-                        <div class="flex flex-col gap-y-6">
-                            <div class="text-xl font-semibold capitalize">
-                                Support
-                            </div>
-                            @php
-                                $footerSupport = Menu::location('footer-4');
-                            @endphp
-                            <ul class="flex flex-col gap-y-[10px] capitalize">
-                                @if ($footerSupport)
-                                    @foreach ($footerSupport->menuItems as $item)
-                                        <li>
-                                            <a href="{{ $item->url }}"
-                                                @if ($item->target) target="{{ $item->target }}" @endif
-                                                class="transition-all duration-300 ease-linear hover:opacity-100 underline-offset-4 opacity-80 hover:underline"
-                                                aria-label="{{ $item->title }}">
-                                                {{ $item->title }}
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                @else
-                                    <li>
-                                        <a href="{{ route('contact-us') }}"
-                                            class="transition-all duration-300 ease-linear hover:opacity-100 underline-offset-4 opacity-80 hover:underline"
-                                            aria-label="Contact Us">
-                                            Contact Us
-                                        </a>
-                                    </li>
-                                @endif
-                            </ul>
-                        </div>
                     </div>
                 </div>
             </div>

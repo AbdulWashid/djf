@@ -96,13 +96,13 @@ class MenuSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            [
-                'id' => 5,
-                'menu_id' => 5,
-                'location' => 'footer-4',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+            // [
+            //     'id' => 5,
+            //     'menu_id' => 5,
+            //     'location' => 'footer-4',
+            //     'created_at' => now(),
+            //     'updated_at' => now(),
+            // ],
         ];
 
         DB::table($menuLocationsTable)->insert($menuLocations);

@@ -425,7 +425,7 @@
         <footer class="footer mt-50 pt-50 bg-[#EEE]">
             <div class="container">
                 <div class="row">
-                    <div class="col-xl-2 col-sm-12">
+                    <div class="col-xl-3 col-sm-12">
                         <a href="{{ route('home') }}">
                             @php
                                 $brandLogo = $generalSettings->brand_logo ?? null;
@@ -441,11 +441,33 @@
                             @endif
                         </a>
                         <div class="mt-20 mb-20 w-3/4">
-                            The #1 portal for UAE careers. Explore latest vacancies, salary guides, and recruitment
-                            news. The easiest way to get hired in Dubai. Join!
+                            The #1 portal for UAE careers.
                         </div>
+                        <ul class="mt-20">
+                            <li><span class="fw-bold">Address:</span> {{ $siteSettings->company_address ?? '' }}</li>
+                            <li class="text-nowrap">
+                                <span class="fw-bold">Email:</span>
+                                @if ($siteSettings->company_email)
+                                    @php
+                                        [$emailUser, $emailDomain] = explode('@', $siteSettings->company_email, 2);
+                                    @endphp
+                                    <a href="#" data-email-user="{{ $emailUser }}"
+                                        data-email-domain="{{ $emailDomain }}"></a>
+                                @endif
+                            </li>
+                            <li class="text-nowrap">
+                                <span class="fw-bold">Contact:</span>
+                                @if ($siteSettings->company_phone)
+                                    <a href="tel:{{ $siteSettings->company_phone }}">
+                                        {{ $siteSettings->company_phone }}
+                                    </a>
+                                @else
+                                    {{ '' }}
+                                @endif
+                            </li>
+                        </ul>
                     </div>
-                    <div class="col-xl-2 col-sm-4">
+                    <div class="col-xl-3 col-sm-4">
                         <p class="h6">Company</p>
 
                         @php
@@ -470,7 +492,7 @@
                             @endif
                         </ul>
                     </div>
-                    <div class="col-xl-2 col-sm-4">
+                    <div class="col-xl-3 col-sm-4">
                         <p class="h6">Location</p>
                         @php
                             $footerLocations = Menu::location('footer-2');
@@ -488,7 +510,7 @@
                             @endif
                         </ul>
                     </div>
-                    <div class="col-xl-2 col-sm-4">
+                    <div class="col-xl-3 col-sm-4">
                         <p class="h6">Category</p>
                         @php
                             $footerCategories = Menu::location('footer-3');
@@ -504,50 +526,6 @@
                                     </li>
                                 @endforeach
                             @endif
-                        </ul>
-                    </div>
-                    <div class="col-xl-2 col-sm-4">
-                        <p class="h6">Support</p>
-                        @php
-                            $footerSupport = Menu::location('footer-4');
-                        @endphp
-                        <ul class="menu-footer mt-20">
-                            @if ($footerSupport)
-                                @foreach ($footerSupport->menuItems as $item)
-                                    <li>
-                                        <a href="{{ $item->url }}"
-                                            @if ($item->target) target="{{ $item->target }}" @endif>
-                                            {{ $item->title }}
-                                        </a>
-                                    </li>
-                                @endforeach
-                            @endif
-                        </ul>
-                    </div>
-                    <div class="col-xl-2 col-sm-8">
-                        <p class="h6">Contact Info</p>
-                        <ul class="menu-footer mt-20">
-                            <li><span class="fw-bold">Address:</span> {{ $siteSettings->company_address ?? '' }}</li>
-                            <li class="text-nowrap">
-                                <span class="fw-bold">Email:</span>
-                                @if ($siteSettings->company_email)
-                                    @php
-                                        [$emailUser, $emailDomain] = explode('@', $siteSettings->company_email, 2);
-                                    @endphp
-                                    <a href="#" data-email-user="{{ $emailUser }}"
-                                        data-email-domain="{{ $emailDomain }}"></a>
-                                @endif
-                            </li>
-                            <li class="text-nowrap">
-                                <span class="fw-bold">Contact:</span>
-                                @if ($siteSettings->company_phone)
-                                    <a href="tel:{{ $siteSettings->company_phone }}">
-                                        {{ $siteSettings->company_phone }}
-                                    </a>
-                                @else
-                                    {{ '' }}
-                                @endif
-                            </li>
                         </ul>
                     </div>
                 </div>
