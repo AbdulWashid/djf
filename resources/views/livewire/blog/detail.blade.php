@@ -54,9 +54,9 @@
     </div>
     <div class="archive-header pt-50 pb-50 text-center">
         <div class="container">
-            <h3 class="mb-30 text-center w-75 mx-auto">
+            <h1 class="h1 mb-30 text-center w-75 mx-auto">
                 {{ $pg_title }}
-            </h3>
+            </h1>
             <div class="post-meta text-muted d-flex align-items-center mx-auto justify-content-center">
                 <div class="author d-flex align-items-center mr-30">
                     @if ($post->author && $post->author->profile_photo_path)

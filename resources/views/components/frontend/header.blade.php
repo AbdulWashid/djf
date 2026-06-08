@@ -139,7 +139,7 @@
                 </div>
 
                 <div class="mobile-social-icon mb-50">
-                    <h6 class="mb-25">Follow Us</h6>
+                    <p class="mb-25">Follow Us</p>
                     @php
                         $socialLinks = [
                             'facebook' => $siteSocialSettings->facebook_url ?? null,

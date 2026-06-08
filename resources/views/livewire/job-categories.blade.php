@@ -2,7 +2,11 @@
     <div class="container">
         <div class="row align-items-end">
             <div class="col-lg-7">
-                <h1 class="section-title mb-20 wow animate__animated animate__fadeInUp">Browse by category</h1>
+                @if ($showAll)
+                    <h1 class="h1 section-title mb-20 wow animate__animated animate__fadeInUp">Browse by category</h1>
+                @else
+                    <h2 class="h2 section-title mb-20 wow animate__animated animate__fadeInUp">Browse by category</h2>
+                @endif
                 <p class="text-md-lh28 color-black-5 wow animate__animated animate__fadeInUp">Find the type of
                     work
                     you need, clearly defined and ready to start. Work begins as soon as you purchase and
@@ -11,7 +15,8 @@
             </div>
             @unless ($showAll)
                 <div class="col-lg-5 text-lg-end text-start wow animate__animated animate__fadeInUp" data-wow-delay=".2s">
-                    <a href="{{ route('job-categories') }}" class="mt-sm-15 mt-lg-30 btn btn-border icon-chevron-right">Browse
+                    <a href="{{ route('job-categories') }}"
+                        class="mt-sm-15 mt-lg-30 btn btn-border icon-chevron-right">Browse
                         all</a>
                 </div>
             @endunless
@@ -61,7 +66,6 @@
         @if ($showAll)
             <div class="mt-50">
                 {{ $categories->links() }}
-                {{-- {{ $categories->links('livewire.custom-pagination') }} --}}
             </div>
         @endif
     </div>
