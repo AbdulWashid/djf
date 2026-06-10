@@ -106,10 +106,10 @@
                                     <img src="{{ $post->getFeaturedImageUrl('large') }}" alt="{{ $post->title }}"
                                         width="856" height="540"
                                         class="object-cover w-full h-auto transition-all duration-300 scale-100 group-hover:scale-105" />
-                                    {{--                                @else --}}
-                                    {{--                                    <img src="https://placehold.co/856x540?text={{ urlencode($post->title) }}" --}}
-                                    {{--                                         alt="{{ $post->title }}"  width="856" height="540" --}}
-                                    {{--                                         class="object-cover w-full h-auto transition-all duration-300 scale-100 group-hover:scale-105"/> --}}
+                                    {{-- @else 
+                                    <img src="https://placehold.co/856x540?text={{ urlencode($post->title) }}" 
+                                            alt="{{ $post->title }}"  width="856" height="540" 
+                                            class="object-cover w-full h-auto transition-all duration-300 scale-100 group-hover:scale-105"/>  --}}
                                 @endif
                             </a>
                         </figure>
@@ -124,24 +124,27 @@
 
                         </div>
 
-                        {{--                        <div class="author-bio p-30 mt-50 border-radius-15 bg-white"> --}}
-                        {{--                            <div class="author-image mb-15"> --}}
-                        {{--                                <a href="author.html"><img src="assets/imgs/avatar/ava_14.png" alt="" --}}
-                        {{--                                                           class="avatar"></a> --}}
-                        {{--                                <div class="author-infor"> --}}
-                        {{--                                    <h5 class="mb-5">Steven Job</h5> --}}
-                        {{--                                    <p class="mb-0 text-muted font-xs"> --}}
-                        {{--                                        <span class="mr-10">306 posts</span> --}}
-                        {{--                                        <span class="has-dot">Since 2012</span> --}}
-                        {{--                                    </p> --}}
-                        {{--                                </div> --}}
-                        {{--                            </div> --}}
-                        {{--                            <div class="author-des"> --}}
-                        {{--                                <p>Hi, I'm a recruiter with over 25 years of experience. I have worked in many --}}
-                        {{--                                    multinational companies and corporations. With my experiences, I hope my articles --}}
-                        {{--                                    will bring you knowledge and inspiration.</p> --}}
-                        {{--                            </div> --}}
-                        {{--                        </div> --}}
+                        {{-- <div class="author-bio p-30 mt-50 border-radius-15 bg-white"> 
+                            <div class="author-image mb-15"> 
+                                <a href="author.html">
+                                    <img src="assets/imgs/avatar/ava_14.png" alt="" class="avatar">
+                                </a> 
+                                <div class="author-infor"> 
+                                    <h5 class="mb-5">Steven Job</h5> 
+                                    <p class="mb-0 text-muted font-xs"> 
+                                        <span class="mr-10">306 posts</span> 
+                                        <span class="has-dot">Since 2012</span> 
+                                    </p> 
+                                </div> 
+                            </div> 
+                            <div class="author-des"> 
+                                <p>
+                                    Hi, I'm a recruiter with over 25 years of experience. I have worked in many 
+                                    multinational companies and corporations. With my experiences, I hope my articles 
+                                    will bring you knowledge and inspiration.
+                                </p> 
+                            </div> 
+                        </div>  --}}
 
                         @if ($post->faqs)
 
@@ -244,8 +247,6 @@
                     <div class="sidebar-shadow sidebar-news-small">
                         <h5 class="sidebar-title">Latest news</h5>
                         <div class="post-list-small">
-
-
                             @foreach ($recentPosts as $recentPost)
                                 <div class="post-list-small-item d-flex align-items-center">
                                     <figure class="thumb mr-15">
@@ -261,11 +262,11 @@
                                         <h5><a href="{{ $recentPost->getUrl() }}"
                                                 wire:click="trackView('{{ $recentPost->id }}')">{{ $recentPost->title }}</a>
                                         </h5>
-                                        <div class="post-meta text-muted d-flex align-items-center mb-15">
-                                            <div class="author d-flex align-items-center mr-20">
-
+                                        <div class="post-meta text d-flex align-items-end flex-column">
+                                            <div class="author">
                                                 <span>{{ $recentPost->author->name ?? 'Anonymous' }}</span>
                                             </div>
+
                                             <div class="date">
                                                 <span>{{ $recentPost->published_at->format('M d, Y') }}</span>
                                             </div>

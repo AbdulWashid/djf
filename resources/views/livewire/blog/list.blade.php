@@ -1,6 +1,24 @@
 <!-- Content -->
 <div>
+    <style>
+        .post-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
 
+        @media (max-width: 768px) {
+            .post-image {
+                height: 220px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .post-image {
+                height: 180px;
+            }
+        }
+    </style>
     @php
         $breadcrumbTitle = 'Blog';
         $breadcrumbItems = [];
@@ -150,51 +168,58 @@
                             class="absolute inset-0 z-10 bg-white rounded-lg bg-opacity-40">
                         </div> --}}
                         @forelse($posts as $post)
-                            <div class="card-blog-1 mb-30 post-list hover-up wow
-                        animate__animated animate__fadeIn"
-                                data-wow-delay=".0s" wire:key="post-{{ $post->id }}"
-                                @if ($post->is_featured) style="border-color: #FFC107;" @endif>
+                            <div class="card rounded-3 mb-4 shadow-sm h-100" wire:key="post-{{ $post->id }}"
+                                @if ($post->is_featured) style="border:2px solid #FFC107;" @endif>
 
-                                <figure class="post-thumb overflow-hidden rounded-xl">
-                                    <a href="{{ $post->getUrl() }}" wire:click="trackView('{{ $post->id }}')">
-                                        @if ($post->hasFeaturedImage())
-                                            <img src="{{ $post->getFeaturedImageUrl('square_thumb') }}"
-                                                alt="{{ $post->title }}" width="450" height="450"
-                                                class="object-cover w-full h-[320px] transition-all duration-300 scale-100 group-hover:scale-105" />
-                                        @else
-                                            <img src="https://placehold.co/450x450?text={{ urlencode($post->title) }}"
-                                                alt="{{ $post->title }}" width="450" height="450"
-                                                class="object-cover w-full h-[320px] transition-all duration-300 scale-100 group-hover:scale-105" />
-                                        @endif
-                                    </a>
-                                </figure>
-                                <div class="card-block-info">
+                                <a href="{{ $post->getUrl() }}" wire:click="trackView('{{ $post->id }}')">
+                                    @if ($post->hasFeaturedImage())
+                                        <img src="{{ $post->getFeaturedImageUrl('square_thumb') }}"
+                                            alt="{{ $post->title }}"
+                                            class="card-img-top post-image img-fluid rounded-3">
+                                    @else
+                                        <img src="https://placehold.co/450x450?text={{ urlencode($post->title) }}"
+                                            alt="{{ $post->title }}"
+                                            class="card-img-top post-image img-fluid rounded-3">
+                                    @endif
+                                </a>
 
-                                    <h3 class="post-title mb-15"><a href="{{ $post->getUrl() }}"
-                                            wire:click="trackView('{{ $post->id }}')">{{ $post->title }}</a>
-                                    </h3>
+                                <div class="card-body">
 
-                                    <div class="post-meta text d-flex align-items-center mb-15">
-                                        <div class="author d-flex align-items-center mr-30">
+                                    <h4 class="h4 card-title mb-3">
+                                        <a href="{{ $post->getUrl() }}" wire:click="trackView('{{ $post->id }}')"
+                                            class="text-decoration-none">
+                                            {{ $post->title }}
+                                        </a>
+                                    </h4>
+
+                                    <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
+
+                                        <div class="d-flex align-items-center mb-2 mb-md-0">
                                             @if ($post->author && $post->author->profile_photo_path)
                                                 <img src="{{ Storage::url($post->author->profile_photo_path) }}"
-                                                    alt="{{ $post->author->name }}" width="45" height="45"
-                                                    class="rounded-[50%]" />
+                                                    alt="{{ $post->author->name }}" class="rounded-circle me-2"
+                                                    width="45" height="45">
                                             @else
                                                 <img src="https://placehold.co/45x45?text={{ substr($post->author->name ?? 'A', 0, 1) }}"
-                                                    alt="{{ $post->author->name ?? 'Author' }}" width="45"
-                                                    height="45" class="rounded-[50%]" />
+                                                    alt="{{ $post->author->name ?? 'Author' }}"
+                                                    class="rounded-circle me-2" width="45" height="45">
                                             @endif
+
                                             <span>{{ $post->author->name ?? 'Anonymous' }}</span>
                                         </div>
-                                        <div class="date">
-                                            <span><i
-                                                    class="fi-rr-edit mr-5 text-grey-6"></i>{{ $post->published_at->format('M d, Y') }}</span>
+
+                                        <div>
+                                            <small class="text-muted">
+                                                <i class="fi-rr-edit me-1"></i>
+                                                {{ $post->published_at->format('M d, Y') }}
+                                            </small>
                                         </div>
                                     </div>
-                                    <p class="post-excerpt text d-none d-lg-block line-clamp-2">
+
+                                    <p class="card-text d-none d-lg-block">
                                         {{ $post->content_overview }}
                                     </p>
+
                                     <div class="card-2-bottom mt-30">
                                         <div class="d-flex align-items-center justify-content-between">
                                             <div class="keep-reading">
@@ -209,6 +234,18 @@
                                             </div>
                                         </div>
                                     </div>
+                                    {{-- @if ($post->category)
+                                        <a href="#"
+                                            wire:click.prevent="filterByCategory('{{ $post->category->id }}')"
+                                            class="btn btn-sm btn-outline-primary">
+                                            {{ $post->category->name }}
+                                        </a>
+                                    @else
+                                        <span class="btn btn-sm btn-outline-secondary">
+                                            Uncategorized
+                                        </span>
+                                    @endif --}}
+
                                 </div>
                             </div>
                         @empty

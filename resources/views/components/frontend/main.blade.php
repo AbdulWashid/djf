@@ -425,7 +425,7 @@
         <footer class="footer mt-50 pt-50 bg-[#EEE]">
             <div class="container">
                 <div class="row">
-                    <div class="col-xl-3 col-sm-12">
+                    <div class="col-xl-3 col-sm-12 mt-4">
                         <a href="{{ route('home') }}">
                             @php
                                 $brandLogo = $generalSettings->brand_logo ?? null;
@@ -467,14 +467,14 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="col-xl-3 col-sm-4">
+                    <div class="col-xl-3 col-sm-4 mt-4">
                         <p class="h6">Company</p>
 
                         @php
                             $footerMenu = Menu::location('footer');
                         @endphp
 
-                        <ul class="menu-footer mt-20">
+                        <ul class="menu-footer mt-1">
                             @if ($footerMenu)
                                 @foreach ($footerMenu->menuItems as $item)
                                     <li>
@@ -492,12 +492,12 @@
                             @endif
                         </ul>
                     </div>
-                    <div class="col-xl-3 col-sm-4">
+                    <div class="col-xl-3 col-sm-4 mt-4">
                         <p class="h6">Location</p>
                         @php
                             $footerLocations = Menu::location('footer-2');
                         @endphp
-                        <ul class="menu-footer mt-20">
+                        <ul class="menu-footer mt-1">
                             @if ($footerLocations)
                                 @foreach ($footerLocations->menuItems as $item)
                                     <li>
@@ -510,12 +510,12 @@
                             @endif
                         </ul>
                     </div>
-                    <div class="col-xl-3 col-sm-4">
+                    <div class="col-xl-3 col-sm-4 mt-4">
                         <p class="h6">Category</p>
                         @php
                             $footerCategories = Menu::location('footer-3');
                         @endphp
-                        <ul class="menu-footer mt-20">
+                        <ul class="menu-footer mt-1">
                             @if ($footerCategories)
                                 @foreach ($footerCategories->menuItems as $item)
                                     <li>

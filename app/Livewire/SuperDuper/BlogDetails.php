@@ -81,12 +81,13 @@ class BlogDetails extends Component
         $this->recentPosts = rememberIfEnabled('recent_posts', now()->addMinutes(30), function () {
             return Post::published()
                 ->where('id', '!=', $this->post->id)
-                ->select(['id', 'title', 'slug', 'blog_category_id', 'published_at', 'content_overview'])
+                ->select(['id', 'title', 'slug','blog_author_id', 'blog_category_id', 'published_at', 'content_overview'])
                 ->with([
                     'category:id,name,slug',
                     'media' => function ($query) {
                         $query->where('collection_name', 'featured');
                     },
+                    'author',
                 ])
                 ->orderBy('published_at', 'desc')
                 ->limit(3)
