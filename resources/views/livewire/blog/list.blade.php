@@ -173,8 +173,7 @@
 
                                 <a href="{{ $post->getUrl() }}" wire:click="trackView('{{ $post->id }}')">
                                     @if ($post->hasFeaturedImage())
-                                        <img src="{{ $post->getFeaturedImageUrl('square_thumb') }}"
-                                            alt="{{ $post->title }}"
+                                        <img src="{{ $post->getFeaturedImageUrl('large') }}" alt="{{ $post->title }}"
                                             class="card-img-top post-image img-fluid rounded-3">
                                     @else
                                         <img src="https://placehold.co/450x450?text={{ urlencode($post->title) }}"
