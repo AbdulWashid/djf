@@ -155,22 +155,45 @@ class PostResource extends Resource implements HasShieldPermissions
                                     })
                                     ->extraInputAttributes(['style' => 'min-height: 500px;']),
                             ]),
-                        Forms\Components\Section::make('Media')
-                            ->description('Visual elements for your post')
-                            ->icon('heroicon-o-photo')
-                            ->schema([
-                                SpatieMediaLibraryFileUpload::make('featured')
-                                    ->label('Featured Image')
-                                    ->collection('featured')
-                                    ->image()
-                                    ->imageResizeMode('contain')
-                                    ->imageCropAspectRatio('16:9')
-                                    ->imageResizeTargetWidth('1200')
-                                    ->imageResizeTargetHeight('675')
-                                    ->helperText('This image will be displayed prominently in post listings and social shares (16:9 ratio recommended)')
-                                    ->downloadable()
-                                    ->responsiveImages(),
-                            ]),
+                            Forms\Components\Section::make('Media')
+                                    ->description('Upload images for different locations')
+                                    ->icon('heroicon-o-photo')
+                                    ->schema([
+
+                                        SpatieMediaLibraryFileUpload::make('small_image')
+                                            ->label('Small Image')
+                                            ->collection('small_image')
+                                            ->image()
+                                            ->imageEditor()
+                                            ->helperText(
+                                                'Used on Small blog listing cards.
+                                                Recommended: 600 × 600 px (1:1)'
+                                            )
+                                            ->downloadable(),
+
+                                        SpatieMediaLibraryFileUpload::make('medium_image')
+                                            ->label('Medium Image')
+                                            ->collection('medium_image')
+                                            ->image()
+                                            ->imageEditor()
+                                            ->helperText(
+                                                'Used on Blog Listed page.
+                                                Recommended: 300 × 450 px (2:3)'
+                                            )
+                                            ->downloadable(),
+
+                                        SpatieMediaLibraryFileUpload::make('large_image')
+                                            ->label('Large Image')
+                                            ->collection('large_image')
+                                            ->image()
+                                            ->imageEditor()
+                                            ->helperText(
+                                                'Used on blog detail page, Open Graph and social sharing.
+                                                Recommended: 1600 × 900 px (16:9)'
+                                            )
+                                            ->downloadable(),
+                                    ])
+                                    ->columns(1),                
 
                         Section::make('Seo Details')
                             ->schema([

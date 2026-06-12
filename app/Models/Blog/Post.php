@@ -131,7 +131,7 @@ class Post extends Model implements HasMedia
         // Auto-generate content overview if not set
         if (empty($this->attributes['content_overview'])) {
             $plainText = strip_tags($this->attributes['content_html']);
-            $this->attributes['content_overview'] = substr($plainText, 0, 157) . '...';
+            $this->attributes['content_overview'] = substr($plainText, 0, 100) . '...';
         }
 
         // Calculate reading time (avg reading speed: 200 words per minute)
@@ -174,38 +174,33 @@ class Post extends Model implements HasMedia
     /**
      * Register media conversions.
      */
-    public function registerMediaConversions(Media|null $media = null): void
+    public function getSmallImageUrl(): ?string
     {
-        $this->addMediaConversion('preview')
-            ->format('webp')
-            ->quality(90)
-            ->fit(Fit::Contain, 300, 300)
-            ->nonQueued();
-
-        // Add responsive image sizes - always convert to WebP
-        $this->addMediaConversion('thumbnail')
-            ->format('webp')
-            ->quality(85)
-            ->fit(Fit::Contain, 150, 150)
-            ->nonQueued();
-
-        $this->addMediaConversion('square_thumb')
-            ->fit(Fit::Crop, 500, 500) // Example: 200x200 pixel square
-            ->nonQueued(); // or ->queue
-
-        $this->addMediaConversion('medium')
-            ->format('webp')
-            ->quality(85)
-            ->fit(Fit::Contain, 600, 600)
-            ->nonQueued();
-
-        $this->addMediaConversion('large')
-            ->format('webp')
-            ->quality(85)
-            ->fit(Fit::Contain, 1200, 800)
-            ->nonQueued();
+        return $this->getFirstMediaUrl('small_image');
     }
 
+    public function getMediumImageUrl(): ?string
+    {
+        return $this->getFirstMediaUrl('medium_image');
+    }
+
+    public function getLargeImageUrl(): ?string
+    {
+        return $this->getFirstMediaUrl('large_image');
+    }
+
+    public function hasSmallImage(): bool
+    {
+        return $this->hasMedia('small_image');
+    }
+    public function hasMediumImage(): bool
+    {
+        return $this->hasMedia('medium_image');
+    }
+    public function hasLargeImage(): bool
+    {
+        return $this->hasMedia('large_image');
+    }
     /**
      * Get the featured image URL
      * @param string $conversion
@@ -236,7 +231,13 @@ class Post extends Model implements HasMedia
      */
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('featured')
+        $this->addMediaCollection('small_image')
+            ->singleFile();
+
+        $this->addMediaCollection('medium_image')
+            ->singleFile();
+
+        $this->addMediaCollection('large_image')
             ->singleFile();
 
         $this->addMediaCollection('gallery');

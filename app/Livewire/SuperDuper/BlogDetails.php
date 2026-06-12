@@ -179,7 +179,7 @@ class BlogDetails extends Component
             '@type' => 'BlogPosting',
             'headline' => $this->post->title,
             'description' => $this->post->meta_description ?: $this->post->content_overview,
-            'image' => $this->post->hasFeaturedImage() ? $this->post->getFeaturedImageUrl('large') : null,
+            'image' => $this->post->hasLargeImage() ? $this->post->getLargeImageUrl() : null,
             'datePublished' => $this->post->published_at->toIso8601String(),
             'dateModified' => $this->post->updated_at->toIso8601String(),
             'author' => [
@@ -242,7 +242,7 @@ class BlogDetails extends Component
             'ogTags' => $this->post->og_tags,
             'twitterTags' => $this->post->twitter_tags,
             'canonicalUrl' => $this->post->getCanonicalUrl(),
-            'ogImage' => $this->post->hasFeaturedImage() ? $this->post->getFeaturedImageUrl('large') : null,
+            'ogImage' => $this->post->hasLargeImage() ? $this->post->getLargeImageUrl() : null,
             'schemaData' => [$this->generateSchemaData()],
         ]);
     }

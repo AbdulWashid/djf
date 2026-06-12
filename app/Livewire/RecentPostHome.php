@@ -16,9 +16,7 @@ class RecentPostHome extends Component
                 ->select(['id', 'title', 'slug', 'blog_category_id', 'published_at', 'content_overview', 'blog_author_id'])
                 ->with([
                     'category:id,name,slug',
-                    'media' => function ($query) {
-                        $query->where('collection_name', 'featured');
-                    },
+                    'media',
                     'author:id,username,firstname',
                 ])
                 ->orderBy('published_at', 'desc')

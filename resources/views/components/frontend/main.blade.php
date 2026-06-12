@@ -467,7 +467,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="col-xl-3 col-sm-4 mt-4">
+                    <div class="col-xl-2 col-sm-3 col-6 mt-4">
                         <p class="h6">Company</p>
 
                         @php
@@ -492,7 +492,7 @@
                             @endif
                         </ul>
                     </div>
-                    <div class="col-xl-3 col-sm-4 mt-4">
+                    <div class="col-xl-2 col-sm-3 col-6 mt-4">
                         <p class="h6">Location</p>
                         @php
                             $footerLocations = Menu::location('footer-2');
@@ -510,7 +510,7 @@
                             @endif
                         </ul>
                     </div>
-                    <div class="col-xl-3 col-sm-4 mt-4">
+                    <div class="col-xl-2 col-sm-3 col-6 mt-4">
                         <p class="h6">Category</p>
                         @php
                             $footerCategories = Menu::location('footer-3');
@@ -518,6 +518,24 @@
                         <ul class="menu-footer mt-1">
                             @if ($footerCategories)
                                 @foreach ($footerCategories->menuItems as $item)
+                                    <li>
+                                        <a href="{{ $item->url }}"
+                                            @if ($item->target) target="{{ $item->target }}" @endif>
+                                            {{ $item->title }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            @endif
+                        </ul>
+                    </div>
+                    <div class="col-xl-2 col-sm-3 col-6 mt-4">
+                        <p class="h6">Trending Jobs</p>
+                        @php
+                            $footerTrendingJobs = Menu::location('footer-4');
+                        @endphp
+                        <ul class="menu-footer mt-1">
+                            @if ($footerTrendingJobs)
+                                @foreach ($footerTrendingJobs->menuItems as $item)
                                     <li>
                                         <a href="{{ $item->url }}"
                                             @if ($item->target) target="{{ $item->target }}" @endif>

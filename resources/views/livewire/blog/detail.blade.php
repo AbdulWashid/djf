@@ -24,12 +24,10 @@
         <div class="h-12"></div> {{-- Spacer for fixed banner --}}
     @endif
 
-
     <div class="breacrumb-cover">
         <div class="container">
             <ul class="breadcrumbs">
                 <li><a href="{{ route('home') }}">Home</a></li>
-
                 @php
                     $cat_items = [
                         ['label' => 'Blog', 'url' => route('blog')],
@@ -88,7 +86,6 @@
                         </span>
                     </div>
                 @endif
-
             </div>
         </div>
     </div>
@@ -97,31 +94,21 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="single-body">
-
-
                         <figure class="mb-30">
-
                             <a href="{{ $post->getUrl() }}" wire:click="trackView('{{ $post->id }}')">
-                                @if ($post->hasFeaturedImage())
-                                    <img src="{{ $post->getFeaturedImageUrl('large') }}" alt="{{ $post->title }}"
-                                        width="856" height="540"
-                                        class="object-cover w-full h-auto transition-all duration-300 scale-100 group-hover:scale-105" />
-                                    {{-- @else 
-                                    <img src="https://placehold.co/856x540?text={{ urlencode($post->title) }}" 
-                                            alt="{{ $post->title }}"  width="856" height="540" 
-                                            class="object-cover w-full h-auto transition-all duration-300 scale-100 group-hover:scale-105"/>  --}}
+                                @if ($post->hasLargeImage())
+                                    <img src="{{ $post->getLargeImageUrl() }}" alt="{{ $post->title }}" />
+                                @else
+                                    <img src="https://placehold.co/1600x900?text={{ $post->title }}"
+                                        alt="{{ $post->title }}" />
                                 @endif
                             </a>
                         </figure>
                         <div class="excerpt mb-30">
                             <p> {{ $post->content_overview }}</p>
                         </div>
-
                         <div class="single-content">
-
                             {!! $post->content_raw !!}
-
-
                         </div>
 
                         {{-- <div class="author-bio p-30 mt-50 border-radius-15 bg-white"> 
@@ -151,7 +138,6 @@
                             <div class="row mt-50">
                                 <div class="col-lg-12">
                                     <h2 class="heading-border"><span>{{ $post->faq_title }}</span></h2>
-
                                     <div class="accordion accordion-flush">
                                         @php
                                             $fqlist = [];
@@ -160,7 +146,6 @@
                                             @php
                                                 $fqlist[$faq['question']] = strip_tags($faq['answer']);
                                             @endphp
-
                                             <div class="accordion-item">
                                                 <p class="accordion-header" id="flush-headingOne2">
                                                     <button class="accordion-button collapsed" type="button"
@@ -185,8 +170,6 @@
                                         @empty
                                             <h5 class="text-center">No FAQs found</h5>
                                         @endforelse
-
-
                                     </div>
                                 </div>
                             </div>
@@ -199,7 +182,6 @@
                             @endif
                         @endif
 
-
                         @if (count($relatedPosts) > 0)
                             <div class="related-posts mt-50">
                                 <h4 class="mb-30">Related Posts</h4>
@@ -210,18 +192,15 @@
                                                 <div class="swiper-slide">
                                                     <div class="card-grid-3 hover-up p-15">
                                                         <a href="{{ $related->getUrl() }}">
-                                                            @if ($related->hasFeaturedImage())
-                                                                <figure><img
-                                                                        class="flex items-center justify-center w-full h-48 bg-gray-200"
-                                                                        alt="{{ $related->title }}"
-                                                                        src="{{ $related->getFeaturedImageUrl('square_thumb') }}" />
-                                                                </figure>
-                                                            @else
-                                                                <div
-                                                                    class="flex items-center justify-center w-full h-48 bg-gray-200">
-                                                                    <span class="text-gray-400">No Image</span>
-                                                                </div>
-                                                            @endif
+                                                            <figure class="thumb mr-15">
+                                                                @if ($related->hasSmallImage())
+                                                                    <img src="{{ $related->getSmallImageUrl() }}"
+                                                                        alt="{{ $related->title }}" />
+                                                                @else
+                                                                    <img src="https://placehold.co/600x600?text={{ substr($related->title, 0, 10) }}"
+                                                                        alt="{{ $related->title }}" />
+                                                                @endif
+                                                            </figure>
                                                         </a>
                                                         <h6 class="heading-md mt-15 mb-0"><a
                                                                 href="{{ $related->getUrl() }}">{{ $related->title }}</a>
@@ -229,8 +208,6 @@
                                                     </div>
                                                 </div>
                                             @endforeach
-
-
                                         </div>
                                         <div class="swiper-pagination swiper-pagination3"></div>
                                     </div>
@@ -238,10 +215,7 @@
                             </div>
                         @endif
                     </div>
-
-
                 </div>
-
 
                 <div class="col-lg-4 col-md-12 col-sm-12 col-12 pl-40 pl-lg-15 mt-lg-30">
                     <div class="sidebar-shadow sidebar-news-small">
@@ -250,11 +224,11 @@
                             @foreach ($recentPosts as $recentPost)
                                 <div class="post-list-small-item d-flex align-items-center">
                                     <figure class="thumb mr-15">
-                                        @if ($recentPost->hasFeaturedImage())
-                                            <img src="{{ $recentPost->getFeaturedImageUrl('square_thumb') }}"
+                                        @if ($recentPost->hasSmallImage())
+                                            <img src="{{ $recentPost->getSmallImageUrl() }}"
                                                 alt="{{ $recentPost->title }}" />
                                         @else
-                                            <img src="https://placehold.co/150x150?text={{ substr($recentPost->title, 0, 10) }}"
+                                            <img src="https://placehold.co/600x600?text={{ substr($recentPost->title, 0, 10) }}"
                                                 alt="{{ $recentPost->title }}" />
                                         @endif
                                     </figure>
@@ -274,15 +248,11 @@
                                     </div>
                                 </div>
                             @endforeach
-
-
                         </div>
                     </div>
                     <div class="sidebar-shadow widget-categories">
                         <h5 class="sidebar-title">Category</h5>
                         <ul>
-
-
                             @foreach ($categories as $category)
                                 <li class="d-flex justify-content-between align-items-center">
                                     <a href="{{ route('blog', ['category' => $category->id]) }}"
@@ -290,23 +260,17 @@
                                         {{ $category->name }}
                                     </a>
                                     <span>{{ $category->posts_count }}</span>
-
-
                                 </li>
                             @endforeach
-
-
                         </ul>
                     </div>
 
                     <div class="sidebar-shadow">
                         <h5 class="sidebar-title">Popular Tags</h5>
                         <div class="block-tags">
-
                             @forelse($popularTags as $tag)
                                 <button wire:click="searchByTag('{{ is_object($tag) ? $tag->name : $tag['name'] }}')"
                                     class="btn btn-tags-sm mb-10 mr-5">
-
                                     <span>
                                         @if (is_object($tag) && isset($tag->name) && is_string($tag->name))
                                             {{ $tag->name }}
@@ -322,21 +286,14 @@
                                     </span>
 
                                 </button>
-
                             @empty
                                 No tags found
                             @endforelse
-
-
                         </div>
                     </div>
-
                 </div>
             </div>
-
-
         </div>
     </div>
-
 </div>
 <!-- End Content -->

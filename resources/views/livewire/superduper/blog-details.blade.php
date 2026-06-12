@@ -54,7 +54,7 @@
                                 {{-- Featured Image --}}
                                 <div class="mb-7 block overflow-hidden rounded-[10px]">
                                     @if ($post->hasFeaturedImage())
-                                        <img src="{{ $post->getFeaturedImageUrl('large') }}" alt="{{ $post->title }}"
+                                        <img src="{{ $post->getLargeImageUrl() }}" alt="{{ $post->title }}"
                                             width="856" height="540"
                                             class="object-cover w-full h-auto scale-100" />
                                     @else
@@ -228,7 +228,7 @@
                                                 class="bg-white rounded-[10px] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                                                 <a href="{{ $related->getUrl() }}" class="block overflow-hidden">
                                                     @if ($related->hasFeaturedImage())
-                                                        <img src="{{ $related->getFeaturedImageUrl('medium') }}"
+                                                        <img src="{{ $related->getSmallImageUrl() }}"
                                                             alt="{{ $related->title }}"
                                                             class="object-cover w-full h-48 transition-transform hover:scale-105" />
                                                     @else
@@ -278,7 +278,7 @@
                                         <a href="{{ $recentPost->getUrl() }}"
                                             class="inline-block h-[100px] w-full overflow-hidden rounded-[5px] sm:w-[150px]">
                                             @if ($recentPost->hasFeaturedImage())
-                                                <img src="{{ $recentPost->getFeaturedImageUrl('thumbnail') }}"
+                                                <img src="{{ $recentPost->getSmallImageUrl() }}"
                                                     alt="{{ $recentPost->title }}" width="150" height="100"
                                                     class="object-cover w-full h-full transition-all duration-300 scale-100 group-hover:scale-105" />
                                             @else
