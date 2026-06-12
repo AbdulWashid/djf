@@ -170,23 +170,15 @@
                                         <a href="{{ $post->getUrl() }}" wire:click="trackView('{{ $post->id }}')">
 
                                             <picture>
-                                                @if ($post->hasMediumImage())
-                                                    <source media="(min-width: 768px)"
-                                                        srcset="{{ $post->getMediumImageUrl() }}"
-                                                        alt="{{ $post->title }}">
-                                                @else
-                                                    <source media="(min-width: 768px)"
-                                                        srcset="https://placehold.co/300x450?text={{ urlencode($post->title) }}"
-                                                        alt="{{ $post->title }}">
-                                                @endif
+                                                <source media="(min-width: 768px)"
+                                                    srcset="{{ $post->hasMediumImage()
+                                                        ? $post->getMediumImageUrl()
+                                                        : 'https://placehold.co/300x400?text=' . urlencode($post->title) }}">
 
-                                                @if ($post->hasLargeImage())
-                                                    <img src="{{ $post->getLargeImageUrl() }}"
-                                                        alt="{{ $post->title }}" class="img-fluid w-100 rounded">
-                                                @else
-                                                    <img src="https://placehold.co/1600x900?text={{ urlencode($post->title) }}"
-                                                        alt="{{ $post->title }}" class="img-fluid w-100 rounded">
-                                                @endif
+                                                <img src="{{ $post->hasLargeImage()
+                                                    ? $post->getLargeImageUrl()
+                                                    : 'https://placehold.co/1600x900?text=' . urlencode($post->title) }}"
+                                                    alt="{{ $post->title }}" class="img-fluid w-100 rounded">
                                             </picture>
 
                                         </a>
