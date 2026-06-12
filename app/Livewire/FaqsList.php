@@ -14,17 +14,7 @@ class FaqsList extends Component
 
     public function mount(): void
     {
-        if ($this->location && $this->category) {
-            $type = Faq::TYPE_BOTH;
-        } elseif ($this->location) {
-            $type = Faq::TYPE_LOCATION;
-        } elseif ($this->category) {
-            $type = Faq::TYPE_CATEGORY;
-        } else {
-            $type = Faq::TYPE_DEFAULT;
-        }
-
-        $this->faqs = Faq::active()->where('section', $this->section)->where('type', $type)->get();
+        $this->faqs = Faq::active()->where('section', $this->section)->get();
     }
     public function render()
     {

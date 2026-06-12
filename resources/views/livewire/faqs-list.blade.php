@@ -15,7 +15,7 @@
             <div id="flush-collapseOne{{ $faq->id }}" class="accordion-collapse collapse"
                 aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample-{{ $rand }}">
                 <div class="accordion-body">
-                    <div class="mb-15">
+                    <div class="mb-15" style="color: #374151">
                         {!! strtr($faq->answer, ['{category-name}' => $category ?? '', '{place-name}' => $location ?? '']) !!}
                     </div>
                 </div>

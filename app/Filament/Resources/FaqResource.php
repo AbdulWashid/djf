@@ -57,12 +57,6 @@ class FaqResource extends Resource
                     ])
                     ->live()
                     ->required(),
-                Select::make('type')
-                    ->options(Faq::typeOptions())
-                    ->default(Faq::TYPE_DEFAULT)
-                    ->visible(fn (Get $get): bool => $get('section') === 'jobs')
-                    ->helperText('Use placeholders like {category-name} and {place-name} in question or answer.')
-                    ->required(fn (Get $get): bool => $get('section') === 'jobs'),
                 Placeholder::make('job_faq_placeholder_note')
                     ->label('Job FAQ placeholders')
                     ->content('Available tokens: {category-name}, {place-name}. They will be replaced from the current job context.')
@@ -78,9 +72,6 @@ class FaqResource extends Resource
             ->columns([
                 TextColumn::make('question'),
                 TextColumn::make('section'),
-                TextColumn::make('type')
-                    ->badge()
-                    ->sortable(),
                 ToggleColumn::make('status'),
             ])
             ->filters([
@@ -92,8 +83,6 @@ class FaqResource extends Resource
                         'general' => 'General',
 
                     ]),
-                SelectFilter::make('type')
-                    ->options(Faq::typeOptions()),
             ])
             ->actions([
                 EditAction::make(),
