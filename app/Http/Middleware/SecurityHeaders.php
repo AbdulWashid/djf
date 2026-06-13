@@ -48,8 +48,8 @@ class SecurityHeaders
                     "media-src 'self'; " .
                     "object-src 'none'; " .
                     "frame-src 'self'; " .
-                    "form-action 'self' " .
-                    "frame-ancestors 'self' ".
+                    "form-action 'self'; " .
+                    "frame-ancestors 'self'; ".
                     "base-uri 'self';";
                     // "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://fonts.googleapis.com; " .
                     // "img-src 'self' data: https://placehold.co https://www.googletagmanager.com https://www.google-analytics.com; " .
