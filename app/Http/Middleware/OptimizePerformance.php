@@ -106,8 +106,8 @@ class OptimizePerformance
         }
 
         // Minify HTML by removing unnecessary whitespace
-        $content = preg_replace('/\s+/', ' ', $content);
-        $content = preg_replace('/>\s+</', '><', $content);
+        // $content = preg_replace('/\s+/', ' ', $content);
+        // $content = preg_replace('/>\s+</', '><', $content);
 
         // Remove HTML comments (but keep conditional comments)
         $content = preg_replace('/<!--(?!\s*(?:\[if [^\]]+]|<!|>))(?:(?!-->).)*-->/s', '', $content);
