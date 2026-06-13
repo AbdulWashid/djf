@@ -40,7 +40,6 @@
 
 <head>
     @php
-
         $page_type = $pageType;
         $favicon = $generalSettings->site_favicon;
         $brandLogo = $generalSettings->brand_logo;
@@ -234,37 +233,19 @@
         }
     @endphp
 
-
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="application-name" content="{{ $siteName }}">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <!-- Canonical URL -->
-    {{-- <link rel="canonical" href="{{ $canonicalUrl ?? ($seoSettings->canonical_url ?? url()->current()) }}" /> --}}
-    <link rel="canonical" href="{{ url()->full() }}" />
-
-    <!-- SEO Meta Tags -->
-    <meta name="keywords" content="{{ $metaKeywords ?? ($seoSettings->meta_keywords ?? '') }}" />
+    <title>{{ $title }}</title>
     <meta name="description" content="{!! htmlspecialchars_decode($pageDescription) ??
         ($seoSettings->meta_description ?? ($siteSettings->description ?? '')) !!}">
-
-    <!-- Mobile Optimization Meta Tags  -->
-    <meta name="format-detection" content="telephone=no">
-    <meta name="theme-color" content="#512B0F">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <!-- Schema.org markup (Google) -->
-    <meta itemprop="name" content="{!! htmlspecialchars_decode($title) !!}" />
-
-
-    <meta itemprop="url" content="{{ url()->current() }}">
-    <meta itemprop="description" content="{!! htmlspecialchars_decode($pageDescription) ?? ($seoSettings->meta_description ?? $siteSettings->description) !!}">
-    <meta itemprop="thumbnailUrl"
-        content="{{ $brandLogo ? Storage::url($brandLogo) : asset('storage/images/logo.png') }}">
-    <meta itemprop="image"
-        content="{{ $seoSettings->schema_logo ?? ($brandLogo ? Storage::url($brandLogo) : asset('storage/images/logo.png')) }}">
+    <meta name="keywords" content="{{ $metaKeywords ?? ($seoSettings->meta_keywords ?? '') }}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="{{ $authorName ?? 'Dubai Job Finder' }}">
+    <meta name="application-name" content="{{ $siteName }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="shortcut icon" href="{{ $favicon ? Storage::url($favicon) : asset('superduper/img/favicon.png') }}"
+        type="image/x-icon">
+    {{-- <link rel="canonical" href="{{ $canonicalUrl ?? ($seoSettings->canonical_url ?? url()->current()) }}" /> --}}
+    <link rel="canonical" href="{{ url()->full() }}" />
 
     @if ($twitterTags != null)
         {!! html_entity_decode($twitterTags) !!}
@@ -299,33 +280,40 @@
         <meta property="og:image:alt" content="{{ $siteName }}" />
     @endif
 
-    <!-- Verification codes -->
+    <!-- Schema.org markup (Google) -->
+    <meta itemprop="name" content="{!! htmlspecialchars_decode($title) !!}" />
+    <meta itemprop="url" content="{{ url()->current() }}">
+    <meta itemprop="description" content="{!! htmlspecialchars_decode($pageDescription) ?? ($seoSettings->meta_description ?? $siteSettings->description) !!}">
+    <meta itemprop="thumbnailUrl"
+        content="{{ $brandLogo ? Storage::url($brandLogo) : asset('storage/images/logo.png') }}">
+    <meta itemprop="image"
+        content="{{ $seoSettings->schema_logo ?? ($brandLogo ? Storage::url($brandLogo) : asset('storage/images/logo.png')) }}">
+
+    <!-- Mobile Optimization Meta Tags  -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#512B0F">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+
     @if (!empty($seoSettings->verification_codes))
+        <!-- Verification codes -->
         @foreach ($seoSettings->verification_codes as $verificationCode)
             {!! $verificationCode !!}
         @endforeach
     @endif
 
-    <!-- Additional meta tags -->
     @if ($seoSettings->head_additional_meta)
+        <!-- Additional meta tags -->
         {!! $seoSettings->head_additional_meta !!}
     @endif
 
     <!-- META YEILD -->
-    @yield('components.seo.meta')
+    {{-- @yield('components.seo.meta') --}}
     <!-- META YEILD end -->
-    <title>{{ $title }}</title>
-
-    <!-- My Title  {{ $pageTitle }}   -->
-
-    <!-- Favicon from settings -->
-    <link rel="shortcut icon" href="{{ $favicon ? Storage::url($favicon) : asset('superduper/img/favicon.png') }}"
-        type="image/x-icon">
 
     <!-- Theme CSS via Vite -->
     @vite(['resources/css/app.css'])
-
-    <!-- Icon Font -->
 
     <link rel="stylesheet" href="{{ asset('assets/css/plugins/animate.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/main.css?v=1.1') }}" />
