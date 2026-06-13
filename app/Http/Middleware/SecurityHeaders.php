@@ -38,9 +38,26 @@ class SecurityHeaders
         }
 
         if (app()->environment('production')) {
-            $csp = "default-src 'self'; " . "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://static.cloudflareinsights.com https://www.googletagmanager.com; " . "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; " . "img-src 'self' data: https://placehold.co https://www.googletagmanager.com https://www.google-analytics.com; " . "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://fonts.googleapis.com; " . "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com; " . "media-src 'self'; " . "object-src 'none'; " . "frame-src 'self';";
+            // $csp = "default-src 'self'; " . "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://static.cloudflareinsights.com https://www.googletagmanager.com; " . "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; " . "img-src 'self' data: https://placehold.co https://www.googletagmanager.com https://www.google-analytics.com; " . "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://fonts.googleapis.com; " . "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com; " . "media-src 'self'; " . "object-src 'none'; " . "frame-src 'self';";
+            $csp = "default-src 'self'; " .
+                    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://static.cloudflareinsights.com https://www.googletagmanager.com; " .
+                    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; " .
+                    "img-src 'self' data: https://placehold.co https://www.googletagmanager.com https://www.google-analytics.com; " .
+                    "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://fonts.googleapis.com; " .
+                    "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com; " .
+                    "media-src 'self'; " .
+                    "object-src 'none'; " .
+                    "frame-src 'self';";
         } else {
-            $csp = "default-src 'self'; " . "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:* http://127.0.0.1:* http://[::1]:* https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://static.cloudflareinsights.com; " . "style-src 'self' 'unsafe-inline' http://localhost:* http://127.0.0.1:* http://[::1]:* https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " . "img-src 'self' data: https://placehold.co;" . "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com; " . "connect-src 'self' ws://localhost:* ws://127.0.0.1:* ws://[::1]:* http://localhost:* http://127.0.0.1:* http://[::1]:* https://www.google-analytics.com; " . "media-src 'self'; " . "object-src 'none'; " . "frame-src 'self';";
+            $csp = "default-src 'self'; " .
+                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:* http://127.0.0.1:* http://[::1]:* https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " .
+                   "style-src 'self' 'unsafe-inline' http://localhost:* http://127.0.0.1:* http://[::1]:* https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " .
+                   "img-src 'self' data:; " .
+                   "font-src 'self' data: https://cdnjs.cloudflare.com; " .
+                   "connect-src 'self' ws://localhost:* ws://127.0.0.1:* ws://[::1]:* http://localhost:* http://127.0.0.1:* http://[::1]:*; " .
+                   "media-src 'self'; " .
+                   "object-src 'none'; " .
+                   "frame-src 'self';";
         }
 
         // Check for CSP Report-Only header in request (for debugging)
@@ -49,7 +66,7 @@ class SecurityHeaders
 
             SecurityLogger::logSuspiciousActivity('CSP Report-Only mode enabled', [
                 'enabled_by' => 'request header',
-                'csp' => $csp,
+                'csp' => $csp
             ]);
         } else {
             $response->headers->set('Content-Security-Policy', $csp);
@@ -79,7 +96,9 @@ class SecurityHeaders
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
         // Permissions Policy - Controls which browser features can be used (formerly Feature Policy)
-        $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+        $response->headers->set('Permissions-Policy',
+            'camera=(), microphone=(), geolocation=(), payment=()'
+        );
 
         // HSTS - Forces browsers to use HTTPS for a specified time period
         // Only enable in production and if you have HTTPS configured
