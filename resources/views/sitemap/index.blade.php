@@ -7,6 +7,8 @@
     <title>Sitemap for {{ config('app.name') }}</title>
     <meta name="description"
         content="Browse the full structure of {{ config('app.name') }}. Find pages and sections easily.">
+    <link rel="canonical" href="{{ url()->full() }}" />
+
     <style>
         body {
             margin: 0;
