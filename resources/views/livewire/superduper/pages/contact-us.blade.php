@@ -5,7 +5,14 @@
         }, 5000);
     });
 })">
-
+    <div class="breacrumb-cover">
+        <div class="container">
+            <ul class="breadcrumbs">
+                <li><a href="{{ route('home') }}">Home</a></li>
+                <li>Contact-us</li>
+            </ul>
+        </div>
+    </div>
     <section class="mt-20">
         <div class="container">
             <div class="row">

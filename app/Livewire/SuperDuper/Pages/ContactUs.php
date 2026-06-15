@@ -247,6 +247,11 @@ class ContactUs extends Component
     public function render()
     {
         return view('livewire.superduper.pages.contact-us')
-            ->layout('components.frontend.main', ['pageType' => 'contact', 'pageTitle' => 'Contact Us', 'pageDescription' => 'Contact Us', 'metaKeywords' => 'Contact Us']);
+            ->layout('components.frontend.main', [
+                    'pageType' => 'contact', 
+                    'pageTitle' => 'Contact Dubai Job Finder | Customer Support & Help', 
+                    'pageDescription' => ' Get in touch with Dubai Job Finder for advertising, business partnerships, and recruitment solutions. Let us connect you with top talent in the UAE.', 
+                    'metaKeywords' => 'Contact Us'
+                ]);
     }
 }

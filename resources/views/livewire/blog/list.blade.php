@@ -24,23 +24,21 @@
         <div class="container">
             <ul class="breadcrumbs">
                 <li><a href="{{ route('home') }}">Home</a></li>
+                <li><a href="{{ route('blog') }}">Blogs</a></li>
                 @php
                     $cat_items = [];
                     $pg_title = 'Blog';
 
                     if ($search) {
                         $pg_title = 'Search results for "' . $search . '"';
-                        $cat_items = [['label' => 'Blog', 'url' => route('blog')], ['label' => 'Search']];
+                        $cat_items = [['label' => 'Search']];
                     } elseif ($activeCategory) {
                         $activeCategoryName = $categories->firstWhere('id', $activeCategory)?->name;
                         $pg_title = $activeCategoryName ? $activeCategoryName . ' Articles' : 'Blog';
-                        $cat_items = [
-                            ['label' => 'Blog', 'url' => route('blog')],
-                            ['label' => $activeCategoryName ?? 'Category'],
-                        ];
+                        $cat_items = [['label' => $activeCategoryName ?? 'Category']];
                     } elseif ($featuredOnly) {
                         $pg_title = 'Featured Blog Posts';
-                        $cat_items = [['label' => 'Blog', 'url' => route('blog')], ['label' => 'Featured']];
+                        $cat_items = [['label' => 'Featured']];
                     }
                 @endphp
 

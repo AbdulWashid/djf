@@ -18,6 +18,15 @@
         }
     </style>
 
+    <div class="breacrumb-cover">
+        <div class="container">
+            <ul class="breadcrumbs">
+                <li><a href="{{ route('home') }}">Home</a></li>
+                <li>{{ $page->title }}</li>
+            </ul>
+        </div>
+    </div>
+
     <section class="mt-20">
         <div class="container">
             <div class="row align-items-end mb-50">
@@ -43,8 +52,8 @@
                                     <p class="accordion-header" id="flush-headingOne2">
                                         <button class="accordion-button collapsed" type="button"
                                             data-bs-toggle="collapse"
-                                            data-bs-target="#flush-collapseOne{{ $key }}" aria-expanded="false"
-                                            aria-controls="flush-collapseOne{{ $key }}">
+                                            data-bs-target="#flush-collapseOne{{ $key }}"
+                                            aria-expanded="false" aria-controls="flush-collapseOne{{ $key }}">
                                             {{ $faq['question'] }}
                                         </button>
                                     </p>

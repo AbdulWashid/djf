@@ -1,11 +1,14 @@
-{{-- @dd($locations, $location, str_replace(' ', '-', strtolower($location)), str_replace(' ', '-', strtolower($locations[6]))) --}}
 <div>
-    <section class="section-box-2">
-        <div class="box-head-single none-bg">
+    <section class="section-box">
+        <div class="box-head-single">
             <div class="container">
                 <h1 class="h1">Currently available Jobs @if (!empty($location))
                         in {{ Str::ucwords($location) }}
                     @endif!</h1>
+                <ul class="breadcrumbs">
+                    <li><a href="{{ route('home') }}">Home</a></li>
+                    <li>Jobs listing</li>
+                </ul>
             </div>
         </div>
     </section>

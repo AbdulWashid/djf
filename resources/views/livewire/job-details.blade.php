@@ -3,10 +3,10 @@
         <div class="box-head-single">
             <div class="container">
                 <h1 style="font-size: 36px;">{{ $job->title }}</h1>
-                {{--                <ul class="breadcrumbs"> --}}
-                {{--                    <li><a href="{{ route('home') }}">Home</a></li> --}}
-                {{--                    <li>Jobs listing</li> --}}
-                {{--                </ul> --}}
+                <ul class="breadcrumbs">
+                    <li><a href="{{ route('home') }}">Home</a></li>
+                    <li><a href="{{ route('jobs') }}">Jobs listing</a></li>
+                </ul>
             </div>
         </div>
     </section>
@@ -20,10 +20,10 @@
                         </div>
                     @endif
 
-                    {{--                    <div class="single-image-feature"> --}}
-                    {{--                        <figure><img alt="{{ $job->title }}" src="{{ asset('assets/imgs/page/job-single/img-job-feature.png') }}" class="img-rd-15" /> --}}
-                    {{--                        </figure> --}}
-                    {{--                    </div> --}}
+                    {{-- <div class="single-image-feature">
+                        <figure><img alt="{{ $job->title }}" src="{{ asset('assets/imgs/page/job-single/img-job-feature.png') }}" class="img-rd-15" />
+                        </figure>
+                    </div> --}}
                     <div class="content-single single-body">
                         <div class="h5 font-bold">Job Description</div>
                         <div> {!! $job->description !!}</div>
@@ -43,9 +43,9 @@
                         @endif
                     </div>
 
-                    {{--                    <div class="author-single"> --}}
-                    {{--                        <span>{{ $job->employer->name }}</span> --}}
-                    {{--                    </div> --}}
+                    {{-- <div class="author-single">
+                        <span>{{ $job->employer->name }}</span>
+                    </div> --}}
 
                     <div class="single-apply-jobs">
                         <div class="row align-items-center">
@@ -89,7 +89,7 @@
                         <div class="text-start mt-20">
                             <a href="#" class="btn btn-default mr-10" wire:click.prevent="openApplyModal">Apply
                                 now</a>
-                            {{--                            <a href="#" class="btn btn-border">Save job</a> --}}
+                            {{-- <a href="#" class="btn btn-border">Save job</a> --}}
                         </div>
 
                         <div class="sidebar-list-job">

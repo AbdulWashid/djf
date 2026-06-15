@@ -4,14 +4,14 @@
     'pageType' => 'standard', // Maps to $page_type in your switch statement
     'pageTitle' => '', // Used in default case and meta tags
     'pageDescription' => '', // Used in description meta tags
-    'metaKeywords' => '', // Used in keywords meta tag
+    'metaKeywords' => null, // Used in keywords meta tag
     'twitterTags' => '', // Used in keywords meta tag
     'ogTags' => '', // Used in keywords meta tag
 
     // === Blog Post Props ===
     'postTitle' => '', // For blog_post page type
     'postCategory' => '', // For blog_post page type
-    'authorName' => '', // For blog_post and author page types
+    'authorName' => null, // For blog_post and author page types
     'publishDate' => null, // For blog_post page type
 
     // === Category Props ===
@@ -38,6 +38,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="ltr" class="scroll-smooth">
 
+
 <head>
     @php
         $page_type = $pageType;
@@ -58,7 +59,7 @@
                 $variables = array_merge($_main_variables, [
                     '{post_title}' => $postTitle ?? '',
                     '{post_category}' => $postCategory ?? '',
-                    '{author_name}' => $authorName ?? '',
+                    '{author_name}' => $authorName ?? 'Dubai Job Finder',
                     '{publish_date}' => $publishDate ? $publishDate->format('Y') : '',
                 ]);
                 break;
@@ -82,7 +83,7 @@
             case 'author':
                 $titleFormat = $seoSettings->author_title_format ?? 'Posts by {author_name}';
                 $variables = array_merge($_main_variables, [
-                    '{author_name}' => $authorName ?? '',
+                    '{author_name}' => $authorName ?? 'Dubai Job Finder',
                     '{post_count}' => $postCount ?? '',
                 ]);
                 break;
@@ -232,7 +233,7 @@
             }
         }
     @endphp
-
+    {{-- @dd($seoSettings) --}}
     <meta charset="UTF-8">
     <title>{{ $title }}</title>
     <meta name="description" content="{!! htmlspecialchars_decode($pageDescription) ??

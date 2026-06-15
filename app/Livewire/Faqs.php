@@ -14,6 +14,10 @@ class Faqs extends Component
     }
     public function render()
     {
-        return view('livewire.faqs')->layout('components.frontend.main');
+        return view('livewire.faqs')->layout('components.frontend.main', [
+            'pageType' => 'FAQ\'s',
+            'pageTitle' => 'How to Find a Job in Dubai? FAQs & Answers | DubaiJobFinder',
+            'pageDescription' => 'Stuck in your job search? Read our comprehensive FAQs on Dubai jobs, interview tips, and recruitment updates to land your dream career in Dubai.',
+        ]);
     }
 }
