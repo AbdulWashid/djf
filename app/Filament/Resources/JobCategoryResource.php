@@ -73,10 +73,9 @@ class JobCategoryResource extends Resource
         return $table
             ->columns([TextColumn::make('name')->searchable()->sortable(), ToggleColumn::make('status')])
             ->filters([TrashedFilter::make()])
-            ->actions([EditAction::make()])
+            ->actions([EditAction::make(),DeleteAction::make()])
             ->bulkActions([BulkActionGroup::make([])]);
     }
-
     public static function getPages(): array
     {
         return [
