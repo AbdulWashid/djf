@@ -175,7 +175,7 @@
     {{-- Apply Modal --}}
     @if ($showApplyModal)
         <div class="modal-backdrop-custom" wire:click="closeApplyModal">
-            <div class="bg-white p-4" style="max-width: 720px; margin: 5vh auto; border-radius: 12px;" wire:click.stop>
+            <div class="bg-white p-4" style="max-width: 720px; margin: 5vh auto; border-radius: 12px;" x-on:click.stop>
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="m-0">Apply for: {{ $job->title }}</h5>
                 </div>
@@ -186,7 +186,7 @@
                     </div>
                 @endif
 
-                <form wire:submit.prevent="submitApplication" method="POST">
+                <form wire:submit.prevent="submitApplication">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">First name</label>
