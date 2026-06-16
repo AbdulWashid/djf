@@ -29,10 +29,20 @@ class JobDetails extends Component
     public bool $applySuccess = false;
     public ?string $applySuccessMessage = null;
 
+    protected $rules = [
+        'first_name' => 'required|min:2|max:120',
+        'last_name' => 'required|min:2|max:120',
+        'email' => 'required|email',
+        'phone' => 'required|max:50',
+        'nationality' => 'required|max:120',
+        'cover_letter' => 'nullable|max:2000',
+        'cv' => 'required|file|mimes:pdf,doc,docx|max:5120',
+    ];
+
     public function mount($slug)
     {
         $this->job = Opening::where('slug', $slug)->where('status', 1)->with('employer','job_category')->first();
-        //dd($this->job->meta_keywords);
+        
         if (!$this->job) {
             abort(404);
         }
@@ -127,5 +137,10 @@ class JobDetails extends Component
 
         $this->applySuccess = true;
         $this->applySuccessMessage = 'Your application has been submitted successfully.';
+    }
+
+    public function updated($property)
+    {
+        $this->validateOnly($property);
     }
 }

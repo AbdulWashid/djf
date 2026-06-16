@@ -1,4 +1,13 @@
 <div>
+    <style>
+        .modal-backdrop-custom {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            z-index: 9999;
+            overflow-y: auto;
+        }
+    </style>
     <section class="section-box">
         <div class="box-head-single">
             <div class="container">
@@ -64,8 +73,6 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
 
                 <div class="col-lg-4 col-md-12 col-sm-12 col-12 pl-40 pl-lg-15 mt-lg-30">
@@ -159,7 +166,6 @@
                     <livewire:faqs-list section="jobs" :location="$job->location" :category="$job->title" />
 
                     <div class="mb-4"></div>
-
                     <livewire:recent-jobs />
                 </div>
             </div>
@@ -167,12 +173,11 @@
     </section>
 
     {{-- Apply Modal --}}
-    @if ($showApplyModal ?? false)
-        <div class="position-fixed top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,.55); z-index: 1050;">
+    @if ($showApplyModal)
+        <div class="modal-backdrop-custom" wire:click="closeApplyModal">
             <div class="bg-white p-4" style="max-width: 720px; margin: 5vh auto; border-radius: 12px;" wire:click.stop>
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="m-0">Apply for: {{ $job->title }}</h5>
-                    <button type="button" class="btn btn-sm btn-border" wire:click="closeApplyModal">Close</button>
                 </div>
 
                 @if (session()->has('apply_success'))
@@ -181,11 +186,12 @@
                     </div>
                 @endif
 
-                <form wire:submit.prevent="submitApplication">
+                <form wire:submit.prevent="submitApplication" method="POST">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">First name</label>
-                            <input type="text" class="form-control" wire:model.defer="first_name">
+                            <input type="text" class="form-control @error('first_name') is-invalid @enderror"
+                                wire:model.live="first_name" required>
                             @error('first_name')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
@@ -193,7 +199,8 @@
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Last name</label>
-                            <input type="text" class="form-control" wire:model.defer="last_name">
+                            <input type="text" class="form-control @error('last_name') is-invalid @enderror"
+                                wire:model.live="last_name" required>
                             @error('last_name')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
@@ -201,7 +208,8 @@
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-control" wire:model.defer="email">
+                            <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                wire:model.live="email" required>
                             @error('email')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
@@ -209,7 +217,8 @@
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Phone</label>
-                            <input type="text" class="form-control" wire:model.defer="phone">
+                            <input type="text" class="form-control @error('phone') is-invalid @enderror"
+                                wire:model.live="phone" required>
                             @error('phone')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
@@ -217,7 +226,8 @@
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Nationality</label>
-                            <input type="text" class="form-control" wire:model.defer="nationality">
+                            <input type="text" class="form-control @error('nationality') is-invalid @enderror"
+                                wire:model.live="nationality" required>
                             @error('nationality')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
@@ -225,7 +235,8 @@
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">CV (PDF/DOC/DOCX)</label>
-                            <input type="file" class="form-control" wire:model="cv">
+                            <input type="file" class="form-control @error('cv') is-invalid @enderror"
+                                wire:model="cv" accept=".pdf,.doc,.docx" required>
                             @error('cv')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
@@ -234,7 +245,8 @@
 
                         <div class="col-12 mb-3">
                             <label class="form-label">Cover letter / Message (optional)</label>
-                            <textarea class="form-control" rows="4" wire:model.defer="cover_letter"></textarea>
+                            <textarea class="form-control @error('cover_letter') is-invalid @enderror" rows="4"
+                                wire:model.live="cover_letter"></textarea>
                             @error('cover_letter')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
