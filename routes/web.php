@@ -14,6 +14,7 @@ use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Lab404\Impersonate\Services\ImpersonateManager;
+use App\Http\Controllers\JobApplicationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -132,3 +133,5 @@ Route::get('/{slug}', function ($slug) {
 })
     ->where('slug', '^(?!about|contact).*$')
     ->name('page');
+
+Route::post('/jobs/{slug}/apply', [JobApplicationController::class, 'apply'])->name('jobs.apply');
