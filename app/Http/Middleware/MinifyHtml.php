@@ -9,21 +9,22 @@ use voku\helper\HtmlMin;
 
 class MinifyHtml
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         $response = $next($request);
-        if (config('app.env') === 'production') {
-            if (str_contains($response->headers->get('Content-Type'), 'text/html')) {
-                $htmlMin = new HtmlMin();
-                $response->setContent(
-                    $htmlMin->minify($response->getContent())
-                );
-            }
+
+        if (
+            app()->environment('production') &&
+            str_contains((string) $response->headers->get('Content-Type'), 'text/html')
+        ) {
+            $htmlMin = new HtmlMin();
+
+            // Disable DOM-based optimization that rewrites tags/attributes
+            $htmlMin->doOptimizeViaHtmlDomParser(false);
+
+            $response->setContent(
+                $htmlMin->minify($response->getContent())
+            );
         }
 
         return $response;

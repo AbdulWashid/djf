@@ -38,7 +38,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\OptimizePerformance::class,
             \App\Http\Middleware\SecurityHeaders::class, 
-            \App\Http\Middleware\MinifyHtml::class, 
+            // \App\Http\Middleware\MinifyHtml::class, 
         ],
 
         'api' => [

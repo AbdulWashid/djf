@@ -237,25 +237,25 @@
     <title>{{ $title }}</title>
     <meta name="description" content="{!! htmlspecialchars_decode($pageDescription) ??
         ($seoSettings->meta_description ?? ($siteSettings->description ?? '')) !!}">
-    <meta name="keywords" content="{{ $metaKeywords ?? ($seoSettings->meta_keywords ?? '') }}" />
+    <meta name="keywords" content="{{ $metaKeywords ?? ($seoSettings->meta_keywords ?? '') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="{{ $authorName ?? 'Dubai Job Finder' }}">
     <meta name="application-name" content="{{ $siteName }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="{{ $favicon ? Storage::url($favicon) : asset('superduper/img/favicon.png') }}"
         type="image/x-icon">
-    {{-- <link rel="canonical" href="{{ $canonicalUrl ?? ($seoSettings->canonical_url ?? url()->current()) }}" /> --}}
-    <link rel="canonical" href="{{ url()->full() }}" />
+    {{-- <link rel="canonical" href="{{ $canonicalUrl ?? ($seoSettings->canonical_url ?? url()->current()) }}" > --}}
+    <link rel="canonical" href="{{ url()->full() }}">
     @if ($twitterTags != null)
         {!! html_entity_decode($twitterTags) !!}
     @else
         <!-- Twitter Card -->
         <meta name="twitter:card" content="{{ $seoSettings->twitter_card_type ?? 'summary' }}">
-        <meta name="twitter:site" content="{{ $seoSettings->twitter_site ?? '@dubaijobfinder' }}" />
-        <meta name="twitter:creator" content="{{ $seoSettings->twitter_creator ?? '@dubaijobfinder' }}" />
+        <meta name="twitter:site" content="{{ $seoSettings->twitter_site ?? '@dubaijobfinder' }}">
+        <meta name="twitter:creator" content="{{ $seoSettings->twitter_creator ?? '@dubaijobfinder' }}">
         <meta name="twitter:title" content="{{ $title ?? $seoSettings->twitter_title }}">
         <meta name="twitter:description"
-            content="{{ $seoSettings->twitter_description ?? ($pageDescription ?? $seoSettings->meta_description) }}" />
+            content="{{ $seoSettings->twitter_description ?? ($pageDescription ?? $seoSettings->meta_description) }}">
         <meta name="twitter:image"
             content="{{ $twitterImage ?? ($seoSettings->twitter_image ?? ($brandLogo ? Storage::url($brandLogo) : asset('storage/images/logo.png'))) }}">
         <meta name="twitter:url" content="{{ url()->current() }}">
@@ -265,22 +265,22 @@
         {!! html_entity_decode($ogTags) !!}
     @else
         <!-- Open Graph (Facebook, LinkedIn) -->
-        <meta property="og:site_name" content="{{ $siteName ?? $seoSettings->og_site_name }}" />
-        <meta property="og:title" content="{{ $title ?? $seoSettings->og_title }}" />
-        <meta property="og:type" content="{{ $seoSettings->og_type ?? 'website' }}" />
+        <meta property="og:site_name" content="{{ $siteName ?? $seoSettings->og_site_name }}">
+        <meta property="og:title" content="{{ $title ?? $seoSettings->og_title }}">
+        <meta property="og:type" content="{{ $seoSettings->og_type ?? 'website' }}">
         <meta property="og:description"
-            content="{{ $seoSettings->og_description ?? ($pageDescription ?? $seoSettings->meta_description) }}" />
-        <meta property="og:url" content="{{ url()->current() }}" />
+            content="{{ $seoSettings->og_description ?? ($pageDescription ?? $seoSettings->meta_description) }}">
+        <meta property="og:url" content="{{ url()->current() }}">
         <meta property="og:image"
-            content="{{ $ogImage ?? ($seoSettings->og_image ?? ($brandLogo ? Storage::url($brandLogo) : asset('storage/images/logo.png'))) }}" />
+            content="{{ $ogImage ?? ($seoSettings->og_image ?? ($brandLogo ? Storage::url($brandLogo) : asset('storage/images/logo.png'))) }}">
         <meta property="og:image:width" content="1500">
         <meta property="og:image:height" content="1500">
-        <meta property="og:image:type" content="image/jpeg" />
-        <meta property="og:image:alt" content="{{ $siteName }}" />
+        <meta property="og:image:type" content="image/jpeg">
+        <meta property="og:image:alt" content="{{ $siteName }}">
     @endif
 
     <!-- Schema.org markup (Google) -->
-    <meta itemprop="name" content="{!! htmlspecialchars_decode($title) !!}" />
+    <meta itemprop="name" content="{!! htmlspecialchars_decode($title) !!}">
     <meta itemprop="url" content="{{ url()->current() }}">
     <meta itemprop="description" content="{!! htmlspecialchars_decode($pageDescription) ?? ($seoSettings->meta_description ?? $siteSettings->description) !!}">
     <meta itemprop="thumbnailUrl"
@@ -312,8 +312,8 @@
     <!-- Theme CSS via Vite -->
     @vite(['resources/css/app.css'])
 
-    <link rel="stylesheet" href="{{ asset('assets/css/plugins/animate.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/main.css?v=1.1') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/plugins/animate.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/main.css?v=1.1') }}">
     <style>
         [x-cloak] {
             display: none !important;
@@ -393,7 +393,7 @@
             <div class="preloader d-flex align-items-center justify-content-center">
                 <div class="preloader-inner position-relative">
                     <div class="text-center">
-                        <img src="{{ asset('assets/imgs/theme/loading.gif') }}" alt="Dubai Job Finder" />
+                        <img src="{{ asset('assets/imgs/theme/loading.gif') }}" alt="Dubai Job Finder">
                     </div>
                 </div>
             </div>
@@ -422,7 +422,7 @@
 
                             @if ($footerLogo)
                                 <img src="{{ Storage::url($footerLogo) }}" alt="{{ $brandName }}" width="220"
-                                    height="auto" />
+                                    height="auto">
                             @endif
                         </a>
                         <div class="mt-20 mb-20 w-3/4">
