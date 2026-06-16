@@ -38,7 +38,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="ltr" class="scroll-smooth">
 
-
 <head>
     @php
         $page_type = $pageType;
@@ -247,7 +246,6 @@
         type="image/x-icon">
     {{-- <link rel="canonical" href="{{ $canonicalUrl ?? ($seoSettings->canonical_url ?? url()->current()) }}" /> --}}
     <link rel="canonical" href="{{ url()->full() }}" />
-
     @if ($twitterTags != null)
         {!! html_entity_decode($twitterTags) !!}
     @else
@@ -289,13 +287,11 @@
         content="{{ $brandLogo ? Storage::url($brandLogo) : asset('storage/images/logo.png') }}">
     <meta itemprop="image"
         content="{{ $seoSettings->schema_logo ?? ($brandLogo ? Storage::url($brandLogo) : asset('storage/images/logo.png')) }}">
-
     <!-- Mobile Optimization Meta Tags  -->
     <meta name="format-detection" content="telephone=no">
     <meta name="theme-color" content="#512B0F">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
 
     @if (!empty($seoSettings->verification_codes))
         <!-- Verification codes -->

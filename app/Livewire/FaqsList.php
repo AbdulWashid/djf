@@ -33,10 +33,10 @@ class FaqsList extends Component
         foreach ($faqs as $faq) {
             $mainEntity[] = [
                 '@type' => 'Question',
-                'name' => $faq['question'],
+                'name' => strtr($faq['question'],['{category-name}' => $category ?? '', '{place-name}' => $location ?? '']),
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => strip_tags($faq['answer']),
+                    'text' => strtr(strip_tags($faq['answer']), ['{category-name}' => $category ?? '', '{place-name}' => $location ?? '']),
                 ],
             ];
         }
