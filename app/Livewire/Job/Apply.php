@@ -1,28 +1,82 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Job;
 
+use App\Models\JobApplications;
 use App\Models\Opening;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
-class JobDetails extends Component
+class Apply extends Component
 { 
+    use WithFileUploads;
+
     public $slug;
     public $job;
 
+    public $first_name = '';
+    public $last_name = '';
+    public $email = '';
+    public $phone = '';
+    public $nationality = '';
+    public $cover_letter = '';
+    public $cv;
+
     public function mount($slug)
     {
-        $this->job = Opening::where('slug', $slug)->where('status', 1)->with('employer', 'job_category')->first();
+        $this->job = Opening::where('slug', $slug)
+            ->where('status', 1)
+            ->with('employer', 'job_category')
+            ->first();
 
-        if (!$this->job) {
-            abort(404);
-        }
+        abort_if(!$this->job, 404);
+    }
+
+    protected function rules()
+    {
+        return [
+            'first_name' => ['required', 'string', 'min:2', 'max:120'],
+            'last_name' => ['required', 'string', 'min:2', 'max:120'],
+            'email' => ['required', 'email', 'max:190'],
+            'phone' => ['required', 'string', 'max:50'],
+            'nationality' => ['required', 'string', 'max:120'],
+            'cover_letter' => ['nullable', 'string', 'max:2000'],
+            'cv' => ['required', 'file', 'mimes:pdf,doc,docx', 'max:5120'],
+        ];
+    }
+
+    public function submit()
+    {
+        $this->validate();
+
+        $resumePath = $this->cv->store(
+            'job-applications/resumes',
+            'public'
+        );
+
+        $data = JobApplications::create([
+            'opening_id' => $this->job->id,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'nationality' => $this->nationality,
+            'cover_letter' => $this->cover_letter,
+            'resume_path' => $resumePath,
+            'status' => 'pending',
+        ]);
+
+        return redirect()->route(
+            'jobs.apply.thankyou',
+            $this->job->slug
+        )->with('application_id', $data->id);
     }
 
     public function render()
     {
-        return view('livewire.job-details')->layout('components.frontend.main', [
+        return view('livewire.job.apply')->layout('components.frontend.main',
+        [
             'pageType' => 'job_posting',
             'pageTitle' => $this->job->meta_title ?? 'Jobs in '. $this->job->location .' | '. $this->job->title.' | Apply Now - Dubaijobfinder',
             'pageDescription' => $this->job->meta_description ?? 'Find the latest '. $this->job->title.' jobs in '. $this->job->location .'. Apply online for urgent vacancies and career opportunities on Dubaijobfinder.',

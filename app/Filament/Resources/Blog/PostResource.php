@@ -71,7 +71,7 @@ class PostResource extends Resource implements HasShieldPermissions
             ->schema([
                 Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Post Content')
+                        Section::make('Post Content')
                             ->description('The main content of your blog post')
                             ->icon('heroicon-o-document-text')
                             ->schema([
@@ -154,47 +154,46 @@ class PostResource extends Resource implements HasShieldPermissions
                                         return "{$wordCount} words | ~{$readingTime} min read";
                                     })
                                     ->extraInputAttributes(['style' => 'min-height: 500px;']),
-                            ]),
-                            Forms\Components\Section::make('Media')
-                                    ->description('Upload images for different locations')
-                                    ->icon('heroicon-o-photo')
-                                    ->schema([
+                        ]),
+                        Section::make('Media')
+                            ->description('Upload images for different locations')
+                            ->icon('heroicon-o-photo')
+                            ->schema([
 
-                                        SpatieMediaLibraryFileUpload::make('small_image')
-                                            ->label('Small Image')
-                                            ->collection('small_image')
-                                            ->image()
-                                            ->imageEditor()
-                                            ->helperText(
-                                                'Used on Small blog listing cards.
-                                                Recommended: 600 × 600 px (1:1)'
-                                            )
-                                            ->downloadable(),
+                                // SpatieMediaLibraryFileUpload::make('small_image')
+                                //     ->label('Small Image')
+                                //     ->collection('small_image')
+                                //     ->image()
+                                //     ->imageEditor()
+                                //     ->helperText(
+                                //         'Used on Small blog listing cards.
+                                //         Recommended: 600 × 600 px (1:1)'
+                                //     )
+                                //     ->downloadable(),
 
-                                        SpatieMediaLibraryFileUpload::make('medium_image')
-                                            ->label('Medium Image')
-                                            ->collection('medium_image')
-                                            ->image()
-                                            ->imageEditor()
-                                            ->helperText(
-                                                'Used on Blog Listed page.
-                                                Recommended: 300 × 450 px (2:3)'
-                                            )
-                                            ->downloadable(),
+                                SpatieMediaLibraryFileUpload::make('medium_image')
+                                    ->label('Medium Image')
+                                    ->collection('medium_image')
+                                    ->image()
+                                    ->imageEditor()
+                                    ->helperText(
+                                        'Used on Blog Listed page.
+                                        Recommended: 800 × 600 px (4:3)'
+                                    )
+                                    ->downloadable(),
 
-                                        SpatieMediaLibraryFileUpload::make('large_image')
-                                            ->label('Large Image')
-                                            ->collection('large_image')
-                                            ->image()
-                                            ->imageEditor()
-                                            ->helperText(
-                                                'Used on blog detail page, Open Graph and social sharing.
-                                                Recommended: 1600 × 900 px (16:9)'
-                                            )
-                                            ->downloadable(),
-                                    ])
-                                    ->columns(1),                
-
+                                SpatieMediaLibraryFileUpload::make('large_image')
+                                    ->label('Large Image')
+                                    ->collection('large_image')
+                                    ->image()
+                                    ->imageEditor()
+                                    ->helperText(
+                                        'Used on blog detail page, Open Graph and social sharing.
+                                        Recommended: 1600 × 900 px (16:9)'
+                                    )
+                                    ->downloadable(),
+                        ])
+                        ->columns(1),                
                         Section::make('Seo Details')
                             ->schema([
                                 TextInput::make('meta_title')
@@ -204,10 +203,8 @@ class PostResource extends Resource implements HasShieldPermissions
                                 Textarea::make('twitter_tags')
                                     ->rows(5),
                                 Textarea::make('og_tags')->label('Open Graph Tags')->rows(5),
-
-                            ]),
-
-                        Forms\Components\Section::make('Frequently asked questions')
+                        ]),
+                        Section::make('Frequently asked questions')
                             ->collapsible()
                             ->description('Add frequently asked questions to your post')
                             ->icon('heroicon-o-question-mark-circle')
@@ -238,278 +235,278 @@ class PostResource extends Resource implements HasShieldPermissions
                                     ->addActionLabel('Add FAQ')
                                     ->columns(2)
                             ])
-                    ])
-                    ->columnSpan(['lg' => 2]),
-                Forms\Components\Group::make()
-                    ->schema([
-                        Forms\Components\Section::make('Status & Visibility')
-                            ->description('Control how this post appears')
-                            ->icon('heroicon-o-eye')
+                        ])
+                        ->columnSpan(['lg' => 2]),
+                        Forms\Components\Group::make()
                             ->schema([
-                                Forms\Components\Select::make('status')
-                                    ->options(function (?Post $record) {
-                                        $user = Auth::user();
-                                        $currentStatus = $record?->status;
-                                        $allowedStatuses = [];
-                                        if ($user && $user->isSuperAdmin()) {
-                                            $allowedStatuses = PostStatus::class;
-                                        } elseif ($user && $user->hasAnyRole(['admin', 'editor'])) {
-                                            $allowedStatuses = PostStatus::class;
-                                        } elseif ($user && $user->hasRole('author')) {
-                                            $allowedStatuses = [
-                                                PostStatus::DRAFT->value => PostStatus::DRAFT->getLabel(),
-                                                PostStatus::PENDING->value => PostStatus::PENDING->getLabel(),
-                                            ];
-                                            if ($currentStatus === PostStatus::PUBLISHED) {
-                                                $allowedStatuses[PostStatus::PUBLISHED->value] = PostStatus::PUBLISHED->getLabel();
-                                            }
-                                        }
-                                        return $allowedStatuses;
-                                    })
-                                    ->default(PostStatus::DRAFT->value)
-                                    ->live()
-                                    ->required()
-                                    ->afterStateUpdated(function (Get $get, Set $set, $state) {
-                                        if ($state === PostStatus::PUBLISHED->value && !$get('published_at')) {
-                                            $set('published_at', now());
-                                        } elseif ($state === PostStatus::DRAFT->value) {
-                                            $set('published_at', null);
-                                            $set('scheduled_at', null);
-                                        }
-                                    })
-                                    ->helperText(function () {
-                                        $user = Auth::user();
-                                        if ($user && $user->hasRole('author')) {
-                                            return 'Authors can create drafts or submit for review. Only editors can publish.';
-                                        }
-                                        return 'Control the publication status of this post.';
-                                    }),
-                                Forms\Components\DatePicker::make('published_at')
-                                    ->label('Publication Date')
-                                    ->required(fn(Get $get): bool => $get('status') === PostStatus::PUBLISHED->value)
-                                    ->placeholder('Select publication date')
-                                    ->helperText('Date when the post will be published')
-                                    ->default(now())
-                                    ->disabled(function () {
-                                        $user = Auth::user();
-                                        return $user && $user->hasRole('author');
-                                    }),
-                                Forms\Components\DateTimePicker::make('scheduled_at')
-                                    ->label('Schedule For')
-                                    ->required(fn(Get $get): bool => $get('status') === PostStatus::PENDING->value)
-                                    ->visible(fn(Get $get): bool => $get('status') === PostStatus::PENDING->value)
-                                    ->placeholder('Select scheduled date')
-                                    ->seconds(false)
-                                    ->timezone('UTC')
-                                    ->hint('Post will be automatically published at this time')
-                                    ->hintIcon('heroicon-m-clock')
-                                    ->disabled(function (?Post $record) {
-                                        $user = Auth::user();
-                                        return $user && $user->hasRole('author') && !$user->can('schedule', $record ?? new Post());
-                                    }),
-                                Forms\Components\Toggle::make('is_featured')
-                                    ->label('Featured Post')
-                                    ->helperText('Featured posts appear prominently on the site')
-                                    ->default(false)
-                                    ->visible(function (?Post $record) {
-                                        $user = Auth::user();
-                                        return $user && $user->can('feature', $record ?? new Post());
-                                    })
-                                    ->disabled(function (?Post $record) {
-                                        $user = Auth::user();
-                                        return !$user || !$user->can('feature', $record ?? new Post());
-                                    }),
-                                Forms\Components\Placeholder::make('analytics')
-                                    ->label('Post Analytics')
-                                    ->content(function (?Post $record): HtmlString {
-                                        if (!$record) {
-                                            return new HtmlString('<span class="text-sm text-gray-500">Analytics will be available after saving</span>');
-                                        }
-                                        return new HtmlString("
-                                            <div class='space-y-2'>
-                                                <div class='flex justify-between'>
-                                                    <span class='text-sm text-gray-600'>Views:</span>
-                                                    <span class='text-sm font-semibold'>{$record->view_count}</span>
-                                                </div>
-                                                <div class='flex justify-between'>
-                                                    <span class='text-sm text-gray-600'>Reading Time:</span>
-                                                    <span class='text-sm font-semibold'>{$record->reading_time} min</span>
-                                                </div>
-                                                <div class='flex justify-between'>
-                                                    <span class='text-sm text-gray-600'>Comments:</span>
-                                                    <span class='text-sm font-semibold'>{$record->comments_count}</span>
-                                                </div>
-                                            </div>
-                                        ");
-                                    })
-                                    ->visible(function (?Post $record) {
-                                        $user = Auth::user();
-                                        return $record && $user && $user->can('viewAnalytics', $record);
-                                    }),
-                            ]),
-                        Forms\Components\Section::make('Categorization')
-                            ->description('Organize and classify this post')
-                            ->icon('heroicon-o-tag')
-                            ->schema([
-                                Forms\Components\Select::make('blog_category_id')
-                                    ->label('Category')
-                                    ->relationship('category', 'name')
-                                    ->searchable()
-                                    ->preload()
-                                    ->createOptionForm([
-                                        Forms\Components\TextInput::make('name')
-                                            ->required(),
-                                    ])
-                                    ->required(),
-                                SpatieTagsInput::make('tags')
-                                    ->label('Tags')
-                                    ->placeholder('Add tags')
-                                    ->helperText('Comma-separated tags to help with search and filtering'),
-                            ]),
-                        Forms\Components\Section::make('Attribution')
-                            ->description('Who created this post')
-                            ->icon('heroicon-o-user')
-                            ->schema([
-                                Forms\Components\Select::make('blog_author_id')
-                                    ->label('Author')
-                                    ->relationship(
-                                        name: 'author',
-                                        modifyQueryUsing: fn(Builder $query) => $query->with('roles')->whereRelation('roles', 'name', '=', 'author'),
-                                    )
-                                    ->getOptionLabelFromRecordUsing(fn(Model $record) => "{$record->firstname} {$record->lastname}")
-                                    ->searchable(['firstname', 'lastname'])
-                                    ->preload()
-                                    ->required()
-                                    ->disabled(function (?Post $record) {
-                                        $user = Auth::user();
-                                        if (!$user) return true;
-                                        if ($user->isSuperAdmin()) {
-                                            return false;
-                                        }
-                                        if (!$record) {
-                                            return !$user->can('change_author_blog::post');
-                                        }
-                                        return !$user->can('changeAuthor', $record);
-                                    })
-                                    ->helperText(function (?Post $record) {
-                                        $user = Auth::user();
-                                        if (!$user) return '';
-                                        if ($user->isSuperAdmin()) {
-                                            return 'Super Admin can change any post author.';
-                                        }
-                                        if (!$user->can('change_author_blog::post')) {
-                                            return 'Only administrators can change the post author.';
-                                        }
-                                        return 'Select the author for this post.';
-                                    }),
-                                Forms\Components\Placeholder::make('audit_trail')
-                                    ->label('')
-                                    ->content(function (Post $record): HtmlString {
-                                        if ($record->exists) {
-                                            $creatorName = $record->creator ? "{$record->creator->firstname} {$record->creator->lastname}" : 'Unknown';
-                                            $updaterName = $record->updater ? "{$record->updater->firstname} {$record->updater->lastname}" : 'Unknown';
-                                            $createdAt = $record->created_at?->format('M d, Y \a\t h:ia');
-                                            $updatedAt = $record->updated_at?->diffForHumans();
-                                            return new HtmlString("
-                                                <div class='space-y-4'>
-                                                    <div>
-                                                        <div class='text-sm font-medium text-gray-400 dark:text-gray-400'>Created by</div>
-                                                        <div class='flex items-center space-x-2'>
-                                                            <span class='text-sm font-bold text-primary-600 dark:text-primary-400'>{$creatorName}</span>
-                                                            <span class='text-xs text-gray-500 dark:text-gray-400'>on {$createdAt}</span>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div class='text-sm font-medium text-gray-400 dark:text-gray-400'>Last updated by</div>
-                                                        <div class='flex items-center space-x-2'>
-                                                            <span class='text-sm font-bold text-primary-600 dark:text-primary-400'>{$updaterName}</span>
-                                                            <span class='text-xs text-gray-500 dark:text-gray-400'>{$updatedAt}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ");
-                                        }
-                                        return new HtmlString("<span class='text-sm text-gray-500 dark:text-gray-400'>Audit information will be available after saving</span>");
-                                    })
-                                    ->visible(fn(string $operation): bool => $operation === 'edit'),
-                            ])
-                            ->visible(function (?Post $record) {
-                                return Auth::user()->can('change_author', $record);
-                            }),
-                        Forms\Components\Section::make('SEO')
-                            ->description('Search Engine Optimization')
-                            ->icon('heroicon-o-magnifying-glass')
-                            ->collapsed()
-                            ->visible(function (?Post $record) {
-                                $user = Auth::user();
-                                return $user && $user->can('manageSeo', $record ?? new Post());
-                            })
-                            ->schema([
-                                Forms\Components\Textarea::make('meta_title')
-                                    ->placeholder('Leave empty to use post title')
-                                    ->maxLength(70)
-                                    ->helperText('Recommended: 50-60 characters')
-                                    ->rows(2),
-                                Forms\Components\Textarea::make('meta_description')
-                                    ->placeholder('Leave empty to use post overview')
-                                    ->maxLength(160)
-                                    ->helperText('Recommended: 150-160 characters')
-                                    ->rows(5),
-                                Forms\Components\Section::make()
+                                Forms\Components\Section::make('Status & Visibility')
+                                    ->description('Control how this post appears')
+                                    ->icon('heroicon-o-eye')
                                     ->schema([
-                                        Forms\Components\Placeholder::make('seo_preview')
-                                            ->label('Google Preview')
-                                            ->content(function (Get $get): HtmlString {
-                                                $title = $get('meta_title') ?: $get('title');
-                                                $description = $get('meta_description') ?: $get('content_overview');
-                                                $url = config('app.url') . '/blog/' . ($get('slug') ?: Str::slug($get('title')));
-                                                return new HtmlString("
-                                                    <div class='text-base font-medium text-primary-600'>{$title}</div>
-                                                    <div class='text-xs text-emerald-600'>{$url}</div>
-                                                    <div class='mt-1 text-sm text-gray-600'>{$description}</div>
-                                                ");
+                                        Forms\Components\Select::make('status')
+                                            ->options(function (?Post $record) {
+                                                $user = Auth::user();
+                                                $currentStatus = $record?->status;
+                                                $allowedStatuses = [];
+                                                if ($user && $user->isSuperAdmin()) {
+                                                    $allowedStatuses = PostStatus::class;
+                                                } elseif ($user && $user->hasAnyRole(['admin', 'editor'])) {
+                                                    $allowedStatuses = PostStatus::class;
+                                                } elseif ($user && $user->hasRole('author')) {
+                                                    $allowedStatuses = [
+                                                        PostStatus::DRAFT->value => PostStatus::DRAFT->getLabel(),
+                                                        PostStatus::PENDING->value => PostStatus::PENDING->getLabel(),
+                                                    ];
+                                                    if ($currentStatus === PostStatus::PUBLISHED) {
+                                                        $allowedStatuses[PostStatus::PUBLISHED->value] = PostStatus::PUBLISHED->getLabel();
+                                                    }
+                                                }
+                                                return $allowedStatuses;
+                                            })
+                                            ->default(PostStatus::DRAFT->value)
+                                            ->live()
+                                            ->required()
+                                            ->afterStateUpdated(function (Get $get, Set $set, $state) {
+                                                if ($state === PostStatus::PUBLISHED->value && !$get('published_at')) {
+                                                    $set('published_at', now());
+                                                } elseif ($state === PostStatus::DRAFT->value) {
+                                                    $set('published_at', null);
+                                                    $set('scheduled_at', null);
+                                                }
+                                            })
+                                            ->helperText(function () {
+                                                $user = Auth::user();
+                                                if ($user && $user->hasRole('author')) {
+                                                    return 'Authors can create drafts or submit for review. Only editors can publish.';
+                                                }
+                                                return 'Control the publication status of this post.';
                                             }),
+                                        Forms\Components\DatePicker::make('published_at')
+                                            ->label('Publication Date')
+                                            ->required(fn(Get $get): bool => $get('status') === PostStatus::PUBLISHED->value)
+                                            ->placeholder('Select publication date')
+                                            ->helperText('Date when the post will be published')
+                                            ->default(now())
+                                            ->disabled(function () {
+                                                $user = Auth::user();
+                                                return $user && $user->hasRole('author');
+                                            }),
+                                        Forms\Components\DateTimePicker::make('scheduled_at')
+                                            ->label('Schedule For')
+                                            ->required(fn(Get $get): bool => $get('status') === PostStatus::PENDING->value)
+                                            ->visible(fn(Get $get): bool => $get('status') === PostStatus::PENDING->value)
+                                            ->placeholder('Select scheduled date')
+                                            ->seconds(false)
+                                            ->timezone('UTC')
+                                            ->hint('Post will be automatically published at this time')
+                                            ->hintIcon('heroicon-m-clock')
+                                            ->disabled(function (?Post $record) {
+                                                $user = Auth::user();
+                                                return $user && $user->hasRole('author') && !$user->can('schedule', $record ?? new Post());
+                                            }),
+                                        Forms\Components\Toggle::make('is_featured')
+                                            ->label('Featured Post')
+                                            ->helperText('Featured posts appear prominently on the site')
+                                            ->default(false)
+                                            ->visible(function (?Post $record) {
+                                                $user = Auth::user();
+                                                return $user && $user->can('feature', $record ?? new Post());
+                                            })
+                                            ->disabled(function (?Post $record) {
+                                                $user = Auth::user();
+                                                return !$user || !$user->can('feature', $record ?? new Post());
+                                            }),
+                                        Forms\Components\Placeholder::make('analytics')
+                                            ->label('Post Analytics')
+                                            ->content(function (?Post $record): HtmlString {
+                                                if (!$record) {
+                                                    return new HtmlString('<span class="text-sm text-gray-500">Analytics will be available after saving</span>');
+                                                }
+                                                return new HtmlString("
+                                                    <div class='space-y-2'>
+                                                        <div class='flex justify-between'>
+                                                            <span class='text-sm text-gray-600'>Views:</span>
+                                                            <span class='text-sm font-semibold'>{$record->view_count}</span>
+                                                        </div>
+                                                        <div class='flex justify-between'>
+                                                            <span class='text-sm text-gray-600'>Reading Time:</span>
+                                                            <span class='text-sm font-semibold'>{$record->reading_time} min</span>
+                                                        </div>
+                                                        <div class='flex justify-between'>
+                                                            <span class='text-sm text-gray-600'>Comments:</span>
+                                                            <span class='text-sm font-semibold'>{$record->comments_count}</span>
+                                                        </div>
+                                                    </div>
+                                                ");
+                                            })
+                                            ->visible(function (?Post $record) {
+                                                $user = Auth::user();
+                                                return $record && $user && $user->can('viewAnalytics', $record);
+                                            }),
+                                    ]),
+                                Forms\Components\Section::make('Categorization')
+                                    ->description('Organize and classify this post')
+                                    ->icon('heroicon-o-tag')
+                                    ->schema([
+                                        Forms\Components\Select::make('blog_category_id')
+                                            ->label('Category')
+                                            ->relationship('category', 'name')
+                                            ->searchable()
+                                            ->preload()
+                                            ->createOptionForm([
+                                                Forms\Components\TextInput::make('name')
+                                                    ->required(),
+                                            ])
+                                            ->required(),
+                                        SpatieTagsInput::make('tags')
+                                            ->label('Tags')
+                                            ->placeholder('Add tags')
+                                            ->helperText('Comma-separated tags to help with search and filtering'),
+                                    ]),
+                                Forms\Components\Section::make('Attribution')
+                                    ->description('Who created this post')
+                                    ->icon('heroicon-o-user')
+                                    ->schema([
+                                        Forms\Components\Select::make('blog_author_id')
+                                            ->label('Author')
+                                            ->relationship(
+                                                name: 'author',
+                                                modifyQueryUsing: fn(Builder $query) => $query->with('roles')->whereRelation('roles', 'name', '=', 'author'),
+                                            )
+                                            ->getOptionLabelFromRecordUsing(fn(Model $record) => "{$record->firstname} {$record->lastname}")
+                                            ->searchable(['firstname', 'lastname'])
+                                            ->preload()
+                                            ->required()
+                                            ->disabled(function (?Post $record) {
+                                                $user = Auth::user();
+                                                if (!$user) return true;
+                                                if ($user->isSuperAdmin()) {
+                                                    return false;
+                                                }
+                                                if (!$record) {
+                                                    return !$user->can('change_author_blog::post');
+                                                }
+                                                return !$user->can('changeAuthor', $record);
+                                            })
+                                            ->helperText(function (?Post $record) {
+                                                $user = Auth::user();
+                                                if (!$user) return '';
+                                                if ($user->isSuperAdmin()) {
+                                                    return 'Super Admin can change any post author.';
+                                                }
+                                                if (!$user->can('change_author_blog::post')) {
+                                                    return 'Only administrators can change the post author.';
+                                                }
+                                                return 'Select the author for this post.';
+                                            }),
+                                        Forms\Components\Placeholder::make('audit_trail')
+                                            ->label('')
+                                            ->content(function (Post $record): HtmlString {
+                                                if ($record->exists) {
+                                                    $creatorName = $record->creator ? "{$record->creator->firstname} {$record->creator->lastname}" : 'Unknown';
+                                                    $updaterName = $record->updater ? "{$record->updater->firstname} {$record->updater->lastname}" : 'Unknown';
+                                                    $createdAt = $record->created_at?->format('M d, Y \a\t h:ia');
+                                                    $updatedAt = $record->updated_at?->diffForHumans();
+                                                    return new HtmlString("
+                                                        <div class='space-y-4'>
+                                                            <div>
+                                                                <div class='text-sm font-medium text-gray-400 dark:text-gray-400'>Created by</div>
+                                                                <div class='flex items-center space-x-2'>
+                                                                    <span class='text-sm font-bold text-primary-600 dark:text-primary-400'>{$creatorName}</span>
+                                                                    <span class='text-xs text-gray-500 dark:text-gray-400'>on {$createdAt}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <div class='text-sm font-medium text-gray-400 dark:text-gray-400'>Last updated by</div>
+                                                                <div class='flex items-center space-x-2'>
+                                                                    <span class='text-sm font-bold text-primary-600 dark:text-primary-400'>{$updaterName}</span>
+                                                                    <span class='text-xs text-gray-500 dark:text-gray-400'>{$updatedAt}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ");
+                                                }
+                                                return new HtmlString("<span class='text-sm text-gray-500 dark:text-gray-400'>Audit information will be available after saving</span>");
+                                            })
+                                            ->visible(fn(string $operation): bool => $operation === 'edit'),
                                     ])
-                                    ->compact(),
-                                Forms\Components\Actions::make([
-                                    Forms\Components\Actions\Action::make('generateSeoMetadata')
-                                        ->label('Generate SEO Metadata')
-                                        ->icon('heroicon-m-sparkles')
-                                        ->action(function (Get $get, Set $set) {
-                                            $title = $get('title');
-                                            $overview = $get('content_overview');
-                                            // Generate meta title (up to 60 chars)
-                                            $set('meta_title', Str::limit($title, 60));
-                                            // Generate meta description (up to 155 chars)
-                                            if ($overview) {
-                                                $set('meta_description', Str::limit($overview, 155));
-                                            }
-                                            Notification::make()
-                                                ->title('SEO metadata generated')
-                                                ->success()
-                                                ->send();
-                                        }),
-                                    Forms\Components\Actions\Action::make('previewPost')
-                                        ->label('Preview Post')
-                                        ->icon('heroicon-m-eye')
-                                        ->color('info')
-                                        ->action(function (Get $get) {
-                                            $previewUrl = route('blog.preview', [
-                                                'title' => $get('title'),
-                                                'content' => $get('content_raw'),
-                                                'excerpt' => $get('content_overview'),
-                                                'meta_description' => $get('meta_description') ?: $get('content_overview'),
-                                                'slug' => $get('slug'),
-                                                'featured_image' => '', // You can add featured image URL logic here
-                                            ]);
-                                            return redirect()->to($previewUrl);
-                                        })
-                                        ->openUrlInNewTab()
-                                        ->visible(fn(Get $get): bool => !empty($get('title')) && !empty($get('content_raw'))),
-                                ])->columnSpanFull(),
-                            ]),
-                    ])
-                    ->columnSpan(['lg' => 1]),
+                                    ->visible(function (?Post $record) {
+                                        return Auth::user()->can('change_author', $record);
+                                    }),
+                                Forms\Components\Section::make('SEO')
+                                    ->description('Search Engine Optimization')
+                                    ->icon('heroicon-o-magnifying-glass')
+                                    ->collapsed()
+                                    ->visible(function (?Post $record) {
+                                        $user = Auth::user();
+                                        return $user && $user->can('manageSeo', $record ?? new Post());
+                                    })
+                                    ->schema([
+                                        Forms\Components\Textarea::make('meta_title')
+                                            ->placeholder('Leave empty to use post title')
+                                            ->maxLength(70)
+                                            ->helperText('Recommended: 50-60 characters')
+                                            ->rows(2),
+                                        Forms\Components\Textarea::make('meta_description')
+                                            ->placeholder('Leave empty to use post overview')
+                                            ->maxLength(160)
+                                            ->helperText('Recommended: 150-160 characters')
+                                            ->rows(5),
+                                        Forms\Components\Section::make()
+                                            ->schema([
+                                                Forms\Components\Placeholder::make('seo_preview')
+                                                    ->label('Google Preview')
+                                                    ->content(function (Get $get): HtmlString {
+                                                        $title = $get('meta_title') ?: $get('title');
+                                                        $description = $get('meta_description') ?: $get('content_overview');
+                                                        $url = config('app.url') . '/blog/' . ($get('slug') ?: Str::slug($get('title')));
+                                                        return new HtmlString("
+                                                            <div class='text-base font-medium text-primary-600'>{$title}</div>
+                                                            <div class='text-xs text-emerald-600'>{$url}</div>
+                                                            <div class='mt-1 text-sm text-gray-600'>{$description}</div>
+                                                        ");
+                                                    }),
+                                            ])
+                                            ->compact(),
+                                        Forms\Components\Actions::make([
+                                            Forms\Components\Actions\Action::make('generateSeoMetadata')
+                                                ->label('Generate SEO Metadata')
+                                                ->icon('heroicon-m-sparkles')
+                                                ->action(function (Get $get, Set $set) {
+                                                    $title = $get('title');
+                                                    $overview = $get('content_overview');
+                                                    // Generate meta title (up to 60 chars)
+                                                    $set('meta_title', Str::limit($title, 60));
+                                                    // Generate meta description (up to 155 chars)
+                                                    if ($overview) {
+                                                        $set('meta_description', Str::limit($overview, 155));
+                                                    }
+                                                    Notification::make()
+                                                        ->title('SEO metadata generated')
+                                                        ->success()
+                                                        ->send();
+                                                }),
+                                            Forms\Components\Actions\Action::make('previewPost')
+                                                ->label('Preview Post')
+                                                ->icon('heroicon-m-eye')
+                                                ->color('info')
+                                                ->action(function (Get $get) {
+                                                    $previewUrl = route('blog.preview', [
+                                                        'title' => $get('title'),
+                                                        'content' => $get('content_raw'),
+                                                        'excerpt' => $get('content_overview'),
+                                                        'meta_description' => $get('meta_description') ?: $get('content_overview'),
+                                                        'slug' => $get('slug'),
+                                                        'featured_image' => '', // You can add featured image URL logic here
+                                                    ]);
+                                                    return redirect()->to($previewUrl);
+                                                })
+                                                ->openUrlInNewTab()
+                                                ->visible(fn(Get $get): bool => !empty($get('title')) && !empty($get('content_raw'))),
+                                        ])->columnSpanFull(),
+                                    ]),
+                            ])
+                            ->columnSpan(['lg' => 1]),
             ])
             ->columns(3);
     }

@@ -1,18 +1,4 @@
 <div>
-    <style>
-        .modal-backdrop-custom {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, .55);
-            z-index: 9999;
-            overflow-y: auto;
-            display: none;
-        }
-
-        .modal-backdrop-custom.show {
-            display: block;
-        }
-    </style>
     <section class="section-box">
         <div class="box-head-single">
             <div class="container">
@@ -52,7 +38,9 @@
                     <div class="single-apply-jobs">
                         <div class="row align-items-center">
                             <div class="col-md-5">
-                                <a href="#" class="btn btn-default mr-15 js-open-apply-modal">Apply now</a>
+                                <a href="{{ route('jobs.apply.form', $job->slug) }}" class="btn btn-default mr-15">
+                                    Apply Now
+                                </a>
                             </div>
                             <div class="col-md-7 text-lg-end social-share">
                                 <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->full()) }}"
@@ -86,7 +74,9 @@
                         </div>
 
                         <div class="text-start mt-20">
-                            <a href="#" class="btn btn-default mr-10 js-open-apply-modal">Apply now</a>
+                            <a href="{{ route('jobs.apply.form', $job->slug) }}" class="btn btn-default mr-15">
+                                Apply Now
+                            </a>
                         </div>
 
                         <div class="sidebar-list-job">
@@ -159,228 +149,5 @@
             </div>
         </div>
     </section>
-
-    {{-- Apply Modal (plain Blade, always rendered, toggled via JS) --}}
-    <div class="modal-backdrop-custom" id="applyModalBackdrop">
-        <div class="bg-white p-4" style="max-width: 720px; margin: 5vh auto; border-radius: 12px;" id="applyModalBox">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="m-0">Apply for: {{ $job->title }}</h5>
-            </div>
-
-            <div class="alert alert-danger d-none" id="applyFormGeneralError"></div>
-
-            <form id="applyJobForm" action="{{ route('jobs.apply', $job->slug) }}" method="POST"
-                enctype="multipart/form-data" novalidate>
-                @csrf
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">First name</label>
-                        <input type="text" name="first_name" class="form-control" minlength="2" maxlength="120"
-                            required>
-                        <small class="text-danger error-text" data-error-for="first_name"></small>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Last name</label>
-                        <input type="text" name="last_name" class="form-control" minlength="2" maxlength="120"
-                            required>
-                        <small class="text-danger error-text" data-error-for="last_name"></small>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" maxlength="190" required>
-                        <small class="text-danger error-text" data-error-for="email"></small>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Phone</label>
-                        <input type="text" name="phone" class="form-control" maxlength="50" required>
-                        <small class="text-danger error-text" data-error-for="phone"></small>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Nationality</label>
-                        <input type="text" name="nationality" class="form-control" maxlength="120" required>
-                        <small class="text-danger error-text" data-error-for="nationality"></small>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">CV (PDF/DOC/DOCX, max 5MB)</label>
-                        <input type="file" name="cv" class="form-control" accept=".pdf,.doc,.docx" required>
-                        <small class="text-danger error-text" data-error-for="cv"></small>
-                    </div>
-
-                    <div class="col-12 mb-3">
-                        <label class="form-label">Cover letter / Message (optional)</label>
-                        <textarea name="cover_letter" class="form-control" rows="4" maxlength="2000"></textarea>
-                        <small class="text-danger error-text" data-error-for="cover_letter"></small>
-                    </div>
-                </div>
-
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-default" id="applySubmitBtn">
-                        <span id="applySubmitBtnText">Submit Application</span>
-                    </button>
-                    <button type="button" class="btn btn-border" id="applyCancelBtn">
-                        Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
 </div>
 <!-- End Content -->
-
-@push('js')
-    <script>
-        $(function() {
-            var $backdrop = $('#applyModalBackdrop');
-            var $form = $('#applyJobForm');
-            var $submitBtn = $('#applySubmitBtn');
-            var $submitBtnText = $('#applySubmitBtnText');
-            var $generalError = $('#applyFormGeneralError');
-            var $successAlert = $('#applySuccessAlert');
-
-            function clearErrors() {
-                $('.error-text').text('');
-                $generalError.addClass('d-none').text('');
-            }
-
-            function openModal() {
-                clearErrors();
-                $form.trigger('reset');
-                $backdrop.addClass('show');
-            }
-
-            function closeModal() {
-                $backdrop.removeClass('show');
-            }
-
-            $(document).on('click', '.js-open-apply-modal', function(e) {
-                e.preventDefault();
-                openModal();
-            });
-
-            $('#applyCancelBtn').on('click', function() {
-                closeModal();
-            });
-
-            // Close only when clicking the dark backdrop itself, not inside the modal box
-            $backdrop.on('click', function(e) {
-                if (e.target === this) {
-                    closeModal();
-                }
-            });
-
-            function setError(field, message) {
-                $('[data-error-for="' + field + '"]').text(message);
-            }
-
-            function validateForm() {
-                clearErrors();
-                var valid = true;
-
-                var firstName = $.trim($form.find('[name="first_name"]').val());
-                if (firstName.length < 2) {
-                    setError('first_name', 'First name must be at least 2 characters.');
-                    valid = false;
-                }
-
-                var lastName = $.trim($form.find('[name="last_name"]').val());
-                if (lastName.length < 2) {
-                    setError('last_name', 'Last name must be at least 2 characters.');
-                    valid = false;
-                }
-
-                var email = $.trim($form.find('[name="email"]').val());
-                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email)) {
-                    setError('email', 'Please enter a valid email address.');
-                    valid = false;
-                }
-
-                var phone = $.trim($form.find('[name="phone"]').val());
-                if (phone.length < 6) {
-                    setError('phone', 'Please enter a valid phone number.');
-                    valid = false;
-                }
-
-                var nationality = $.trim($form.find('[name="nationality"]').val());
-                if (nationality.length < 2) {
-                    setError('nationality', 'Nationality is required.');
-                    valid = false;
-                }
-
-                var cvInput = $form.find('[name="cv"]')[0];
-                var cv = cvInput.files[0];
-                if (!cv) {
-                    setError('cv', 'Please upload your CV.');
-                    valid = false;
-                } else {
-                    var allowedExt = ['pdf', 'doc', 'docx'];
-                    var ext = cv.name.split('.').pop().toLowerCase();
-                    if ($.inArray(ext, allowedExt) === -1) {
-                        setError('cv', 'Only PDF, DOC, or DOCX files are allowed.');
-                        valid = false;
-                    } else if (cv.size > 5 * 1024 * 1024) {
-                        setError('cv', 'File size must not exceed 5MB.');
-                        valid = false;
-                    }
-                }
-
-                var coverLetter = $form.find('[name="cover_letter"]').val();
-                if (coverLetter.length > 2000) {
-                    setError('cover_letter', 'Cover letter must not exceed 2000 characters.');
-                    valid = false;
-                }
-
-                return valid;
-            }
-
-            $form.on('submit', function(e) {
-                e.preventDefault();
-
-                if (!validateForm()) {
-                    return;
-                }
-
-                $submitBtn.prop('disabled', true);
-                $submitBtnText.text('Submitting...');
-
-                var formData = new FormData(this);
-
-                $.ajax({
-                    url: $form.attr('action'),
-                    method: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    dataType: 'json',
-                }).done(function(data) {
-                    closeModal();
-                    $form.trigger('reset');
-                    $successAlert.removeClass('d-none').text(data.message ||
-                        'Your application has been submitted successfully.');
-                    $('html, body').animate({
-                        scrollTop: 0
-                    }, 300);
-                }).fail(function(xhr) {
-                    if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
-                        var errors = xhr.responseJSON.errors;
-                        $.each(errors, function(field, messages) {
-                            setError(field, messages[0]);
-                        });
-                    } else {
-                        $generalError.removeClass('d-none').text(
-                            'Something went wrong. Please try again.');
-                    }
-                }).always(function() {
-                    $submitBtn.prop('disabled', false);
-                    $submitBtnText.text('Submit Application');
-                });
-            });
-        });
-    </script>
-@endpush

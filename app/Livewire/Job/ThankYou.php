@@ -1,28 +1,42 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Job;
 
+use App\Models\JobApplications;
 use App\Models\Opening;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
-class JobDetails extends Component
+class ThankYou extends Component
 { 
+    use WithFileUploads;
+
     public $slug;
     public $job;
+    public $application;
 
-    public function mount($slug)
+    public function mount($slug = 'data-entry-specialist')
     {
-        $this->job = Opening::where('slug', $slug)->where('status', 1)->with('employer', 'job_category')->first();
+        $this->job = Opening::where('slug', $slug)
+            ->where('status', 1)
+            ->with('employer', 'job_category')
+            ->first();
 
-        if (!$this->job) {
-            abort(404);
+        if(session()->has('application_id')){
+            $applicationId = session('application_id');
+            // $this->application = JobApplications::findOrFail(36);
+            $this->application = JobApplications::findOrFail($applicationId);
+        }
+        else{
+            return redirect()->route('jobs.show', $slug);
         }
     }
 
     public function render()
     {
-        return view('livewire.job-details')->layout('components.frontend.main', [
+        return view('livewire.job.thank-you')->layout('components.frontend.main',
+        [
             'pageType' => 'job_posting',
             'pageTitle' => $this->job->meta_title ?? 'Jobs in '. $this->job->location .' | '. $this->job->title.' | Apply Now - Dubaijobfinder',
             'pageDescription' => $this->job->meta_description ?? 'Find the latest '. $this->job->title.' jobs in '. $this->job->location .'. Apply online for urgent vacancies and career opportunities on Dubaijobfinder.',

@@ -3,6 +3,8 @@
 use App\Livewire\Employers;
 use App\Livewire\Faqs;
 use App\Livewire\JobDetails;
+use App\Livewire\Job\Apply;
+use App\Livewire\Job\ThankYou;
 use App\Livewire\JobsComponent;
 use App\Livewire\Remainder;
 use App\Livewire\SuperDuper\BlogList;
@@ -14,7 +16,6 @@ use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Lab404\Impersonate\Services\ImpersonateManager;
-use App\Http\Controllers\JobApplicationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,13 @@ Route::get('/about-us', function () {
     }
     //  return view('components.superduper.pages.about');
 })->name('about-us');
+
+
+Route::get('/job/{slug}/apply', Apply::class)
+    ->name('jobs.apply.form');
+
+Route::get('/jobs/{slug}/thank-you', ThankYou::class)
+    ->name('jobs.apply.thankyou');
 
 Route::get('/jobs', JobsComponent::class)->name('jobs');
 Route::get('/jobs/{location}', JobsComponent::class)->name('jobs.location');
@@ -134,4 +142,3 @@ Route::get('/{slug}', function ($slug) {
     ->where('slug', '^(?!about|contact).*$')
     ->name('page');
 
-Route::post('/jobs/{slug}/apply', [JobApplicationController::class, 'apply'])->name('jobs.apply');
