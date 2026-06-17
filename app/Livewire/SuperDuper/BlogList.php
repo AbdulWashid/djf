@@ -58,9 +58,7 @@ class BlogList extends Component
                 ->select(['id', 'title', 'slug', 'blog_author_id', 'blog_category_id', 'published_at', 'content_overview'])
                 ->with([
                     'category:id,name,slug',
-                    'media' => function ($query) {
-                        $query->where('collection_name', 'featured');
-                    },
+                    'media',
                     'author',
                 ])
                 ->orderBy('published_at', 'desc')

@@ -291,9 +291,8 @@ class Post extends Model implements HasMedia
     {
         // Get all the tags of the current post
         $tags = $this->tags->pluck('name')->toArray();
-
         // Find posts with the same category or tags
-        return self::where('id', '!=', $this->id)
+        return self::with('media')->where('id', '!=', $this->id)
             ->where(function ($query) use ($tags) {
                 $query->where('blog_category_id', $this->blog_category_id)
                     ->orWhereHas('tags', function ($q) use ($tags) {

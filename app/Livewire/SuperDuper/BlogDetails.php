@@ -12,9 +12,9 @@ class BlogDetails extends Component
     public $post;
     public $slug;
     public $relatedPosts = [];
-    public $previousPost;
+    // public $previousPost;
     public $isPreview;
-    public $nextPost;
+    // public $nextPost;
     public $recentPosts = [];
     public $categories = [];
     public $popularTags = [];
@@ -62,9 +62,9 @@ class BlogDetails extends Component
         }
 
         // Load related/navigation posts
-        $this->relatedPosts = $this->post->getRelatedPosts(6);
-        $this->previousPost = $this->post->getPreviousPost();
-        $this->nextPost = $this->post->getNextPost();
+        $this->relatedPosts = $this->post->getRelatedPosts(4);
+        // $this->previousPost = $this->post->getPreviousPost();
+        // $this->nextPost = $this->post->getNextPost();
 
         // Set SEO metadata
         view()->share('canonical', $this->post->getCanonicalUrl());
@@ -84,9 +84,7 @@ class BlogDetails extends Component
                 ->select(['id', 'title', 'slug','blog_author_id', 'blog_category_id', 'published_at', 'content_overview'])
                 ->with([
                     'category:id,name,slug',
-                    'media' => function ($query) {
-                        $query->where('collection_name', 'featured');
-                    },
+                    'media',
                     'author',
                 ])
                 ->orderBy('published_at', 'desc')
@@ -223,8 +221,8 @@ class BlogDetails extends Component
     {
         return view('livewire.blog.detail', [
             'post' => $this->post,
-            'previousPost' => $this->previousPost,
-            'nextPost' => $this->nextPost,
+            // 'previousPost' => $this->previousPost,
+            // 'nextPost' => $this->nextPost,
             'relatedPosts' => $this->relatedPosts,
             'recentPosts' => $this->recentPosts,
             'categories' => $this->categories,

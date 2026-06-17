@@ -193,17 +193,17 @@
                                                     <div class="card-grid-3 hover-up p-15">
                                                         <a href="{{ $related->getUrl() }}">
                                                             <figure class="thumb mr-15">
-                                                                @if ($related->hasSmallImage())
-                                                                    <img src="{{ $related->getSmallImageUrl() }}"
+                                                                @if ($related->hasLargeImage())
+                                                                    <img src="{{ $related->getLargeImageUrl() }}"
                                                                         alt="{{ $related->title }}" />
                                                                 @else
-                                                                    <img src="https://placehold.co/600x600?text={{ substr($related->title, 0, 10) }}"
+                                                                    <img src="https://placehold.co/1600x900?text={{ substr($related->title, 0, 10) }}"
                                                                         alt="{{ $related->title }}" />
                                                                 @endif
                                                             </figure>
                                                         </a>
                                                         <h6 class="heading-md mt-15 mb-0"><a
-                                                                href="{{ $related->getUrl() }}">{{ $related->title }}</a>
+                                                                href="{{ $related->getUrl() }}">{{ Str::limit($related->title, 50) }}</a>
                                                         </h6>
                                                     </div>
                                                 </div>
@@ -224,8 +224,8 @@
                             @foreach ($recentPosts as $recentPost)
                                 <div class="post-list-small-item d-flex align-items-center">
                                     <figure class="thumb mr-15">
-                                        @if ($recentPost->hasSmallImage())
-                                            <img src="{{ $recentPost->getSmallImageUrl() }}"
+                                        @if ($recentPost->hasLargeImage())
+                                            <img src="{{ $recentPost->getLargeImageUrl() }}"
                                                 alt="{{ $recentPost->title }}" />
                                         @else
                                             <img src="https://placehold.co/600x600?text={{ substr($recentPost->title, 0, 10) }}"
@@ -233,8 +233,8 @@
                                         @endif
                                     </figure>
                                     <div class="content">
-                                        <h5><a href="{{ $recentPost->getUrl() }}"
-                                                wire:click="trackView('{{ $recentPost->id }}')">{{ $recentPost->title }}</a>
+                                        <h5 class="h5"><a href="{{ $recentPost->getUrl() }}"
+                                                wire:click="trackView('{{ $recentPost->id }}')">{{ Str::limit($recentPost->title, 50) }}</a>
                                         </h5>
                                         <div class="post-meta text d-flex align-items-end flex-column">
                                             <div class="author">
