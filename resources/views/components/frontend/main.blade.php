@@ -220,16 +220,22 @@
 
         $structuredData[] = $organizationSchema;
 
+        if (!empty($schemaData)) {
+            if (is_array($schemaData) && array_is_list($schemaData)) {
+                if (isset($schemaData[0])) {
+                    $structuredData[] = $schemaData[0];
+                }
+            } else {
+                $structuredData[] = $schemaData;
+            }
+        }
+
         if (!empty($breadcrumbItems) && is_array($breadcrumbItems)) {
             $structuredData[] = $buildBreadcrumbSchema($breadcrumbItems);
         }
 
-        if (!empty($schemaData)) {
-            if (is_array($schemaData) && array_is_list($schemaData)) {
-                $structuredData = array_merge($structuredData, $schemaData);
-            } else {
-                $structuredData[] = $schemaData;
-            }
+        if (!empty($schemaData) && is_array($schemaData) && array_is_list($schemaData) && isset($schemaData[1])) {
+            $structuredData[] = $schemaData[1];
         }
     @endphp
     {{-- @dd($seoSettings) --}}

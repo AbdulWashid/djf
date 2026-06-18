@@ -29,11 +29,14 @@ class JobDetails extends Component
             'metaKeywords' => $this->job->meta_keywords,
             'ogTags' => $this->job->og_tags,
             'twitterTags' => $this->job->twitter_tags,
-            'schemaData' => [$this->generateJobPostingSchema()],
+            'schemaData' => array_filter([
+                $this->generateJobPostingSchema(),
+                $this->generateFaqSchema(),
+            ]),
         ]);
     }
 
-   protected function generateJobPostingSchema(): array
+    protected function generateJobPostingSchema(): array
     {
         $addressParts = array_map('trim', explode(',', (string) ($this->job->employer->address ?? '')));
 
@@ -63,8 +66,8 @@ class JobDetails extends Component
                             'currency' => 'AED',
                             'value' => [
                                 '@type' => 'QuantitativeValue',
-                                'minValue' => (int) $min,
-                                'maxValue' => (int) ($max ?: $min),
+                                'minValue' => $min,
+                                'maxValue' => ($max ?: $min),
                                 'unitText' => 'YEAR',
                             ],
                         ];
@@ -94,5 +97,38 @@ class JobDetails extends Component
 
             'url' => route('jobs.show', $this->job->slug),
         ], fn ($value) => filled($value));
+    }
+    protected function generateFaqSchema(): ?array
+    {
+        $faqs = \App\Models\Faq::active()
+            ->where('section', 'jobs')
+            ->get();
+
+        if ($faqs->isEmpty()) {
+            return null;
+        }
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'FAQPage',
+            'mainEntity' => $faqs->map(function ($faq) {
+                return [
+                    '@type' => 'Question',
+                    'name' => strtr($faq->question, [
+                        '{category-name}' => $this->job->title,
+                        '{place-name}' => $this->job->location,
+                    ]),
+                    'acceptedAnswer' => [
+                        '@type' => 'Answer',
+                        'text' => strip_tags(
+                            strtr($faq->answer, [
+                                '{category-name}' => $this->job->title,
+                                '{place-name}' => $this->job->location,
+                            ])
+                        ),
+                    ],
+                ];
+            })->values()->all(),
+        ];
     }
 }
