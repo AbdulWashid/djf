@@ -28,8 +28,8 @@
     @if (isset($faqsSchema))
         @push('schema')
             <script>
-                ques = $('.accordion-button');
-                ans = $('.accordion-body');
+                const ques = document.querySelectorAll('.accordion-button');
+                const ans = document.querySelectorAll('.accordion-body');
             </script>
             <script type="application/ld+json">
                     {!! $faqsSchema !!}
