@@ -1,34 +1,9 @@
 # =========================
 # DubaiJobFinder.net Robots.txt
+# Last updated: June 2026
 # =========================
 
-# Allowed AI Search Crawlers
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: OAI-SearchBot
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: Applebot
-Allow: /
-
-# Allowed Search Engines
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: DuckDuckBot
-Allow: /
-
-User-agent: YandexBot
-Allow: /
-
-# Block Aggressive AI Training Crawlers
+# Block AI training crawlers
 User-agent: GPTBot
 Disallow: /
 
@@ -53,41 +28,59 @@ Disallow: /
 User-agent: Meta-WebIndexer
 Disallow: /
 
-User-agent: PetalBot
-Disallow: /
-
 User-agent: TikTokSpider
 Disallow: /
 
-# Global Rules
-User-agent: *
+# Allow AI search citation bots
+User-agent: ChatGPT-User
+Allow: /
 
-Disallow: /cdn-cgi/l/email-protection
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# Googlebot — specific rules
+User-agent: Googlebot
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /cdn-cgi/
 Disallow: /*?filter=
 Disallow: /*?sort=
 Disallow: /*?job_type=
 Disallow: /*?salary=
 Disallow: /*?location=
-Disallow: /*?page=
 Disallow: /*?q=
 Disallow: /*?category=
-
 Allow: /
-Allow: /assets/
-Allow: /storage/
-Allow: /vendor/
-Allow: /livewire/
-Allow: /css/
-Allow: /js/
-Allow: /images/
 
-# Block internal and sensitive areas
+# Bingbot — specific rules
+User-agent: Bingbot
 Disallow: /admin/
 Disallow: /dashboard/
 Disallow: /api/
+Disallow: /cdn-cgi/
+Allow: /
 
-# Block low-value dynamic URL parameters only when necessary (keep minimal)
-# If you need to block specific query-parameter combinations, add them here.
+# Catch-all for all other crawlers
+User-agent: *
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /cdn-cgi/
+Disallow: /*?filter=
+Disallow: /*?sort=
+Disallow: /*?job_type=
+Disallow: /*?salary=
+Disallow: /*?location=
+Disallow: /*?q=
+Disallow: /*?category=
+Allow: /
 
 # Sitemap
 Sitemap: https://dubaijobfinder.net/sitemap.xml
