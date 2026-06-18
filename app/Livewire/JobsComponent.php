@@ -182,6 +182,7 @@ class JobsComponent extends Component
             'pageType' => 'job_listing',
             'pageTitle' => str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? JobCategory::find($this->category)->name : ''], $this->pageTitle),
             'pageDescription' => str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? JobCategory::find($this->category)->name : ''], $this->pageDescription),
+            'schemaData' => $this->buildSchemas(),
         ]);
     }
 

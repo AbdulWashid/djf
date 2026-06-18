@@ -26,7 +26,7 @@
     @endforelse
 
     @if (isset($faqsSchema))
-        @push('js')
+        @push('schema')
             <script>
                 ques = $('.accordion-button');
                 ans = $('.accordion-body');

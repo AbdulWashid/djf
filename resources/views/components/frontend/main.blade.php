@@ -373,6 +373,7 @@
             });
         });
     </script>
+    @stack('schema')
 </head>
 
 <body>

@@ -33,7 +33,7 @@ class JobDetails extends Component
         ]);
     }
 
-    protected function generateJobPostingSchema(): array
+   protected function generateJobPostingSchema(): array
     {
         $addressParts = array_map('trim', explode(',', (string) ($this->job->employer->address ?? '')));
 
@@ -43,13 +43,43 @@ class JobDetails extends Component
             'title' => $this->job->title,
             'description' => strip_tags($this->job->description ?? ''),
             'datePosted' => $this->job->created_at?->toIso8601String(),
+
+            // Job Expiry Date
+            'validThrough' => $this->job->created_at?->copy()->addMonth()->format('Y-m-d'),
+
             'employmentType' => $this->job->job_type?->getLabel(),
+
+            // Salary Information
+            'baseSalary' => filled($this->job->salary_range)
+                    ? (function () {
+                        [$min, $max] = array_pad(
+                            explode('-', str_replace(' ', '', $this->job->salary_range)),
+                            2,
+                            null
+                        );
+
+                        return [
+                            '@type' => 'MonetaryAmount',
+                            'currency' => 'AED',
+                            'value' => [
+                                '@type' => 'QuantitativeValue',
+                                'minValue' => (int) $min,
+                                'maxValue' => (int) ($max ?: $min),
+                                'unitText' => 'YEAR',
+                            ],
+                        ];
+                    })()
+                    : null,
+
             'hiringOrganization' => array_filter([
                 '@type' => 'Organization',
                 'name' => $this->job->employer->name ?? config('app.name'),
                 'sameAs' => $this->job->employer->website ?? null,
-                'logo' => $this->job->employer->logo ? Storage::url($this->job->employer->logo) : null,
+                'logo' => $this->job->employer->logo
+                    ? Storage::url($this->job->employer->logo)
+                    : null,
             ], fn ($value) => filled($value)),
+
             'jobLocation' => array_filter([
                 '@type' => 'Place',
                 'address' => array_filter([
@@ -57,9 +87,11 @@ class JobDetails extends Component
                     'streetAddress' => $addressParts[0] ?? null,
                     'addressLocality' => $addressParts[1] ?? ($this->job->location ?? null),
                     'addressRegion' => $addressParts[2] ?? null,
-                    'addressCountry' => $addressParts[3] ?? null,
+                    'postalCode' => $this->job->employer->postal_code ?? null,
+                    'addressCountry' => $addressParts[3] ?? 'AE',
                 ], fn ($value) => filled($value)),
             ], fn ($value) => filled($value)),
+
             'url' => route('jobs.show', $this->job->slug),
         ], fn ($value) => filled($value));
     }
