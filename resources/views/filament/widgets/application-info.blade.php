@@ -1,18 +1,18 @@
 <x-filament-widgets::widget
-    class="border-l-4 border-primary-400 rounded-2xl fi-filament-info-widget bg-gradient-to-r from-secondary-50 to-white dark:from-secondary-900 dark:to-gray-800">
+    class="border-l-4 border-primary-400 rounded-2xl fi-filament-info-widget bg-gradient-to-r from-secondary-50 to-white">
     <x-filament::section>
         <div class="flex items-center gap-x-6 gap-y-0">
             <div class="flex-1">
                 <div class="flex items-center gap-x-2">
                     <span
-                        class="text-xl font-bold text-primary-600 dark:text-primary-100">{{ config('app.name') }}</span>
+                        class="text-xl font-bold text-primary-600">{{ config('app.name') }}</span>
                     <span
                         class="text-xs bg-primary-100 text-primary-600 px-2 py-0.5 rounded">v{{ env('APP_VERSION') }}</span>
                 </div>
                 <div class="flex gap-x-3">
                     <a href="https://github.com/riodwanto/superduper-filament-starter-kit" target="_blank"
                         rel="nofollow noopener noreferrer"
-                        class="flex items-center justify-center gap-1 text-sm font-semibold text-neutral-800 dark:text-neutral-400 hover:text-primary-700">
+                        class="flex items-center justify-center gap-1 text-sm font-semibold text-neutral-800 hover:text-primary-700">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.483
                                 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608
@@ -29,13 +29,13 @@
 
             <div class="text-right">
                 <div class="text-xs text-gray-400">Laravel: <span
-                        class="font-semibold text-gray-700 dark:text-gray-300">{{ \Illuminate\Foundation\Application::VERSION }}</span>
+                        class="font-semibold text-gray-700">{{ \Illuminate\Foundation\Application::VERSION }}</span>
                 </div>
                 <div class="text-xs text-gray-400">Filament: <span
-                        class="font-semibold text-gray-700 dark:text-gray-300">{{ \Composer\InstalledVersions::getPrettyVersion('filament/filament') }}</span>
+                        class="font-semibold text-gray-700">{{ \Composer\InstalledVersions::getPrettyVersion('filament/filament') }}</span>
                 </div>
                 <div class="text-xs text-gray-400">PHP: <span
-                        class="font-semibold text-gray-700 dark:text-gray-300">{{ PHP_VERSION }}</span></div>
+                        class="font-semibold text-gray-700">{{ PHP_VERSION }}</span></div>
             </div>
         </div>
     </x-filament::section>

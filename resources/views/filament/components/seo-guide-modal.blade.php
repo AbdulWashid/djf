@@ -1,15 +1,15 @@
 <div class="space-y-6 text-sm">
-    <div class="p-4 border rounded-lg bg-primary-50 dark:bg-primary-950 border-primary-200 dark:border-primary-800">
-        <h3 class="mb-2 text-base font-medium text-primary-900 dark:text-primary-100">
+    <div class="p-4 border rounded-lg bg-primary-50 border-primary-200">
+        <h3 class="mb-2 text-base font-medium text-primary-900">
             <x-heroicon-o-light-bulb class="inline-block w-5 h-5 mr-1" />
             Title Separator
         </h3>
-        <p class="text-primary-700 dark:text-primary-300">
+        <p class="text-primary-700">
             The title separator is the character that appears between sections of your page title. Instead of typing the
             separator character directly in your title formats, use the <code>{separator}</code> placeholder.
             This allows you to change the separator site-wide by updating a single setting.
         </p>
-        <div class="mt-2 text-primary-700 dark:text-primary-300">
+        <div class="mt-2 text-primary-700">
             <strong>Example:</strong><br>
             With the format <code>{page_title} {separator} {site_name}</code>:
             <ul class="mt-1 ml-4 list-disc list-inside">
@@ -26,30 +26,30 @@
             <thead>
                 <tr>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Placeholder
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Description
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Example
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{site_name}</code></td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Your website name</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">My Awesome Website</td>
+                    <td class="px-3 py-2 border border-gray-200"><code>{site_name}</code></td>
+                    <td class="px-3 py-2 border border-gray-200">Your website name</td>
+                    <td class="px-3 py-2 border border-gray-200">My Awesome Website</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{separator}</code></td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The title separator character
+                    <td class="px-3 py-2 border border-gray-200"><code>{separator}</code></td>
+                    <td class="px-3 py-2 border border-gray-200">The title separator character
                         you've configured</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">| or - or ·</td>
+                    <td class="px-3 py-2 border border-gray-200">| or - or ·</td>
                 </tr>
             </tbody>
         </table>
@@ -61,25 +61,25 @@
             <thead>
                 <tr>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Placeholder
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Description
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Example
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{page_title}</code></td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The title of the specific page
+                    <td class="px-3 py-2 border border-gray-200"><code>{page_title}</code></td>
+                    <td class="px-3 py-2 border border-gray-200">The title of the specific page
                     </td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">About Us</td>
+                    <td class="px-3 py-2 border border-gray-200">About Us</td>
                 </tr>
             </tbody>
         </table>
@@ -95,40 +95,40 @@
             <thead>
                 <tr>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Placeholder
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Description
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Example
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{post_title}</code></td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The title of the blog post</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">How to Grow Tomatoes</td>
+                    <td class="px-3 py-2 border border-gray-200"><code>{post_title}</code></td>
+                    <td class="px-3 py-2 border border-gray-200">The title of the blog post</td>
+                    <td class="px-3 py-2 border border-gray-200">How to Grow Tomatoes</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{post_category}</code></td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The category of the blog post</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Gardening</td>
+                    <td class="px-3 py-2 border border-gray-200"><code>{post_category}</code></td>
+                    <td class="px-3 py-2 border border-gray-200">The category of the blog post</td>
+                    <td class="px-3 py-2 border border-gray-200">Gardening</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{author_name}</code></td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The author of the post</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Jane Smith</td>
+                    <td class="px-3 py-2 border border-gray-200"><code>{author_name}</code></td>
+                    <td class="px-3 py-2 border border-gray-200">The author of the post</td>
+                    <td class="px-3 py-2 border border-gray-200">Jane Smith</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{publish_date}</code></td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The year the post was published
+                    <td class="px-3 py-2 border border-gray-200"><code>{publish_date}</code></td>
+                    <td class="px-3 py-2 border border-gray-200">The year the post was published
                     </td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">2023</td>
+                    <td class="px-3 py-2 border border-gray-200">2023</td>
                 </tr>
             </tbody>
         </table>
@@ -145,41 +145,41 @@
             <thead>
                 <tr>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Placeholder
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Description
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Example
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{product_name}</code></td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The name of the product</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Wireless Headphones</td>
+                    <td class="px-3 py-2 border border-gray-200"><code>{product_name}</code></td>
+                    <td class="px-3 py-2 border border-gray-200">The name of the product</td>
+                    <td class="px-3 py-2 border border-gray-200">Wireless Headphones</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{product_category}</code>
+                    <td class="px-3 py-2 border border-gray-200"><code>{product_category}</code>
                     </td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The category of the product</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Audio Equipment</td>
+                    <td class="px-3 py-2 border border-gray-200">The category of the product</td>
+                    <td class="px-3 py-2 border border-gray-200">Audio Equipment</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{product_brand}</code></td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The brand of the product</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">SoundMax</td>
+                    <td class="px-3 py-2 border border-gray-200"><code>{product_brand}</code></td>
+                    <td class="px-3 py-2 border border-gray-200">The brand of the product</td>
+                    <td class="px-3 py-2 border border-gray-200">SoundMax</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{price}</code></td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The formatted price of the product
+                    <td class="px-3 py-2 border border-gray-200"><code>{price}</code></td>
+                    <td class="px-3 py-2 border border-gray-200">The formatted price of the product
                     </td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">$129.99</td>
+                    <td class="px-3 py-2 border border-gray-200">$129.99</td>
                 </tr>
             </tbody>
         </table>
@@ -196,37 +196,37 @@
             <thead>
                 <tr>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Placeholder
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Description
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Example
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{category_name}</code></td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The name of the category</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Men's Clothing</td>
+                    <td class="px-3 py-2 border border-gray-200"><code>{category_name}</code></td>
+                    <td class="px-3 py-2 border border-gray-200">The name of the category</td>
+                    <td class="px-3 py-2 border border-gray-200">Men's Clothing</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{parent_category}</code>
+                    <td class="px-3 py-2 border border-gray-200"><code>{parent_category}</code>
                     </td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The parent category (if
+                    <td class="px-3 py-2 border border-gray-200">The parent category (if
                         applicable)</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Apparel</td>
+                    <td class="px-3 py-2 border border-gray-200">Apparel</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{products_count}</code></td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The number of products in the
+                    <td class="px-3 py-2 border border-gray-200"><code>{products_count}</code></td>
+                    <td class="px-3 py-2 border border-gray-200">The number of products in the
                         category</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">42</td>
+                    <td class="px-3 py-2 border border-gray-200">42</td>
                 </tr>
             </tbody>
         </table>
@@ -242,30 +242,30 @@
             <thead>
                 <tr>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Placeholder
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Description
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Example
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{search_term}</code></td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The search query entered by the
+                    <td class="px-3 py-2 border border-gray-200"><code>{search_term}</code></td>
+                    <td class="px-3 py-2 border border-gray-200">The search query entered by the
                         user</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">organic fertilizer</td>
+                    <td class="px-3 py-2 border border-gray-200">organic fertilizer</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{results_count}</code></td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The number of search results</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">24</td>
+                    <td class="px-3 py-2 border border-gray-200"><code>{results_count}</code></td>
+                    <td class="px-3 py-2 border border-gray-200">The number of search results</td>
+                    <td class="px-3 py-2 border border-gray-200">24</td>
                 </tr>
             </tbody>
         </table>
@@ -281,30 +281,30 @@
             <thead>
                 <tr>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Placeholder
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Description
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Example
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{author_name}</code></td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The name of the author</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">John Doe</td>
+                    <td class="px-3 py-2 border border-gray-200"><code>{author_name}</code></td>
+                    <td class="px-3 py-2 border border-gray-200">The name of the author</td>
+                    <td class="px-3 py-2 border border-gray-200">John Doe</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700"><code>{post_count}</code></td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The number of posts by this author
+                    <td class="px-3 py-2 border border-gray-200"><code>{post_count}</code></td>
+                    <td class="px-3 py-2 border border-gray-200">The number of posts by this author
                     </td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">15</td>
+                    <td class="px-3 py-2 border border-gray-200">15</td>
                 </tr>
             </tbody>
         </table>
@@ -322,43 +322,43 @@
             <thead>
                 <tr>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Property
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Description
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Your Setting
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">og:type</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The type of content (website,
+                    <td class="px-3 py-2 border border-gray-200">og:type</td>
+                    <td class="px-3 py-2 border border-gray-200">The type of content (website,
                         article, product, etc.)</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">website</td>
+                    <td class="px-3 py-2 border border-gray-200">website</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">og:title</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The title that appears when shared
+                    <td class="px-3 py-2 border border-gray-200">og:title</td>
+                    <td class="px-3 py-2 border border-gray-200">The title that appears when shared
                         (use {page_title})</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">{page_title}</td>
+                    <td class="px-3 py-2 border border-gray-200">{page_title}</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">og:description</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The description that appears (use
+                    <td class="px-3 py-2 border border-gray-200">og:description</td>
+                    <td class="px-3 py-2 border border-gray-200">The description that appears (use
                         {meta_description})</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">{meta_description}</td>
+                    <td class="px-3 py-2 border border-gray-200">{meta_description}</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">og:image</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The image that appears with the
+                    <td class="px-3 py-2 border border-gray-200">og:image</td>
+                    <td class="px-3 py-2 border border-gray-200">The image that appears with the
                         share</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Your uploaded image</td>
+                    <td class="px-3 py-2 border border-gray-200">Your uploaded image</td>
                 </tr>
             </tbody>
         </table>
@@ -371,41 +371,41 @@
             <thead>
                 <tr>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Property
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Description
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Options
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">twitter:card</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The type of card to show</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">summary, summary_large_image, app,
+                    <td class="px-3 py-2 border border-gray-200">twitter:card</td>
+                    <td class="px-3 py-2 border border-gray-200">The type of card to show</td>
+                    <td class="px-3 py-2 border border-gray-200">summary, summary_large_image, app,
                         player</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">twitter:site</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Your website's Twitter handle</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">@yourtwitter</td>
+                    <td class="px-3 py-2 border border-gray-200">twitter:site</td>
+                    <td class="px-3 py-2 border border-gray-200">Your website's Twitter handle</td>
+                    <td class="px-3 py-2 border border-gray-200">@yourtwitter</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">twitter:title</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The title that appears in the
+                    <td class="px-3 py-2 border border-gray-200">twitter:title</td>
+                    <td class="px-3 py-2 border border-gray-200">The title that appears in the
                         Twitter Card</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">{page_title}</td>
+                    <td class="px-3 py-2 border border-gray-200">{page_title}</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">twitter:description</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The description that appears</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">{meta_description}</td>
+                    <td class="px-3 py-2 border border-gray-200">twitter:description</td>
+                    <td class="px-3 py-2 border border-gray-200">The description that appears</td>
+                    <td class="px-3 py-2 border border-gray-200">{meta_description}</td>
                 </tr>
             </tbody>
         </table>
@@ -419,50 +419,50 @@
             <thead>
                 <tr>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Property
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Description
                     </th>
                     <th
-                        class="px-3 py-2 text-left border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        class="px-3 py-2 text-left border border-gray-200 bg-gray-50">
                         Options
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">@type</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The type of entity your site
+                    <td class="px-3 py-2 border border-gray-200">@type</td>
+                    <td class="px-3 py-2 border border-gray-200">The type of entity your site
                         represents</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Organization, Person,
+                    <td class="px-3 py-2 border border-gray-200">Organization, Person,
                         LocalBusiness, etc.</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">name</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The name of your organization/site
+                    <td class="px-3 py-2 border border-gray-200">name</td>
+                    <td class="px-3 py-2 border border-gray-200">The name of your organization/site
                     </td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">{site_name}</td>
+                    <td class="px-3 py-2 border border-gray-200">{site_name}</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">description</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">A description of your
+                    <td class="px-3 py-2 border border-gray-200">description</td>
+                    <td class="px-3 py-2 border border-gray-200">A description of your
                         organization/site</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">{meta_description}</td>
+                    <td class="px-3 py-2 border border-gray-200">{meta_description}</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">logo</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">The logo of your organization/site
+                    <td class="px-3 py-2 border border-gray-200">logo</td>
+                    <td class="px-3 py-2 border border-gray-200">The logo of your organization/site
                     </td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Your uploaded logo image</td>
+                    <td class="px-3 py-2 border border-gray-200">Your uploaded logo image</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
-    <div class="p-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+    <div class="p-4 border border-gray-200 rounded-lg bg-gray-50">
         <h3 class="mb-2 text-base font-medium">SEO Best Practices for Title Formats</h3>
         <ol class="list-decimal list-inside">
             <li class="mb-1">Keep titles under 60-65 characters to avoid truncation in search results</li>
@@ -473,12 +473,12 @@
         </ol>
     </div>
 
-    <div class="p-4 border border-yellow-200 rounded-lg bg-yellow-50 dark:bg-yellow-950 dark:border-yellow-800">
-        <h3 class="mb-2 text-base font-medium text-yellow-900 dark:text-yellow-100">
+    <div class="p-4 border border-yellow-200 rounded-lg bg-yellow-50">
+        <h3 class="mb-2 text-base font-medium text-yellow-900">
             <x-heroicon-o-exclamation-triangle class="inline-block w-5 h-5 mr-1" />
             Meta Description Recommendations
         </h3>
-        <ul class="mt-1 space-y-1 text-yellow-700 list-disc list-inside dark:text-yellow-300">
+        <ul class="mt-1 space-y-1 text-yellow-700 list-disc list-inside">
             <li>Keep meta descriptions between 150-160 characters</li>
             <li>Include your primary keyword naturally near the beginning</li>
             <li>Write compelling copy that entices users to click</li>
@@ -487,16 +487,16 @@
         </ul>
     </div>
 
-    <div class="p-4 border border-blue-200 rounded-lg bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
-        <h3 class="mb-2 text-base font-medium text-blue-900 dark:text-blue-100">
+    <div class="p-4 border border-blue-200 rounded-lg bg-blue-50">
+        <h3 class="mb-2 text-base font-medium text-blue-900">
             <x-heroicon-o-information-circle class="inline-block w-5 h-5 mr-1" />
             Robots.txt and Sitemap Tips
         </h3>
-        <p class="mb-2 text-blue-700 dark:text-blue-300">
+        <p class="mb-2 text-blue-700">
             Your robots.txt file controls which parts of your site search engines can access, while your sitemap helps
             them discover and understand your content structure.
         </p>
-        <div class="text-blue-700 dark:text-blue-300">
+        <div class="text-blue-700">
             <strong>Common robots.txt directives:</strong>
             <ul class="mt-1 ml-4 list-disc list-inside">
                 <li><code>User-agent: *</code> - Applies to all search engines</li>
@@ -505,7 +505,7 @@
                 <li><code>Disallow: /private/</code> - Block indexing of private content</li>
             </ul>
         </div>
-        <div class="mt-2 text-blue-700 dark:text-blue-300">
+        <div class="mt-2 text-blue-700">
             <strong>Sitemap best practices:</strong>
             <ul class="mt-1 ml-4 list-disc list-inside">
                 <li>Include all important pages (but exclude admin, search, login)</li>
@@ -517,15 +517,15 @@
         </div>
     </div>
 
-    <div class="p-4 border border-green-200 rounded-lg bg-green-50 dark:bg-green-950 dark:border-green-800">
-        <h3 class="mb-2 text-base font-medium text-green-900 dark:text-green-100">
+    <div class="p-4 border border-green-200 rounded-lg bg-green-50">
+        <h3 class="mb-2 text-base font-medium text-green-900">
             <x-heroicon-o-check-circle class="inline-block w-5 h-5 mr-1" />
             Social Media Image Recommendations
         </h3>
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
                 <h4 class="mb-1 font-medium">Open Graph Images</h4>
-                <ul class="text-green-700 list-disc list-inside dark:text-green-300">
+                <ul class="text-green-700 list-disc list-inside">
                     <li>Optimal size: 1200 × 630 pixels</li>
                     <li>Minimum size: 600 × 315 pixels</li>
                     <li>Aspect ratio: 1.91:1</li>
@@ -535,7 +535,7 @@
             </div>
             <div>
                 <h4 class="mb-1 font-medium">Twitter Card Images</h4>
-                <ul class="text-green-700 list-disc list-inside dark:text-green-300">
+                <ul class="text-green-700 list-disc list-inside">
                     <li>Summary card: 800 × 418 pixels</li>
                     <li>Summary with large image: 800 × 418 pixels</li>
                     <li>Aspect ratio: 1.91:1</li>
@@ -546,50 +546,50 @@
         </div>
     </div>
 
-    <div class="p-4 border border-purple-200 rounded-lg bg-purple-50 dark:bg-purple-950 dark:border-purple-800">
-        <h3 class="mb-2 text-base font-medium text-purple-900 dark:text-purple-100">
+    <div class="p-4 border border-purple-200 rounded-lg bg-purple-50">
+        <h3 class="mb-2 text-base font-medium text-purple-900">
             <x-heroicon-o-sparkles class="inline-block w-5 h-5 mr-1" />
             Schema.org Types and Use Cases
         </h3>
-        <div class="text-purple-700 dark:text-purple-300">
+        <div class="text-purple-700">
             <p class="mb-2">Different Schema.org types are appropriate for different kinds of websites:</p>
             <table class="w-full border-collapse">
                 <thead>
                     <tr>
                         <th
-                            class="px-3 py-2 text-left bg-purple-100 border border-purple-200 dark:border-purple-700 dark:bg-purple-900">
+                            class="px-3 py-2 text-left bg-purple-100 border border-purple-200">
                             Type</th>
                         <th
-                            class="px-3 py-2 text-left bg-purple-100 border border-purple-200 dark:border-purple-700 dark:bg-purple-900">
+                            class="px-3 py-2 text-left bg-purple-100 border border-purple-200">
                             Use Case</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="px-3 py-2 border border-purple-200 dark:border-purple-700"><code>Organization</code>
+                        <td class="px-3 py-2 border border-purple-200"><code>Organization</code>
                         </td>
-                        <td class="px-3 py-2 border border-purple-200 dark:border-purple-700">Business websites,
+                        <td class="px-3 py-2 border border-purple-200">Business websites,
                             corporate sites, non-profits</td>
                     </tr>
                     <tr>
-                        <td class="px-3 py-2 border border-purple-200 dark:border-purple-700"><code>Person</code></td>
-                        <td class="px-3 py-2 border border-purple-200 dark:border-purple-700">Personal websites,
+                        <td class="px-3 py-2 border border-purple-200"><code>Person</code></td>
+                        <td class="px-3 py-2 border border-purple-200">Personal websites,
                             portfolios, resumes</td>
                     </tr>
                     <tr>
-                        <td class="px-3 py-2 border border-purple-200 dark:border-purple-700"><code>LocalBusiness</code>
+                        <td class="px-3 py-2 border border-purple-200"><code>LocalBusiness</code>
                         </td>
-                        <td class="px-3 py-2 border border-purple-200 dark:border-purple-700">Stores, restaurants,
+                        <td class="px-3 py-2 border border-purple-200">Stores, restaurants,
                             services with physical locations</td>
                     </tr>
                     <tr>
-                        <td class="px-3 py-2 border border-purple-200 dark:border-purple-700"><code>WebSite</code></td>
-                        <td class="px-3 py-2 border border-purple-200 dark:border-purple-700">Used alongside other types
+                        <td class="px-3 py-2 border border-purple-200"><code>WebSite</code></td>
+                        <td class="px-3 py-2 border border-purple-200">Used alongside other types
                             to provide site-specific info</td>
                     </tr>
                     <tr>
-                        <td class="px-3 py-2 border border-purple-200 dark:border-purple-700"><code>Product</code></td>
-                        <td class="px-3 py-2 border border-purple-200 dark:border-purple-700">E-commerce sites, product
+                        <td class="px-3 py-2 border border-purple-200"><code>Product</code></td>
+                        <td class="px-3 py-2 border border-purple-200">E-commerce sites, product
                             pages</td>
                     </tr>
                 </tbody>
@@ -597,12 +597,12 @@
         </div>
     </div>
 
-    <div class="p-4 border border-red-200 rounded-lg bg-red-50 dark:bg-red-950 dark:border-red-800">
-        <h3 class="mb-2 text-base font-medium text-red-900 dark:text-red-100">
+    <div class="p-4 border border-red-200 rounded-lg bg-red-50">
+        <h3 class="mb-2 text-base font-medium text-red-900">
             <x-heroicon-o-flag class="inline-block w-5 h-5 mr-1" />
             Common SEO Mistakes to Avoid
         </h3>
-        <ul class="text-red-700 list-disc list-inside dark:text-red-300">
+        <ul class="text-red-700 list-disc list-inside">
             <li>Using the same title and description on multiple pages</li>
             <li>Creating overly long titles that get truncated in search results</li>
             <li>Using generic descriptions that don't compel users to click</li>
@@ -614,7 +614,7 @@
         </ul>
     </div>
 
-    <div class="p-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+    <div class="p-4 border border-gray-200 rounded-lg bg-gray-50">
         <h3 class="mb-2 text-base font-medium">Verification Codes Guide</h3>
         <p class="mb-3">Verification codes prove to search engines that you own your website and give you access to
             their webmaster tools.</p>
@@ -622,36 +622,36 @@
             <thead>
                 <tr>
                     <th
-                        class="px-3 py-2 text-left bg-gray-100 border border-gray-200 dark:border-gray-700 dark:bg-gray-700">
+                        class="px-3 py-2 text-left bg-gray-100 border border-gray-200">
                         Search Engine</th>
                     <th
-                        class="px-3 py-2 text-left bg-gray-100 border border-gray-200 dark:border-gray-700 dark:bg-gray-700">
+                        class="px-3 py-2 text-left bg-gray-100 border border-gray-200">
                         Verification Method</th>
                     <th
-                        class="px-3 py-2 text-left bg-gray-100 border border-gray-200 dark:border-gray-700 dark:bg-gray-700">
+                        class="px-3 py-2 text-left bg-gray-100 border border-gray-200">
                         Where to Get It</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Google</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Meta tag content value</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Google Search Console</td>
+                    <td class="px-3 py-2 border border-gray-200">Google</td>
+                    <td class="px-3 py-2 border border-gray-200">Meta tag content value</td>
+                    <td class="px-3 py-2 border border-gray-200">Google Search Console</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Bing</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Meta tag content value</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Bing Webmaster Tools</td>
+                    <td class="px-3 py-2 border border-gray-200">Bing</td>
+                    <td class="px-3 py-2 border border-gray-200">Meta tag content value</td>
+                    <td class="px-3 py-2 border border-gray-200">Bing Webmaster Tools</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Yandex</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Meta tag content value</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Yandex Webmaster</td>
+                    <td class="px-3 py-2 border border-gray-200">Yandex</td>
+                    <td class="px-3 py-2 border border-gray-200">Meta tag content value</td>
+                    <td class="px-3 py-2 border border-gray-200">Yandex Webmaster</td>
                 </tr>
                 <tr>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Baidu</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Meta tag content value</td>
-                    <td class="px-3 py-2 border border-gray-200 dark:border-gray-700">Baidu Webmaster Tools</td>
+                    <td class="px-3 py-2 border border-gray-200">Baidu</td>
+                    <td class="px-3 py-2 border border-gray-200">Meta tag content value</td>
+                    <td class="px-3 py-2 border border-gray-200">Baidu Webmaster Tools</td>
                 </tr>
             </tbody>
         </table>

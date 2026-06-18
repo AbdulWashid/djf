@@ -1,17 +1,17 @@
-// import preset from "./vendor/filament/support/tailwind.config.preset";
+import defaultTheme from 'tailwindcss/defaultTheme';
+import forms from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
-
 export default {
-    // presets: [preset],
-    corePlugins: {
+     corePlugins: {
         visibility: false
     },
     content: [
-        "./resources/**/*.blade.php",
-        "./resources/**/*.js",
-        "./resources/**/*.vue",
+        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
+        './storage/framework/views/*.php',
+        './resources/views/**/*.blade.php',
     ],
+
     theme: {
         extend: {
             colors: {
@@ -74,9 +74,14 @@ export default {
                 warning: '#F59E0B',
                 info: '#3B82F6',
             },
+            fontFamily: {
+                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+            },
         },
     },
+
     plugins: [
+        forms,
         require("@tailwindcss/forms"),
         require("@tailwindcss/typography"),
     ],

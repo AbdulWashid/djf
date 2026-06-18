@@ -1,4 +1,4 @@
-<div class="relative overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800 dark:from-primary-800 dark:to-gray-900">
+<div class="relative overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800">
     <div class="absolute inset-0 bg-grid-white/[0.05] bg-[size:60px_60px]"></div>
     <div class="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/5"></div>
 
@@ -102,6 +102,6 @@
     </div>
 
     <div class="relative">
-        <div class="absolute bottom-[-1px] left-0 right-0 w-full h-16 bg-gradient-to-r from-secondary-600 to-secondary-500 dark:from-secondary-600 dark:to-gray-900" style="clip-path: polygon(0 100%, 100% 0, 100% 100%, 0% 100%);"></div>
+        <div class="absolute bottom-[-1px] left-0 right-0 w-full h-16 bg-gradient-to-r from-secondary-600 to-secondary-500" style="clip-path: polygon(0 100%, 100% 0, 100% 100%, 0% 100%);"></div>
     </div>
 </div>

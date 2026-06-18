@@ -17,16 +17,13 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Lab404\Impersonate\Services\ImpersonateManager;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+Route::view('dashboard', 'dashboard')
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+Route::view('profile', 'profile')
+    ->middleware(['auth'])
+    ->name('profile');
+
 Route::get('/', function () {
     $homeMeta = HomePageMeta::query()->latest()->first();
 
@@ -40,56 +37,52 @@ Route::get('/about-us', function () {
     if ($page) {
         return view('page', ['page' => $page]);
     }
-    //  return view('components.superduper.pages.about');
 })->name('about-us');
 
 
-Route::get('/job/{slug}/apply', Apply::class)
-    ->name('jobs.apply.form');
+Route::get('/job/{slug}/apply', Apply::class)->name('jobs.apply.form');
 
-Route::get('/jobs/{slug}/thank-you', ThankYou::class)
-    ->name('jobs.apply.thankyou');
+Route::get('/jobs/{slug}/thank-you', ThankYou::class)->name('jobs.apply.thankyou');
 
 Route::get('/jobs', JobsComponent::class)->name('jobs');
+
 Route::get('/jobs/{location}', JobsComponent::class)->name('jobs.location');
+
 Route::get('/jobs/{category}', JobsComponent::class)->name('jobs.category');
+
 Route::get('/jobs/{location}/{category_slug}', JobsComponent::class)->name('jobs.location.category');
-// Route::get('/jobs/{location}/category/{category}', JobsComponent::class)->name('jobs.location.category');
 
 Route::get('/job-categories', function () {
     return view('components.superduper.pages.job-categories');
 })->name('job-categories');
 
 Route::get('/employers/', Employers::class)->name('employers');
+
 Route::get('/blogs', BlogList::class)->name('blog');
+
 Route::get('/remainder', Remainder::class)->name('remainder');
+
 Route::get('/faqs', Faqs::class)->name('faqs');
+
 Route::get('/job/{slug}', JobDetails::class)->name('jobs.show');
+
 Route::get('/blog/{slug}', BlogDetails::class)->name('blog.show');
+
 Route::get('/contact-us', ContactUs::class)->name('contact-us');
-//Route::get('/privacy-policy', function () {
-//    return view('components.superduper.pages.coming-soon');.
-//})->name('privacy-policy');
-//
-//Route::get('/terms-conditions', function () {
-//    return view('components.superduper.pages.coming-soon');
-//})->name('terms-conditions');
+
 Route::get('/coming-soon', function () {
     return view('components.superduper.pages.coming-soon');
 })->name('coming-soon');
+
 Route::post('/contact', [App\Http\Controllers\ContactController::class, 'submit'])->name('contact.submit');
 
 Route::post('/admin/cache-clear', function () {
     Artisan::call('optimize:clear');
-    // Artisan::call('filament:optimize-clear');
-    // Artisan::call('filament-icons:clear-cache');
 
     Notification::make()->title('Application cache cleared successfully.')->success()->send();
 
     return back()->with('status', 'Application cache cleared successfully.');
-})
-    ->middleware('auth')
-    ->name('admin.cache.clear');
+})->middleware('auth')->name('admin.cache.clear');
 
 Route::get('impersonate/leave', function () {
     if (!app(ImpersonateManager::class)->isImpersonating()) {
@@ -97,19 +90,15 @@ Route::get('impersonate/leave', function () {
     }
     app(ImpersonateManager::class)->leave();
     return redirect(session()->pull('impersonate.back_to'));
-})
-    ->name('impersonate.leave')
-    ->middleware('web');
-// SEO Routes
+})->name('impersonate.leave')->middleware('web');
+
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 Route::get('/sitemap.html', [App\Http\Controllers\SitemapController::class, 'html'])->name('sitemap.html');
 // Route::get('/robots.txt', [App\Http\Controllers\SitemapController::class, 'robots'])->name('robots');
 
 Route::get('/{slug}', function ($slug) {
-    // Check for a page with the matching slug
     $page = StaticPage::where('slug', $slug)->where('status', 1)->first();
     $faqSchema = '';
-    // If a page is found, return its view
     if ($page) {
         if ($page->faqs) {
             $mainEntity = [];
@@ -133,12 +122,19 @@ Route::get('/{slug}', function ($slug) {
 
         return view('page', ['page' => $page, 'faqSchema' => $faqSchema]);
     } else {
-        // If no page is found, return a 404 response
         abort(404);
     }
-    // If no page with that slug exists, let the route fall through
-    // to the next, which is the fallback route.
-})
-    ->where('slug', '^(?!about|contact).*$')
-    ->name('page');
+})->where('slug', '^(?!about|contact).*$')->name('page');
 
+
+require __DIR__.'/auth.php';
+
+
+
+//Route::get('/privacy-policy', function () {
+//    return view('components.superduper.pages.coming-soon');.
+//})->name('privacy-policy');
+//
+//Route::get('/terms-conditions', function () {
+//    return view('components.superduper.pages.coming-soon');
+//})->name('terms-conditions');

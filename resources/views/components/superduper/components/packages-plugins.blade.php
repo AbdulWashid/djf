@@ -1,7 +1,7 @@
 <div class="section-packages">
     <div class="jos">
         <div
-            class="py-[60px] md:py-20 lg:py-[100px] bg-gradient-to-t from-background-white to-background-wheat dark:from-primary-900 dark:to-primary-800">
+            class="py-[60px] md:py-20 lg:py-[100px] bg-gradient-to-t from-background-white to-background-wheat">
             <!-- Section Container -->
             <div class="container-default">
                 <!-- Section Title -->

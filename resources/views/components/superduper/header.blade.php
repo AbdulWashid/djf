@@ -15,7 +15,7 @@
                     />
                 @else
                     <div class="flex items-center">
-                        <span class="text-xl font-bold md:text-2xl text-primary-800 dark:text-white header-brand-text">{{ $brandName }}</span>
+                        <span class="text-xl font-bold md:text-2xl text-primary-800 header-brand-text">{{ $brandName }}</span>
                     </div>
                 @endif
             </a>
@@ -23,21 +23,21 @@
             <!-- Header Navigation -->
             <div class="menu-block-wrapper lg:static">
                 <div class="fixed inset-0 z-40 menu-overlay bg-primary-900/70 backdrop-blur-sm lg:hidden" style="display: none;" aria-hidden="true"></div>
-                <nav class="menu-block fixed top-0 right-0 bottom-0 w-[280px] text-secondary-600 md:w-[320px] bg-primary-600 dark:bg-primary-800 z-50 shadow-2xl overflow-y-auto transform translate-x-full transition-transform duration-300 lg:static lg:translate-x-0 lg:w-auto lg:bg-transparent lg:shadow-none lg:overflow-visible lg:dark:bg-transparent"
+                <nav class="menu-block fixed top-0 right-0 bottom-0 w-[280px] text-secondary-600 md:w-[320px] bg-primary-600 z-50 shadow-2xl overflow-y-auto transform translate-x-full transition-transform duration-300 lg:static lg:translate-x-0 lg:w-auto lg:bg-transparent lg:shadow-none lg:overflow-visible lg:dark:bg-transparent"
                      id="append-menu-header"
                      role="navigation"
                      aria-label="Main navigation">
                     <!-- Mobile Menu Header -->
                     <div class="flex items-center justify-between p-4 lg:hidden">
-                        <button class="flex items-center go-back text-primary-800 dark:text-white"
+                        <button class="flex items-center go-back text-primary-800"
                                 aria-label="Go back to previous menu">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                             </svg>
                             <span>Back</span>
                         </button>
-                        <div class="font-medium current-menu-title text-primary-800 dark:text-white" aria-live="polite"></div>
-                        <button class="text-2xl cursor-pointer mobile-menu-close text-primary-800 dark:text-white"
+                        <div class="font-medium current-menu-title text-primary-800" aria-live="polite"></div>
+                        <button class="text-2xl cursor-pointer mobile-menu-close text-primary-800"
                                 aria-label="Close navigation menu">
                             &times;
                         </button>
@@ -58,7 +58,7 @@
 
                                 <li class="nav-item mb-3 lg:mb-0 lg:relative {{ $hasChildren ? 'nav-item-has-children' : '' }}">
                                     <a href="{{ $item->url }}"
-                                       class="nav-link-item flex items-center justify-between hover:text-primary-600 dark:text-white dark:hover:text-primary-200 header-nav-link font-medium py-2 lg:px-3 !text-secondary-600 lg:hover:bg-primary-600 lg:dark:hover:bg-primary-700 transition-colors {{ $hasChildren ? 'drop-trigger' : '' }}"
+                                       class="nav-link-item flex items-center justify-between hover:text-primary-600 header-nav-link font-medium py-2 lg:px-3 !text-secondary-600 lg:hover:bg-primary-600 lg:dark:hover:bg-primary-700 transition-colors {{ $hasChildren ? 'drop-trigger' : '' }}"
                                        @if($item->target) target="{{ $item->target }}" @endif>
                                         <span>{{ $item->title }}</span>
                                         @if($hasChildren)
@@ -78,7 +78,7 @@
 
                                                 <li class="sub-menu--item mb-2 lg:mb-0 {{ $hasGrandchildren ? 'nav-item-has-children' : '' }}">
                                                     <a href="{{ $childItem->url }}"
-                                                       class="block px-3 py-2 transition-colors text-primary-800 hover:text-primary-600 dark:text-white dark:hover:text-primary-200 lg:text-primary-800 lg:hover:bg-primary-50 lg:dark:hover:bg-primary-700 lg:rounded"
+                                                       class="block px-3 py-2 transition-colors text-primary-800 hover:text-primary-600 lg:text-primary-800 lg:hover:bg-primary-50 lg:dark:hover:bg-primary-700 lg:rounded"
                                                        @if($hasGrandchildren) data-menu-get="h3" class="flex items-center justify-between drop-trigger" @endif
                                                        @if($childItem->target) target="{{ $childItem->target }}" @endif>
                                                         <span>{{ $childItem->title }}</span>
@@ -94,7 +94,7 @@
                                                             @foreach($childItem->children as $grandchildItem)
                                                                 <li class="mb-2 sub-menu--item lg:mb-0">
                                                                     <a href="{{ $grandchildItem->url }}"
-                                                                       class="block px-3 py-2 transition-colors text-primary-800 hover:text-primary-600 dark:text-white dark:hover:text-primary-200 lg:text-primary-800 lg:hover:bg-primary-50 lg:dark:hover:bg-primary-700 lg:rounded"
+                                                                       class="block px-3 py-2 transition-colors text-primary-800 hover:text-primary-600 lg:text-primary-800 lg:hover:bg-primary-50 lg:dark:hover:bg-primary-700 lg:rounded"
                                                                        @if($grandchildItem->target) target="{{ $grandchildItem->target }}" @endif>
                                                                         {{ $grandchildItem->title }}
                                                                     </a>
@@ -135,9 +135,9 @@
                             aria-label="Open navigation menu"
                             aria-expanded="false"
                             aria-controls="append-menu-header">
-                        <span class="block w-6 h-0.5 bg-white dark:bg-white mb-1.5 transition-transform hamburger-line" aria-hidden="true"></span>
-                        <span class="block w-6 h-0.5 bg-white dark:bg-white mb-1.5 transition-opacity hamburger-line" aria-hidden="true"></span>
-                        <span class="block w-6 h-0.5 bg-white dark:bg-white transition-transform hamburger-line" aria-hidden="true"></span>
+                        <span class="block w-6 h-0.5 bg-white mb-1.5 transition-transform hamburger-line" aria-hidden="true"></span>
+                        <span class="block w-6 h-0.5 bg-white mb-1.5 transition-opacity hamburger-line" aria-hidden="true"></span>
+                        <span class="block w-6 h-0.5 bg-white transition-transform hamburger-line" aria-hidden="true"></span>
                     </button>
                 </div>
             </div>

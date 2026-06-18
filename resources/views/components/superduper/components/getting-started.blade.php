@@ -1,10 +1,10 @@
-<div class="container px-4 py-16 mx-auto bg-primary-50 dark:bg-gray-900">
+<div class="container px-4 py-16 mx-auto bg-primary-50">
     <div class="mb-12 text-center">
         <h2 class="mb-4 text-3xl font-bold">Ready to Build Faster?</h2>
         <p class="max-w-2xl mx-auto text-lg">Get your next project up and running in minutes with these simple steps:</p>
     </div>
     
-    <div class="max-w-3xl mx-auto overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800">
+    <div class="max-w-3xl mx-auto overflow-hidden bg-white rounded-lg shadow-lg">
         <div class="px-6 py-4 text-white bg-primary-600">
             <h3 class="text-xl font-semibold text-white">Quick Installation</h3>
         </div>
@@ -12,30 +12,30 @@
         <div class="p-6">
             <ol class="space-y-6">
                 <li class="flex">
-                    <span class="flex items-center justify-center flex-shrink-0 w-8 h-8 mr-3 font-bold rounded-full bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-300">1</span>
+                    <span class="flex items-center justify-center flex-shrink-0 w-8 h-8 mr-3 font-bold rounded-full bg-primary-100 text-primary-800">1</span>
                     <div>
                         <h4 class="mb-1 font-semibold">Create new project</h4>
-                        <pre class="p-3 overflow-x-auto text-sm bg-gray-100 rounded dark:bg-gray-900"><code>composer create-project riodwanto/superduper-filament-starter-kit</code></pre>
+                        <pre class="p-3 overflow-x-auto text-sm bg-gray-100 rounded"><code>composer create-project riodwanto/superduper-filament-starter-kit</code></pre>
                     </div>
                 </li>
                 
                 <li class="flex">
-                    <span class="flex items-center justify-center flex-shrink-0 w-8 h-8 mr-3 font-bold rounded-full bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-300">2</span>
+                    <span class="flex items-center justify-center flex-shrink-0 w-8 h-8 mr-3 font-bold rounded-full bg-primary-100 text-primary-800">2</span>
                     <div>
                         <h4 class="mb-1 font-semibold">Run setup script</h4>
-                        <pre class="p-3 overflow-x-auto text-sm bg-gray-100 rounded dark:bg-gray-900"><code>cd superduper-filament-starter-kit
+                        <pre class="p-3 overflow-x-auto text-sm bg-gray-100 rounded"><code>cd superduper-filament-starter-kit
 php bin/setup.php</code></pre>
-                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">The setup script handles environment configuration, migrations, and initial permissions.</p>
+                        <p class="mt-2 text-sm text-gray-600">The setup script handles environment configuration, migrations, and initial permissions.</p>
                     </div>
                 </li>
                 
                 <li class="flex">
-                    <span class="flex items-center justify-center flex-shrink-0 w-8 h-8 mr-3 font-bold rounded-full bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-300">3</span>
+                    <span class="flex items-center justify-center flex-shrink-0 w-8 h-8 mr-3 font-bold rounded-full bg-primary-100 text-primary-800">3</span>
                     <div>
                         <h4 class="mb-1 font-semibold">Start development</h4>
-                        <pre class="p-3 overflow-x-auto text-sm bg-gray-100 rounded dark:bg-gray-900"><code>npm install && npm run dev
+                        <pre class="p-3 overflow-x-auto text-sm bg-gray-100 rounded"><code>npm install && npm run dev
 php artisan serve</code></pre>
-                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Access your admin panel at <code>/admin</code> with default credentials:</p>
+                        <p class="mt-2 text-sm text-gray-600">Access your admin panel at <code>/admin</code> with default credentials:</p>
                         <p class="mt-1 font-mono text-sm"><code>email: superadmin@starter-kit.com</code><br><code>password: superadmin</code></p>
                     </div>
                 </li>

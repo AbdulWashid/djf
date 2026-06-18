@@ -18,8 +18,8 @@
             {{ $this->form }}
 
             <!-- Action Buttons -->
-            <div class="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
-                <div class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+            <div class="flex items-center justify-between pt-6 border-t border-gray-200">
+                <div class="flex items-center space-x-2 text-sm text-gray-500">
                     <x-heroicon-o-information-circle class="w-4 h-4" />
                     <span>Changes are saved immediately when you click Save.</span>
                 </div>
@@ -58,7 +58,7 @@
             <div class="space-y-2 text-sm">
                 <div class="flex justify-between">
                     <span class="font-medium">File Path:</span>
-                    <code class="px-2 py-1 text-xs bg-gray-100 rounded dark:bg-gray-800">
+                    <code class="px-2 py-1 text-xs bg-gray-100 rounded">
                         {{ $this->getDisplayFilePath() }}
                     </code>
                 </div>
@@ -83,7 +83,7 @@
     <!-- Loading Overlay -->
     <div wire:loading.flex wire:target="save"
          class="fixed inset-0 z-50 items-center justify-center bg-black bg-opacity-50">
-        <div class="flex items-center p-6 space-x-3 bg-white rounded-lg dark:bg-gray-800">
+        <div class="flex items-center p-6 space-x-3 bg-white rounded-lg">
             <x-filament::loading-indicator class="w-5 h-5" />
             <span>Saving your changes...</span>
         </div>
