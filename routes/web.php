@@ -17,6 +17,19 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Lab404\Impersonate\Services\ImpersonateManager;
 
+Route::middleware('auth:employer')
+    ->prefix('employer')
+    ->group(function () {
+        Route::view('/dashboard', 'dashboard')
+            ->name('employer.dashboard');
+    });
+Route::middleware('auth:candidate')
+    ->prefix('candidate')
+    ->group(function () {
+        Route::view('/dashboard', 'dashboard')
+            ->name('candidate.dashboard');
+    });
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -96,6 +109,8 @@ Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'inde
 Route::get('/sitemap.html', [App\Http\Controllers\SitemapController::class, 'html'])->name('sitemap.html');
 // Route::get('/robots.txt', [App\Http\Controllers\SitemapController::class, 'robots'])->name('robots');
 
+require __DIR__.'/auth.php';
+
 Route::get('/{slug}', function ($slug) {
     $page = StaticPage::where('slug', $slug)->where('status', 1)->first();
     $faqSchema = '';
@@ -127,7 +142,6 @@ Route::get('/{slug}', function ($slug) {
 })->where('slug', '^(?!about|contact).*$')->name('page');
 
 
-require __DIR__.'/auth.php';
 
 
 

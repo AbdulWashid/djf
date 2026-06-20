@@ -2,19 +2,22 @@
 
 namespace App\Models;
 
-use App\Traits\HasUserStamp;
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Support\Facades\URL;
+use App\Notifications\EmployerVerifyEmail;
 
-class Employer extends Model implements hasMedia
+class Employer extends Authenticatable implements MustVerifyEmail, HasMedia
 {
-
     use InteractsWithMedia;
-//    use HasUlids;
+    use Notifiable;
+
+    protected $guard = 'employer';
 
     protected $fillable = [
         'name',
@@ -22,6 +25,7 @@ class Employer extends Model implements hasMedia
         'description',
         'website',
         'email',
+        'password',
         'phone',
         'address',
         'city',
@@ -31,21 +35,32 @@ class Employer extends Model implements hasMedia
         'is_active',
     ];
 
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('images')
             ->singleFile();
     }
 
-    public function openings() {
+    public function openings()
+    {
         return $this->hasMany(Opening::class);
     }
-
-
-    protected function casts(): array
+    public function sendEmailVerificationNotification(): void
     {
-        return [
-            'is_active' => 'boolean',
-        ];
+        $this->notify(new EmployerVerifyEmail());
     }
 }

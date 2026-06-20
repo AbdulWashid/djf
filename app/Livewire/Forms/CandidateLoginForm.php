@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
-class LoginForm extends Form
+class CandidateLoginForm extends Form
 {
     #[Validate('required|string|email')]
     public string $email = '';
@@ -30,7 +30,7 @@ class LoginForm extends Form
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only(['email', 'password']), $this->remember)) {
+        if (! Auth::guard('candidate')->attempt($this->only(['email', 'password']), $this->remember)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
