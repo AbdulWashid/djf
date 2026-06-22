@@ -3,25 +3,43 @@
 use Livewire\Volt\Component;
 use App\Models\JobCategory;
 use Livewire\WithPagination;
+use Livewire\Attributes\Layout;
 
-new class extends Component {
+new #[Layout('components.frontend.main')] class extends Component {
     use WithPagination;
 
     public ?bool $showAll = false;
     public int $categoryCount = 0;
-    public $categories = '';
 
-    public function mount(bool $showAll = false): void
+    public function mount(): void
     {
-        $this->showAll = $showAll;
+        $this->showAll = request()->segment(1) == 'job-categories';
 
         $this->categoryCount = rememberIfEnabled('job_categories_active_count', now()->addMinutes(30), fn() => JobCategory::query()->active()->count());
 
         if ($this->showAll) {
-            $this->categories = rememberIfEnabled('job_categories_all', now()->addMinutes(30), fn() => JobCategory::query()->active()->select('id', 'name', 'slug', 'logo')->withCount('openings')->orderByDesc('openings_count')->orderBy('name')->paginate(12));
-        } else {
-            $this->categories = rememberIfEnabled('job_categories_home', now()->addMinutes(30), fn() => JobCategory::query()->active()->select('id', 'name', 'slug', 'logo')->withCount('openings')->orderByDesc('openings_count')->orderBy('name')->limit(7)->get());
+            view()->share('pageTitle', 'Job Categories');
+            view()->share('pageDescription', 'Browse all job categories.');
         }
+    }
+
+    public function with(): array
+    {
+        if ($this->showAll) {
+            $page = $this->getPage();
+
+            $categories = rememberIfEnabled('job_categories_all_page_' . $page, now()->addMinutes(30), function () {
+                return JobCategory::query()->active()->select('id', 'name', 'slug', 'logo')->withCount('openings')->orderByDesc('openings_count')->orderBy('name')->paginate(12);
+            });
+        } else {
+            $categories = rememberIfEnabled('job_categories_home', now()->addMinutes(30), function () {
+                return JobCategory::query()->active()->select('id', 'name', 'slug', 'logo')->withCount('openings')->orderByDesc('openings_count')->orderBy('name')->limit(7)->get();
+            });
+        }
+
+        return [
+            'categories' => $categories,
+        ];
     }
 }; ?>
 

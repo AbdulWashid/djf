@@ -219,7 +219,8 @@ class HomePage extends Page implements HasForms
      */
     protected function getMainFilePath(): string
     {
-        return resource_path('views/components/superduper/pages/home.blade.php');
+        return resource_path('views/livewire/pages/home.blade.php');
+        // return resource_path('views/components/superduper/pages/home.blade.php');
     }
 
     /**

@@ -1,4 +1,13 @@
-<x-superduper.main>
+<?php
+
+use Livewire\Volt\Component;
+use Livewire\Attributes\Layout;
+
+new #[Layout('components.frontend.main')] class extends Component {
+    //
+}; ?>
+
+<div>
     <div class="relative z-10 flex flex-col justify-center min-h-[90vh] bg-gradient-to-b from-blue-50 to-white">
         <div class="absolute inset-0 overflow-hidden opacity-10">
             <div class="absolute bg-blue-400 rounded-full -top-24 -right-24 h-96 w-96 blur-3xl"></div>
@@ -10,7 +19,8 @@
                 <div class="flex flex-col items-center justify-center gap-8">
 
                     <div class="max-w-[720px] text-center">
-                        <h1 class="text-4xl font-medium leading-tight text-gray-900 font-ClashDisplay md:text-5xl lg:text-6xl">
+                        <h1
+                            class="text-4xl font-medium leading-tight text-gray-900 font-ClashDisplay md:text-5xl lg:text-6xl">
                             Something is <span class="text-blue-600">Coming Soon</span>
                         </h1>
 
@@ -41,12 +51,12 @@
                                 ];
                             @endphp
 
-                            @foreach($socialLinks as $platform => $url)
-                                @if(!empty($url))
+                            @foreach ($socialLinks as $platform => $url)
+                                @if (!empty($url))
                                     <a href="{{ $url }}" target="_blank" rel="noopener noreferrer"
                                         class="flex items-center justify-center w-10 h-10 text-blue-600 transition-all duration-300 bg-blue-100 rounded-full hover:bg-blue-600 hover:text-white hover:scale-110"
                                         aria-label="{{ $platform }}">
-                                        <i class="{{ $faIcons[$platform] ?? 'fa-brands fa-'.$platform }}"></i>
+                                        <i class="{{ $faIcons[$platform] ?? 'fa-brands fa-' . $platform }}"></i>
                                     </a>
                                 @endif
                             @endforeach
@@ -56,4 +66,4 @@
             </div>
         </div>
     </div>
-</x-superduper.main>
+</div>

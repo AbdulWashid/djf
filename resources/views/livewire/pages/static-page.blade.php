@@ -1,11 +1,51 @@
-@php
-    $pageType = $page->slug === 'about-us' ? 'about' : 'standard';
-@endphp
+<?php
 
-<x-frontend.main page-type="{{ $pageType }}" page-title="{{ $page->meta_title }}"
-    page-description="{{ $page->meta_description }}" page-image="{{ $page->image }}"
-    meta-keywords="{{ $page->meta_keywords }}" twitter-tags="{{ $page->twitter_tags }}" og-tags="{{ $page->og_tags }}">
+use Livewire\Volt\Component;
+use App\Models\StaticPage;
+use Livewire\Attributes\Layout;
 
+new #[Layout('components.frontend.main')] class extends Component {
+    public $page;
+    public $faqSchema = '';
+
+    public function mount($slug): void
+    {
+        $this->page = StaticPage::where('slug', $slug)->where('status', 1)->first();
+        if ($this->page) {
+            if ($this->page->faqs) {
+                $mainEntity = [];
+                foreach ($this->page->faqs as $faq) {
+                    $mainEntity[] = [
+                        '@type' => 'Question',
+                        'name' => $faq['question'],
+                        'acceptedAnswer' => [
+                            '@type' => 'Answer',
+                            'text' => strip_tags($faq['answer']),
+                        ],
+                    ];
+                }
+                $schema = [
+                    '@context' => 'https://schema.org',
+                    '@type' => 'FAQPage',
+                    'mainEntity' => $mainEntity,
+                ];
+                $this->faqSchema = json_encode($schema);
+            }
+        } else {
+            abort(404);
+        }
+
+        view()->share('pageType', $this->page->slug === 'about-us' ? 'about' : 'standard');
+        view()->share('pageTitle', $this->page->meta_title);
+        view()->share('pageDescription', $this->page->meta_description);
+        view()->share('pageImage', $this->page->image);
+        view()->share('metaKeywords', $this->page->meta_keywords);
+        view()->share('twitterTags', $this->page->twitter_tags);
+        view()->share('ogTags', $this->page->og_tags);
+    }
+}; ?>
+
+<div>
     <style>
         h1.page_title {
             font-size: 3rem;
@@ -52,8 +92,8 @@
                                     <p class="accordion-header" id="flush-headingOne2">
                                         <button class="accordion-button collapsed" type="button"
                                             data-bs-toggle="collapse"
-                                            data-bs-target="#flush-collapseOne{{ $key }}"
-                                            aria-expanded="false" aria-controls="flush-collapseOne{{ $key }}">
+                                            data-bs-target="#flush-collapseOne{{ $key }}" aria-expanded="false"
+                                            aria-controls="flush-collapseOne{{ $key }}">
                                             {{ $faq['question'] }}
                                         </button>
                                     </p>
@@ -85,4 +125,4 @@
             @endif
         </div>
     </section>
-</x-frontend.main>
+</div>

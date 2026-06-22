@@ -219,7 +219,8 @@ class ComingSoonPage extends Page implements HasForms
      */
     protected function getMainFilePath(): string
     {
-        return resource_path('views/components/superduper/pages/coming-soon.blade.php');
+        return resource_path('views/livewire/pages/coming-soon.blade.php');
+        // return resource_path('views/components/superduper/pages/coming-soon.blade.php');
     }
 
     /**
