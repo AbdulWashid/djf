@@ -1,21 +1,14 @@
 <?php
 
-use App\Livewire\Employers;
-use App\Livewire\Faqs;
-use App\Livewire\JobDetails;
-use App\Livewire\Job\Apply;
-use App\Livewire\Job\ThankYou;
-use App\Livewire\JobsComponent;
-use App\Livewire\Remainder;
-use App\Livewire\SuperDuper\BlogList;
-use App\Livewire\SuperDuper\BlogDetails;
-use App\Livewire\SuperDuper\Pages\ContactUs;
+use Illuminate\Support\Facades\Route;
+use Livewire\Volt\Volt;
+use Lab404\Impersonate\Services\ImpersonateManager;
+use Illuminate\Support\Facades\Artisan;
+use Filament\Notifications\Notification;
 use App\Models\HomePageMeta;
 use App\Models\StaticPage;
-use Filament\Notifications\Notification;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Route;
-use Lab404\Impersonate\Services\ImpersonateManager;
+use App\Livewire\SuperDuper\Pages\ContactUs;
+
 
 Route::middleware('auth:employer')
     ->prefix('employer')
@@ -52,34 +45,30 @@ Route::get('/about-us', function () {
     }
 })->name('about-us');
 
+Volt::route('/job/{slug}/apply', 'pages.apply')->name('jobs.apply.form');
 
-Route::get('/job/{slug}/apply', Apply::class)->name('jobs.apply.form');
+Volt::route('/jobs/{slug}/thank-you', 'pages.thank-you')->name('jobs.apply.thankyou');
 
-Route::get('/jobs/{slug}/thank-you', ThankYou::class)->name('jobs.apply.thankyou');
-
-Route::get('/jobs', JobsComponent::class)->name('jobs');
-
-Route::get('/jobs/{location}', JobsComponent::class)->name('jobs.location');
-
-Route::get('/jobs/{category}', JobsComponent::class)->name('jobs.category');
-
-Route::get('/jobs/{location}/{category_slug}', JobsComponent::class)->name('jobs.location.category');
+Volt::route('/jobs', 'pages.jobs-component')->name('jobs');
+Volt::route('/jobs/{location}', 'pages.jobs-component')->name('jobs.location');
+Volt::route('/jobs/{category}', 'pages.jobs-component')->name('jobs.category');
+Volt::route('/jobs/{category}/{category_slug}', 'pages.jobs-component')->name('jobs.location.category');
 
 Route::get('/job-categories', function () {
     return view('components.superduper.pages.job-categories');
 })->name('job-categories');
 
-Route::get('/employers/', Employers::class)->name('employers');
+Volt::route('/employer', 'pages.employer')->name('employer');
 
-Route::get('/blogs', BlogList::class)->name('blog');
+Volt::route('/remainder', 'pages.remainder')->name('remainder');
 
-Route::get('/remainder', Remainder::class)->name('remainder');
+Volt::route('/faqs', 'pages.faqs')->name('faqs');
 
-Route::get('/faqs', Faqs::class)->name('faqs');
+Volt::route('/job/{slug}', 'pages.job-details')->name('jobs.show');
 
-Route::get('/job/{slug}', JobDetails::class)->name('jobs.show');
+Volt::route('/blog/{slug}', 'pages.blog-detail')->name('blog.show');
 
-Route::get('/blog/{slug}', BlogDetails::class)->name('blog.show');
+Volt::route('/blogs', 'pages.blog-list')->name('blog');
 
 Route::get('/contact-us', ContactUs::class)->name('contact-us');
 
@@ -107,7 +96,6 @@ Route::get('impersonate/leave', function () {
 
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 Route::get('/sitemap.html', [App\Http\Controllers\SitemapController::class, 'html'])->name('sitemap.html');
-// Route::get('/robots.txt', [App\Http\Controllers\SitemapController::class, 'robots'])->name('robots');
 
 require __DIR__.'/auth.php';
 
@@ -144,9 +132,22 @@ Route::get('/{slug}', function ($slug) {
 
 
 
+// Route::get('/job/{slug}/apply', Apply::class)->name('jobs.apply.form');
+// Route::get('/jobs/{slug}/thank-you', ThankYou::class)->name('jobs.apply.thankyou');
+// Route::get('/jobs', JobsComponent::class)->name('jobs');
+// Route::get('/jobs/{location}', JobsComponent::class)->name('jobs.location');
+// Route::get('/jobs/{category}', JobsComponent::class)->name('jobs.category');
+// Route::get('/jobs/{location}/{category_slug}', JobsComponent::class)->name('jobs.location.category');
+// Route::get('/employers', Employers::class)->name('employers');
+// Route::get('/faqs', Faqs::class)->name('faqs');
+// Route::get('/remainder', Remainder::class)->name('remainder');
+// Route::get('/job/{slug}', JobDetails::class)->name('jobs.show');
+// Route::get('/blog/{slug}', BlogDetails::class)->name('blog.show');
+// Route::get('/blogs', BlogList::class)->name('blog');
+// Route::get('/robots.txt', [App\Http\Controllers\SitemapController::class, 'robots'])->name('robots');
 
 //Route::get('/privacy-policy', function () {
-//    return view('components.superduper.pages.coming-soon');.
+//    return view('components.superduper.pages.coming-soon');
 //})->name('privacy-policy');
 //
 //Route::get('/terms-conditions', function () {

@@ -41,7 +41,7 @@
                                     their search for work, making over 140,000 applications every single day
                                 </div>
 
-                                <livewire:homepage-search />
+                                <livewire:pages.components.homepage-search />
 
                                 {{-- <div class="list-tags-banner mt-60 wow animate__animated animate__fadeInUp"
                                     data-wow-delay=".3s">
@@ -80,10 +80,10 @@
         </section>
 
 
-        <livewire:job-categories />
+        <livewire:pages.components.job-categories />
 
 
-        <livewire:featured-jobs />
+        <livewire:pages.components.featured-jobs />
 
         {{-- <section class="section-box mt-50 mb-70 bg-patern">
             <div class="container">
@@ -235,7 +235,7 @@
             </div>
         </div>
 
-        <livewire:recent-post-home />
+        <livewire:pages.components.recent-post-home />
 
         <section class="section-box mt-50 mb-60">
             <div class="container">
@@ -244,12 +244,12 @@
                 <div class="row">
 
                     <div class="col-md-12">
-                        <livewire:faqs-list section="homepage" />
+                        <livewire:pages.components.faqs-list section="homepage" />
                     </div>
                 </div>
             </div>
         </section>
 
-        <livewire:subscribe />
+        <livewire:pages.components.subscribe />
     </div>
 </x-frontend.main>

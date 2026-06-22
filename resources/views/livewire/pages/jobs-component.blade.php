@@ -1,3 +1,226 @@
+<?php
+
+use Livewire\Volt\Component;
+use Livewire\WithPagination;
+use Livewire\Attributes\Layout;
+use Illuminate\Support\Str;
+use App\Enums\EmploymentType;
+use App\Models\JobCategory;
+use App\Models\Opening;
+
+new #[Layout('components.frontend.main')] class extends Component {
+    use WithPagination;
+
+    public $categories;
+    public $locations;
+    public $job_types;
+    public $q;
+    public $location;
+    public $category;
+    public $job_type = [];
+    public $salary_range;
+    public $salary_ranges;
+
+    public $pageTitle = 'Urgent {Category} Jobs in {location} | Dubaijobfinder';
+    public $pageDescription = 'Find the latest {Category} jobs in {location}. Apply online for urgent vacancies and career opportunities on Dubaijobfinder.';
+
+    public function mount($location = null, $category_slug = null): void
+    {
+        $this->categories = JobCategory::active()->pluck('name', 'id');
+        $this->locations = Opening::distinct()->pluck('location');
+        $this->job_types = EmploymentType::toOptionsArray();
+        $this->q = $this->normalizeQuery(request()->query('q'));
+
+        if ($location) {
+            $cat = JobCategory::where('slug', Str::slug($location))->first();
+            if ($cat) {
+                $this->category = $cat->id;
+                $this->location = null;
+            } else {
+                $foundLocation = $this->locations->first(function ($loc) use ($location) {
+                    return Str::slug($loc) === Str::slug($location);
+                });
+                $this->location = Str::slug($foundLocation) ? $foundLocation : null;
+            }
+        }
+        if ($category_slug) {
+            $foundLocation = $this->locations->first(function ($loc) use ($location) {
+                return Str::slug($loc) === Str::slug($location);
+            });
+            $this->location = $foundLocation;
+
+            $cat = JobCategory::where('slug', Str::slug($category_slug))->first();
+            if ($cat) {
+                $this->category = $cat->id;
+            }
+        }
+
+        view()->share('pageType', 'job_listing');
+
+        view()->share('pageTitle', str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? JobCategory::find($this->category)?->name ?? '' : ''], $this->pageTitle));
+
+        view()->share('pageDescription', str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? JobCategory::find($this->category)?->name ?? '' : ''], $this->pageDescription));
+
+        view()->share('schemaData', $this->buildSchemas());
+    }
+
+    public function hydrate(): void
+    {
+        $this->q = $this->normalizeQuery(request()->query('q', $this->q));
+    }
+
+    public function updatedLocation($value)
+    {
+        $this->updateUrl();
+    }
+
+    public function updatedCategory($value)
+    {
+        $this->updateUrl();
+    }
+
+    private function updateUrl()
+    {
+        $locationSlug = $this->location ? Str::slug($this->location) : null;
+        $categorySlug = null;
+
+        if ($this->category) {
+            $cat = JobCategory::find($this->category);
+            $categorySlug = $cat?->slug;
+        }
+
+        $url = route('jobs');
+        if ($locationSlug && $categorySlug) {
+            $url = route('jobs.location.category', ['location' => $locationSlug, 'category_slug' => $categorySlug]);
+        } elseif ($locationSlug) {
+            $url = route('jobs.location', ['location' => $locationSlug]);
+        } elseif ($categorySlug) {
+            $url = route('jobs.category', ['category' => $categorySlug]);
+        }
+
+        $url = rtrim($url, '/') . '/';
+        if (!empty($this->q)) {
+            $url .= '?q=' . urlencode($this->normalizeQuery($this->q));
+        }
+
+        $this->dispatch('url-updated', ['url' => $url]);
+        $this->dispatch('seo-updated', [
+            'title' => str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? JobCategory::find($this->category)?->name ?? '' : ''], $this->pageTitle),
+            'description' => str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? JobCategory::find($this->category)?->name ?? '' : ''], $this->pageDescription),
+        ]);
+
+        $this->dispatch('schema-updated', [
+            'schemas' => $this->buildSchemas(),
+        ]);
+    }
+
+    protected function buildSchemas(): array
+    {
+        $breadcrumbItems = [['label' => 'Jobs', 'url' => route('jobs')]];
+
+        if (!empty($this->location)) {
+            $breadcrumbItems[] = ['label' => Str::title($this->location)];
+        }
+
+        if (!empty($this->category)) {
+            $breadcrumbItems[] = ['label' => JobCategory::find($this->category)?->name ?? 'Category'];
+        }
+
+        return [
+            [
+                '@context' => 'https://schema.org',
+                '@type' => 'Organization',
+                'name' => config('app.name'),
+                'url' => url('/'),
+            ],
+            [
+                '@context' => 'https://schema.org',
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => collect($breadcrumbItems)
+                    ->values()
+                    ->map(function (array $item, int $index) {
+                        $entry = [
+                            '@type' => 'ListItem',
+                            'position' => $index + 1,
+                            'name' => $item['label'],
+                        ];
+
+                        if (!empty($item['url'])) {
+                            $entry['item'] = $item['url'];
+                        }
+
+                        return $entry;
+                    })
+                    ->all(),
+            ],
+        ];
+    }
+
+    public function clear()
+    {
+        // reset component search filters
+        $this->location = null;
+        $this->category = null;
+        $this->job_type = [];
+        $this->salary_range = null;
+        $this->q = null;
+        $this->updateUrl();
+        $this->resetPage();
+        $this->dispatch('reset-select2');
+    }
+
+    public function search()
+    {
+        $query = Opening::query()->active()->with('employer');
+
+        $keyword = $this->normalizeQuery($this->q ?: request()->query('q', ''));
+
+        // Keyword filter: search by job title or employer name
+        // if ($keyword !== '') {
+        //     $query->where(function ($q) use ($keyword) {
+        //         $q->where('title', 'like', "%{$keyword}%")->orWhereHas('employer', function ($q2) use ($keyword) {
+        //             $q2->where('name', 'like', "%{$keyword}%");
+        //         });
+        //     });
+        // }
+
+        if ($keyword !== '') {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('title', 'like', "%{$keyword}%")
+                    ->orWhere('slug', 'like', "%{$keyword}%")
+                    ->orWhere('job_type', 'like', "%{$keyword}%")
+                    ->orWhere('location', 'like', "%{$keyword}%");
+            });
+        }
+
+        if ($this->location) {
+            $query->where('location', ucwords(str_replace('-', ' ', $this->location)));
+        }
+
+        if ($this->category) {
+            $query->where('job_category_id', $this->category);
+        }
+
+        if ($this->job_type) {
+            $query->whereIn('job_type', (array) $this->job_type);
+        }
+
+        return $query->paginate(12);
+    }
+
+    private function normalizeQuery(?string $value): ?string
+    {
+        $value = trim((string) $value);
+
+        return $value === '' ? null : Str::lower($value);
+    }
+
+    public function jobs()
+    {
+        return $this->search();
+    }
+}; ?>
+
 <div>
     <section class="section-box">
         <div class="box-head-single">
@@ -134,7 +357,7 @@
                                 </div> 
                         </div>  --}}
                         <div class="row job-listing-grid-2">
-                            @forelse($jobs as $job)
+                            @forelse($this->jobs() as $job)
                                 <div class="col-xl-4 col-md-6 mb-30">
                                     <div class="card-grid-2 hover-up wow animate__animated animate__fadeIn h-100 d-flex flex-column"
                                         data-wow-delay=".{{ $loop->index * 0.1 }}s">
@@ -215,7 +438,7 @@
                                 </div>
                             @endforelse
                         </div>
-                        {{ $jobs->links() }}
+                        {{ $this->jobs()->links() }}
                     </div>
                 </div>
             </div>
@@ -272,8 +495,6 @@
             </ul> 
         </div> 
     </div>  --}}
-
-
     @push('js')
         <script>
             document.addEventListener('livewire:initialized', () => {

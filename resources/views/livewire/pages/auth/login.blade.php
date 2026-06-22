@@ -157,7 +157,11 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                     </div>
 
-                    <x-auth-session-status class="mb-4" :status="session('status')" />
+                    @if (session('status'))
+                        <div class="mb-4 font-medium text-sm text-green-600">
+                            {{ session('status') }}
+                        </div>
+                    @endif
 
                     <form wire:submit="login">
 
