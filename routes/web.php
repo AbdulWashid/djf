@@ -52,7 +52,7 @@ Volt::route('/jobs/{slug}/thank-you', 'pages.thank-you')->name('jobs.apply.thank
 Volt::route('/jobs', 'pages.jobs-component')->name('jobs');
 Volt::route('/jobs/{location}', 'pages.jobs-component')->name('jobs.location');
 Volt::route('/jobs/{category}', 'pages.jobs-component')->name('jobs.category');
-Volt::route('/jobs/{category}/{category_slug}', 'pages.jobs-component')->name('jobs.location.category');
+Volt::route('/jobs/{location}/{category_slug}', 'pages.jobs-component')->name('jobs.location.category');
 
 Route::get('/job-categories', function () {
     return view('components.superduper.pages.job-categories');
