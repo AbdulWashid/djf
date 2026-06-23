@@ -62,15 +62,13 @@ class EmployerResource extends Resource
                                             ->maxLength(500)
                                             ->columnSpanFull(),
 
-//                                        SpatieMediaLibraryFileUpload::make('image')
-//                                            ->collection('images') // Matches the collection name in your model
-//                                            ->label('Upload Image')
-//                                            ->image() // Optional: restricts to image files
-//                                            ->responsiveImages() // Optional: generates responsive images
-//                                            ->multiple(false), // Optional: allows multiple file uploads
-//                                        // Add other options like ->downloadable(), ->previewable(), ->deletable()
-
-
+                                        // SpatieMediaLibraryFileUpload::make('image')
+                                        //    ->collection('images') // Matches the collection name in your model
+                                        //    ->label('Upload Image')
+                                        //    ->image() // Optional: restricts to image files
+                                        //    ->responsiveImages() // Optional: generates responsive images
+                                        //    ->multiple(false), // Optional: allows multiple file uploads
+                                        //     Add other options like ->downloadable(), ->previewable(), ->deletable()
 
                                         Forms\Components\Toggle::make('is_active')
                                             ->label('Status')
@@ -120,29 +118,29 @@ class EmployerResource extends Resource
                     ])
                     ->columnSpanFull(),
             ]);
-//
-//        return $form
-//            ->schema([
-//                TextInput::make('name')
-//                    ->required(),
-//                TextInput::make('logo'),
-//                TextInput::make('description'),
-//                TextInput::make('website'),
-//                TextInput::make('email'),
-//                TextInput::make('phone'),
-//                TextInput::make('address'),
-//                TextInput::make('city'),
-//                TextInput::make('state'),
-//                TextInput::make('country'),
-//                TextInput::make('postal_code'),
-//                Checkbox::make('is_active'),
-//                Placeholder::make('created_at')
-//                    ->label('Created Date')
-//                    ->content(fn(?Employer $record): string => $record?->created_at?->diffForHumans() ?? '-'),
-//                Placeholder::make('updated_at')
-//                    ->label('Last Modified Date')
-//                    ->content(fn(?Employer $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
-//            ]);
+
+        // return $form
+        //    ->schema([
+        //        TextInput::make('name')
+        //            ->required(),
+        //        TextInput::make('logo'),
+        //        TextInput::make('description'),
+        //        TextInput::make('website'),
+        //        TextInput::make('email'),
+        //        TextInput::make('phone'),
+        //        TextInput::make('address'),
+        //        TextInput::make('city'),
+        //        TextInput::make('state'),
+        //        TextInput::make('country'),
+        //        TextInput::make('postal_code'),
+        //        Checkbox::make('is_active'),
+        //        Placeholder::make('created_at')
+        //            ->label('Created Date')
+        //            ->content(fn(?Employer $record): string => $record?->created_at?->diffForHumans() ?? '-'),
+        //        Placeholder::make('updated_at')
+        //            ->label('Last Modified Date')
+        //            ->content(fn(?Employer $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+        //    ]);
     }
 
     public static function table(Table $table): Table
@@ -155,7 +153,7 @@ class EmployerResource extends Resource
                 ImageColumn::make('logo'),
                 SpatieMediaLibraryImageColumn::make('featured_image')
                     ->collection('images')
-//                    ->conversion('thumb')
+                //    ->conversion('thumb')
                     ->circular()
                     ->label('Featured Image'),
 
@@ -173,8 +171,7 @@ class EmployerResource extends Resource
                             ->success()
                             ->send();
 
-                    })
-                ,
+                    }),
             ])
             ->filters([
                 //

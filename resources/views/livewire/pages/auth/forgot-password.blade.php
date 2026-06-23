@@ -186,7 +186,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 Remember your password?
                             </span>
 
-                            <a href="{{ route($type . '.login') }}" wire:navigate
+                            <a href="{{ route($type . '.login') }}"
                                 class="font-medium text-primary-600 hover:text-primary-800">
 
                                 Back to Login

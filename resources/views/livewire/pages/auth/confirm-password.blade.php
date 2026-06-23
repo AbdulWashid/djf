@@ -40,7 +40,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             'auth.password_confirmed_at' => time(),
         ]);
 
-        $this->redirectIntended(default: route($this->type . '.dashboard'), navigate: true);
+        $this->redirectIntended(default: route($this->type . '.profile'), navigate: false);
     }
 };
 ?>

@@ -6,13 +6,21 @@ use Lab404\Impersonate\Services\ImpersonateManager;
 use Illuminate\Support\Facades\Artisan;
 use Filament\Notifications\Notification;
 
+Route::middleware([
+    'auth:employer',
+    'verified',
+    'employer.active',
+])->prefix('employer')->name('employer.')->group(function () {
+    Volt::route('/profile', 'pages.employer.profile')
+        ->name('profile');
+    Volt::route('/job-category', 'pages.employer.job-category')
+        ->name('job-category');
+    Volt::route('/job-posting', 'pages.employer.job-posting')
+        ->name('job-posting');
+    Volt::route('/job-application', 'pages.employer.job-application')
+        ->name('job-application');
+});
 
-Route::middleware('auth:employer')
-    ->prefix('employer')
-    ->group(function () {
-        Route::view('/dashboard', 'dashboard')
-            ->name('employer.dashboard');
-    });
 Route::middleware('auth:candidate')
     ->prefix('candidate')
     ->group(function () {

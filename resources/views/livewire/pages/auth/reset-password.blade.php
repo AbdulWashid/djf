@@ -64,7 +64,7 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         Session::flash('status', __($status));
 
-        $this->redirectRoute($this->type . '.login', navigate: true);
+        $this->redirectRoute($this->type . '.login', navigate: false);
     }
 }; ?>
 
@@ -216,7 +216,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 Remember your password?
                             </span>
 
-                            <a href="{{ route($type . '.login') }}" wire:navigate
+                            <a href="{{ route($type . '.login') }}"
                                 class="font-medium text-primary-600 hover:text-primary-800">
 
                                 Back to Login

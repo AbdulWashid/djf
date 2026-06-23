@@ -26,4 +26,13 @@ class JobApplications extends Model
     {
         return $this->belongsTo(Opening::class);
     }
+    public function candidate()
+    {
+        return $this->belongsTo(Candidate::class);
+    }
+
+    public function job()
+    {
+        return $this->belongsTo(Opening::class, 'opening_id');
+    }
 }

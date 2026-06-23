@@ -31,7 +31,10 @@ class Opening extends Model
         'featured',
         'status',
     ];
-
+    public function applications()
+    {
+        return $this->hasMany(JobApplication::class);
+    }
     public function employer(): BelongsTo
     {
         return $this->belongsTo(Employer::class);

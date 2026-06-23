@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\RedirectResponse;
 
 class VerifyEmailController extends Controller
@@ -18,7 +18,7 @@ class VerifyEmailController extends Controller
         $request->fulfill();
 
         if (auth('employer')->check()) {
-            return redirect()->route('employer.dashboard');
+            return redirect()->route('employer.profile');
         }
 
         if (auth('candidate')->check()) {

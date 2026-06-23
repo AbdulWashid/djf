@@ -11,6 +11,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\URL;
 use App\Notifications\EmployerVerifyEmail;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class Employer extends Authenticatable implements MustVerifyEmail, HasMedia
 {
@@ -62,5 +64,25 @@ class Employer extends Authenticatable implements MustVerifyEmail, HasMedia
     public function sendEmailVerificationNotification(): void
     {
         $this->notify(new EmployerVerifyEmail());
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $url = route('employer.password.reset', [
+            'token' => $token,
+            'email' => $this->email,
+        ]);
+
+        $this->notify(new class($url) extends ResetPassword {
+            public function __construct(public string $url) {}
+
+            public function toMail($notifiable): MailMessage
+            {
+                return (new MailMessage)
+                    ->subject('Reset Password')
+                    ->line('Click the button below to reset your password.')
+                    ->action('Reset Password', $this->url);
+            }
+        });
     }
 }

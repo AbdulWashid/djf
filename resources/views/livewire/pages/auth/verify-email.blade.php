@@ -1,14 +1,14 @@
 <?php
 
-use App\Livewire\Actions\Logout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
+use App\Models\Employer;
 
 new #[Layout('components.frontend.main')] class extends Component {
     public string $type;
-
+    public string $email = '';
     public function mount()
     {
         $this->type = request()->routeIs('employer.*') ? 'employer' : 'candidate';
@@ -16,28 +16,25 @@ new #[Layout('components.frontend.main')] class extends Component {
 
     public function sendVerification(): void
     {
-        $user = Auth::guard($this->type)->user();
+        $this->validate([
+            'email' => ['required', 'email'],
+        ]);
 
-        if (!$user) {
+        $employer = Employer::where('email', $this->email)->first();
+
+        if (!$employer) {
+            $this->addError('email', 'Employer not found.');
             return;
         }
 
-        if ($user->hasVerifiedEmail()) {
-            $this->redirectIntended(default: route($this->type . '.dashboard'), navigate: true);
-
+        if ($employer->hasVerifiedEmail()) {
+            $this->addError('email', 'Email already verified.');
             return;
         }
 
-        $user->sendEmailVerificationNotification();
+        $employer->sendEmailVerificationNotification();
 
-        Session::flash('status', 'verification-link-sent');
-    }
-
-    public function logout(Logout $logout): void
-    {
-        $logout();
-
-        $this->redirect('/', navigate: true);
+        session()->flash('status', 'Verification email sent successfully.');
     }
 };
 ?>
@@ -147,30 +144,33 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                     </p>
 
-                    @if (session('status') === 'verification-link-sent')
+                    @if (session('status'))
                         <div class="mb-6 p-4 rounded-lg border border-green-200 bg-green-50 text-green-700">
-
-                            A new verification link has been sent successfully.
-
+                            {{ session('status') }}
                         </div>
                     @endif
 
                     <div class="space-y-3">
+                        <form wire:submit="sendVerification">
+                            <div class="mb-4">
+                                <input type="email" wire:model="email"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-md focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
+                                    placeholder="Enter your email">
 
-                        <button wire:click="sendVerification"
-                            class="w-full py-3 bg-primary-800 hover:bg-primary-700 text-white rounded-md font-medium transition">
+                                @error('email')
+                                    <span class="text-sm text-red-500">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
 
-                            Resend Verification Email
+                            <button type="submit"
+                                class="w-full py-3 bg-primary-800 hover:bg-primary-700 text-white rounded-md font-medium transition">
 
-                        </button>
+                                Resend Verification Email
 
-                        <button wire:click="logout" type="button"
-                            class="w-full py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-md font-medium transition">
-
-                            Log Out
-
-                        </button>
-
+                            </button>
+                        </form>
                     </div>
 
                     <div class="mt-6 text-center text-sm text-gray-500">
