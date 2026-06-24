@@ -10,6 +10,15 @@ new class extends Component {
     {
         $this->employer = Auth::guard('employer')->user();
     }
+    public function logout()
+    {
+        Auth::guard('employer')->logout();
+
+        session()->invalidate();
+        session()->regenerateToken();
+
+        return redirect()->route('employer.login');
+    }
 };
 ?>
 
@@ -57,6 +66,12 @@ new class extends Component {
                 @if (route('employer.job-application') == request()->url()) class="text-primary-800 font-medium" @endif>
                 Applications
             </a>
+        </li>
+        <li class="mb-3">
+            <button onclick="if(confirm('Are you sure you want to logout?')) { $wire.logout() }"
+                class="text-red-600 font-medium">
+                Logout
+            </button>
         </li>
 
     </ul>

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class JobApplications extends Model
 {
@@ -34,5 +35,15 @@ class JobApplications extends Model
     public function job()
     {
         return $this->belongsTo(Opening::class, 'opening_id');
+    }
+    protected static function booted(): void
+    {
+        static::creating(function ($model) {
+            $model->slug = Str::slug($model->name);
+        });
+
+        static::updating(function ($model) {
+            $model->slug = Str::slug($model->name);
+        });
     }
 }
