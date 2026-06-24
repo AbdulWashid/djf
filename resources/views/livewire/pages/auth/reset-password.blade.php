@@ -77,7 +77,7 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                 <span
                     class="inline-flex items-center px-4 py-2 mb-4 text-sm font-medium rounded-full
-        {{ $type === 'employer' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700' }}">
+                        {{ $type === 'employer' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700' }}">
 
                     {{ $type === 'employer' ? 'Employer Account Recovery' : 'Candidate Account Recovery' }}
                 </span>
@@ -135,7 +135,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             </div>
 
             {{-- Reset Password Form --}}
-            <div class="col-lg-6">
+            <div class="col-lg-6 mt-4">
 
                 <div class="bg-white shadow-lg border border-gray-100 rounded-xl p-8">
 
@@ -176,7 +176,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 New Password
                             </label>
 
-                            <input wire:model="password" type="password"
+                            <input wire:model.defer="password" type="password"
                                 class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-1 focus:ring-primary-600 focus:border-primary-600"
                                 placeholder="Enter new password">
 
@@ -193,7 +193,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 Confirm Password
                             </label>
 
-                            <input wire:model="password_confirmation" type="password"
+                            <input wire:model.defer="password_confirmation" type="password"
                                 class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-1 focus:ring-primary-600 focus:border-primary-600"
                                 placeholder="Confirm new password">
 
@@ -204,12 +204,17 @@ new #[Layout('components.frontend.main')] class extends Component {
                             @enderror
                         </div>
 
-                        <button type="submit"
+                        <button type="submit" wire:loading.attr="disabled"
                             class="w-full py-3 text-white font-medium bg-primary-800 hover:bg-primary-700 rounded-md transition">
 
-                            Reset Password
-                        </button>
+                            <span wire:loading.remove>
+                                Reset Password
+                            </span>
 
+                            <span wire:loading>
+                                Resetting...
+                            </span>
+                        </button>
                         <div class="text-center mt-5">
 
                             <span class="text-gray-500">

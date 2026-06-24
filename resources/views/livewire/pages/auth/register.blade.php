@@ -13,19 +13,24 @@ use App\Models\Candidate;
 new #[Layout('components.frontend.main')] class extends Component {
     use WithFileUploads;
 
-    public $logo;
-    public string $name = '';
-    public string $email = '';
-    public string $password = '';
-    public string $password_confirmation = '';
-    public string $description = '';
-    public string $website = '';
-    public string $phone = '';
-    public string $address = '';
-    public string $city = '';
-    public string $state = '';
-    public string $country = '';
-    public string $postal_code = '';
+    public string $name = ''; // employer
+    public string $first_name = ''; // candidate
+    public string $last_name = ''; // candidate
+    public string $email = ''; // both
+    public string $password = ''; // both
+    public string $password_confirmation = ''; // both
+    public string $description = ''; // employer
+    public string $website = ''; // employer
+    public string $phone = ''; // both
+    public string $address = ''; // employer
+    public string $city = ''; // employer
+    public string $state = ''; // employer
+    public string $country = ''; // employer
+    public string $postal_code = ''; // employer
+    public $logo; // employer
+    public string $nationality = ''; // candidate
+    public $resume; // candidate
+    public string $cover_letter = ''; // candidate
     public string $type = '';
 
     public function mount(): void
@@ -41,13 +46,13 @@ new #[Layout('components.frontend.main')] class extends Component {
                 'email' => ['required', 'email', 'unique:employers,email'],
                 'description' => ['nullable', 'string'],
                 'website' => ['nullable', 'url'],
-                'phone' => ['nullable', 'string', 'max:20'],
+                'phone' => ['nullable', 'regex:/^[0-9+\-\s()]+$/'],
                 'address' => ['nullable', 'string', 'max:255'],
                 'city' => ['nullable', 'string', 'max:100'],
                 'state' => ['nullable', 'string', 'max:100'],
                 'country' => ['nullable', 'string', 'max:100'],
                 'postal_code' => ['nullable', 'string', 'max:20'],
-                'logo' => ['nullable', 'image', 'max:2048'],
+                'logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
             ];
 
@@ -85,38 +90,55 @@ new #[Layout('components.frontend.main')] class extends Component {
         }
 
         $rules = [
-            'name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:candidates,email'],
+            'phone' => ['nullable', 'regex:/^[0-9+\-\s()]+$/'],
+            'nationality' => ['nullable', 'string', 'max:100'],
+            'resume' => ['required', 'mimes:pdf,doc,docx', 'max:5120'],
+            'cover_letter' => ['nullable', 'string', 'max:250'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ];
 
         $validated = $this->validate($rules);
 
         $user = Candidate::create([
-            'name' => $this->name,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
             'email' => $this->email,
+            'phone' => $this->phone,
+            'nationality' => $this->nationality,
+            'cover_letter' => $this->cover_letter,
+            'status' => false,
             'password' => Hash::make($this->password),
-            'is_active' => true,
         ]);
+        if ($this->resume) {
+            $path = $this->resume->store('resumes', 'public');
 
+            $user->update([
+                'resume_path' => $path,
+            ]);
+        }
         event(new Registered($user));
+        session()->flash('registration-success', 'Your account has been created successfully. A verification email has been sent to your email address. Please verify your email before logging in. Your account will be reviewed and activated by our team.');
 
-        Auth::guard('candidate')->login($user);
+        $this->redirect(route('candidate.login'), navigate: false);
 
-        $this->redirect(route('candidate.dashboard'), navigate: false);
+        return;
+        // Auth::guard('candidate')->login($user);
     }
 }; ?>
 <div class="bg-gray-50 py-16 min-h-screen">
     <div class="container mx-auto px-4">
         <div class="row ">
-            @if (session('success'))
+            @if (session('registration-success'))
                 <div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-4">
                     <div class="font-medium text-green-800">
                         Registration Successful
                     </div>
 
                     <div class="text-sm text-green-700 mt-1">
-                        {{ session('success') }}
+                        {{ session('registration-success') }}
                     </div>
                 </div>
             @endif
@@ -224,24 +246,55 @@ new #[Layout('components.frontend.main')] class extends Component {
                     </div>
 
                     <form wire:submit="register">
+                        @if ($type === 'employer')
+                            <!-- Name -->
+                            <div class="mb-4">
+                                <label class="block mb-2 text-sm font-medium">
+                                    Company Name
+                                </label>
 
-                        <!-- Name -->
-                        <div class="mb-4">
-                            <label class="block mb-2 text-sm font-medium">
-                                Full Name
-                            </label>
+                                <input type="text" wire:model="name"
+                                    class="w-full rounded-md border border-gray-300 px-4 py-3 focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
+                                    placeholder="Enter your name">
 
-                            <input type="text" wire:model="name"
-                                class="w-full rounded-md border border-gray-300 px-4 py-3 focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
-                                placeholder="Enter your full name">
+                                @error('name')
+                                    <span class="text-red-500 text-sm">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
+                        @elseif ($type === 'candidate')
+                            <div class="mb-4">
+                                <label class="block mb-2 text-sm font-medium">
+                                    First Name
+                                </label>
 
-                            @error('name')
-                                <span class="text-red-500 text-sm">
-                                    {{ $message }}
-                                </span>
-                            @enderror
-                        </div>
+                                <input type="text" wire:model="first_name"
+                                    class="w-full rounded-md border border-gray-300 px-4 py-3 focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
+                                    placeholder="Enter your full name">
 
+                                @error('first_name')
+                                    <span class="text-red-500 text-sm">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="mb-4">
+                                <label class="block mb-2 text-sm font-medium">
+                                    Last Name
+                                </label>
+
+                                <input type="text" wire:model="last_name"
+                                    class="w-full rounded-md border border-gray-300 px-4 py-3 focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
+                                    placeholder="Enter your last name">
+
+                                @error('last_name')
+                                    <span class="text-red-500 text-sm">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
+                        @endif
                         <!-- Email -->
                         <div class="mb-4">
                             <label class="block mb-2 text-sm font-medium">
@@ -262,6 +315,11 @@ new #[Layout('components.frontend.main')] class extends Component {
                             <div class="mb-4">
                                 <label>Company Description</label>
                                 <textarea wire:model="description" rows="1" class="w-full rounded-md border border-gray-300 px-4 py-3"></textarea>
+                                @error('description')
+                                    <span class="text-red-500 text-sm">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
                             </div>
 
                             <div class="grid grid-cols-2 gap-4 mb-4">
@@ -270,50 +328,191 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     <label>Website</label>
                                     <input type="url" wire:model="website"
                                         class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    @error('website')
+                                        <span class="text-red-500 text-sm">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
                                 </div>
 
                                 <div>
                                     <label>Phone</label>
                                     <input type="text" wire:model="phone"
                                         class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    @error('phone')
+                                        <span class="text-red-500 text-sm">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
                                 </div>
 
                                 <div>
                                     <label>Address</label>
                                     <input type="text" wire:model="address"
                                         class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    @error('address')
+                                        <span class="text-red-500 text-sm">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
                                 </div>
 
                                 <div>
                                     <label>City</label>
                                     <input type="text" wire:model="city"
                                         class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    @error('city')
+                                        <span class="text-red-500 text-sm">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
                                 </div>
 
                                 <div>
                                     <label>State</label>
                                     <input type="text" wire:model="state"
                                         class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    @error('state')
+                                        <span class="text-red-500 text-sm">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
                                 </div>
 
                                 <div>
                                     <label>Country</label>
                                     <input type="text" wire:model="country"
                                         class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    @error('country')
+                                        <span class="text-red-500 text-sm">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
                                 </div>
 
                                 <div>
                                     <label>Postal Code</label>
                                     <input type="text" wire:model="postal_code"
                                         class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    @error('postal_code')
+                                        <span class="text-red-500 text-sm">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
                                 </div>
 
                                 <div>
                                     <label>Company Logo</label>
-                                    <input type="file" wire:model="logo"
-                                        class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    <label
+                                        class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+
+                                        <svg class="w-10 h-10 mb-3 text-gray-400" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M7 16a4 4 0 01-.88-7.9A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                        </svg>
+
+                                        <p class="text-sm text-gray-500">
+                                            <span class="font-semibold">Click to upload Company Logo</span>
+                                            or drag and drop
+                                        </p>
+
+                                        <p class="text-xs text-gray-400 mt-1">
+                                            JPG, JPEG, PNG, WEBP (Max 2MB)
+                                        </p>
+
+                                        <input type="file" wire:model="logo" accept="image/*" class="hidden">
+                                    </label>
+                                    @error('logo')
+                                        <span class="text-red-500 text-sm">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
+                                    <div wire:loading wire:target="logo" class="mt-2 text-blue-600">
+                                        Uploading...
+                                    </div>
+
+                                    {{-- @if ($logo instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
+                                        <div class="mt-2 text-sm text-green-600">
+                                            Selected: {{ $logo->getClientOriginalName() }}
+                                        </div>
+                                    @endif --}}
+                                    @if ($logo instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
+                                        <img src="{{ $logo->temporaryUrl() }}"
+                                            class="h-20 w-20 rounded object-cover">
+                                    @endif
+                                </div>
+                            </div>
+                        @elseif ($type === 'candidate')
+                            <div class="mb-4">
+                                <label>Phone</label>
+                                <input type="text" wire:model="phone"
+                                    class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                @error('phone')
+                                    <span class="text-red-500 text-sm">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
+
+                            <div class="mb-4">
+                                <label>Nationality</label>
+                                <input type="text" wire:model="nationality"
+                                    class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                @error('nationality')
+                                    <span class="text-red-500 text-sm">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
+
+                            <div class="mb-4">
+                                <label>Resume</label>
+                                <label
+                                    class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+
+                                    <svg class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M7 16a4 4 0 01-.88-7.9A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                    </svg>
+
+                                    <p class="text-sm text-gray-500">
+                                        <span class="font-semibold">Click to upload CV</span>
+                                        or drag and drop
+                                    </p>
+
+                                    <p class="text-xs text-gray-400 mt-1">
+                                        PDF, DOC, DOCX (Max 5MB)
+                                    </p>
+
+                                    <input type="file" wire:model="resume" accept=".pdf,.doc,.docx"
+                                        class="hidden">
+                                </label>
+                                @error('resume')
+                                    <span class="text-red-500 text-sm">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                                <div wire:loading wire:target="resume" class="mt-2 text-blue-600">
+                                    Uploading...
                                 </div>
 
+                                @if ($resume instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
+                                    <div class="mt-2 text-sm text-green-600">
+                                        Selected: {{ $resume->getClientOriginalName() }}
+                                    </div>
+                                @endif
+
+                            </div>
+                            <div class="mb-4">
+                                <label>Cover Letter</label>
+                                <textarea wire:model="cover_letter" rows="1" class="w-full rounded-md border border-gray-300 px-4 py-3"></textarea>
+                                @error('cover_letter')
+                                    <span class="text-red-500 text-sm">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
                             </div>
                         @endif
 
@@ -404,12 +603,15 @@ new #[Layout('components.frontend.main')] class extends Component {
                         </div>
 
                         <!-- Button -->
-                        <button type="submit"
+                        <button type="submit" wire:loading.attr="disabled"
                             class="w-full bg-primary-800 hover:bg-primary-700 text-white py-3 rounded-md font-medium transition">
-
-                            {{ $type === 'employer' ? 'Register as Employer' : 'Register as Candidate' }}
+                            <span wire:loading.remove>
+                                {{ $type === 'employer' ? 'Register as Employer' : 'Register as Candidate' }}
+                            </span>
+                            <span wire:loading>
+                                Registering...
+                            </span>
                         </button>
-
                         <div class="text-center mt-5">
 
                             <span class="text-gray-500">
@@ -418,17 +620,12 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                             <a href="{{ route($type . '.login') }}"
                                 class="font-medium text-primary-600 hover:text-primary-800">
-
                                 Login Here
                             </a>
-
                         </div>
-
                     </form>
-
                 </div>
             </div>
-
         </div>
     </div>
 </div>

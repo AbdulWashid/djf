@@ -54,7 +54,7 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                 <span
                     class="inline-flex items-center px-4 py-2 mb-4 text-sm font-medium rounded-full
-        {{ $type === 'employer' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700' }}">
+                    {{ $type === 'employer' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700' }}">
 
                     Security Verification
 
@@ -115,7 +115,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             </div>
 
             {{-- Confirmation Card --}}
-            <div class="col-lg-6">
+            <div class="col-lg-6 mt-4">
 
                 <div class="bg-white border border-gray-100 rounded-xl shadow-lg p-8">
 

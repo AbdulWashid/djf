@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 use App\Models\Employer;
+use App\Models\Candidate;
+use Illuminate\Support\Facades\RateLimiter;
 
 new #[Layout('components.frontend.main')] class extends Component {
     public string $type;
@@ -20,19 +20,28 @@ new #[Layout('components.frontend.main')] class extends Component {
             'email' => ['required', 'email'],
         ]);
 
-        $employer = Employer::where('email', $this->email)->first();
+        $user = $this->type === 'employer' ? Employer::where('email', $this->email)->first() : Candidate::where('email', $this->email)->first();
 
-        if (!$employer) {
-            $this->addError('email', 'Employer not found.');
+        $key = 'verify-email:' . request()->ip();
+
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $this->addError('email', 'Too many attempts. Please try again later.');
             return;
         }
 
-        if ($employer->hasVerifiedEmail()) {
+        RateLimiter::hit($key, 300);
+
+        if (!$user) {
+            $this->addError('email', $this->type . ' not found.');
+            return;
+        }
+
+        if ($user->hasVerifiedEmail()) {
             $this->addError('email', 'Email already verified.');
             return;
         }
 
-        $employer->sendEmailVerificationNotification();
+        $user->sendEmailVerificationNotification();
 
         session()->flash('status', 'Verification email sent successfully.');
     }
@@ -43,7 +52,13 @@ new #[Layout('components.frontend.main')] class extends Component {
     <div class="container mx-auto px-4">
 
         <div class="row items-center">
-
+            @if (session('status'))
+                <div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-4">
+                    <div class="text-sm text-green-700 mt-1">
+                        {{ session('status') }}
+                    </div>
+                </div>
+            @endif
             {{-- Left Side --}}
             <div class="col-lg-6 mb-5 mb-lg-0">
 
@@ -112,7 +127,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             </div>
 
             {{-- Right Side --}}
-            <div class="col-lg-6">
+            <div class="col-lg-6 mt-4">
 
                 <div class="bg-white border border-gray-100 rounded-xl shadow-lg p-8">
 
@@ -153,7 +168,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                     <div class="space-y-3">
                         <form wire:submit="sendVerification">
                             <div class="mb-4">
-                                <input type="email" wire:model="email"
+                                <input type="email" wire:model.defer="email" autocomplete="email"
                                     class="w-full px-4 py-3 border border-gray-300 rounded-md focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
                                     placeholder="Enter your email">
 
@@ -164,10 +179,16 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 @enderror
                             </div>
 
-                            <button type="submit"
+                            <button type="submit" wire:loading.attr="disabled"
                                 class="w-full py-3 bg-primary-800 hover:bg-primary-700 text-white rounded-md font-medium transition">
 
-                                Resend Verification Email
+                                <span wire:loading.remove>
+                                    Resend Verification Email
+                                </span>
+
+                                <span wire:loading>
+                                    Sending...
+                                </span>
 
                             </button>
                         </form>

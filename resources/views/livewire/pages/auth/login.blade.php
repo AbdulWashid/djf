@@ -6,6 +6,7 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 use App\Models\Employer;
+use App\Models\Candidate;
 
 new #[Layout('components.frontend.main')] class extends Component {
     public string $email = '';
@@ -49,8 +50,27 @@ new #[Layout('components.frontend.main')] class extends Component {
                     'email' => 'Your account is pending approval by the administrator.',
                 ]);
             }
+        } else {
+            $candidate = Candidate::where('email', $this->email)->first();
+            if (!$candidate) {
+                throw ValidationException::withMessages([
+                    'email' => 'Invalid credentials.',
+                ]);
+            }
+            // Email verification check
+            if (!$candidate->hasVerifiedEmail()) {
+                $this->showVerifyButton = true;
+                throw ValidationException::withMessages([
+                    'email' => 'Please verify your email address first.',
+                ]);
+            }
+            // Account status check
+            if (!$candidate->status) {
+                throw ValidationException::withMessages([
+                    'email' => 'Your account is pending approval by the administrator.',
+                ]);
+            }
         }
-
         if (
             !Auth::guard($this->type)->attempt(
                 [
@@ -67,7 +87,7 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         Session::regenerate();
 
-        $redirect = $this->type === 'employer' ? route('employer.profile') : route('candidate.dashboard');
+        $redirect = $this->type === 'employer' ? route('employer.profile') : route('candidate.profile');
 
         $this->redirectIntended(default: $redirect, navigate: false);
     }
@@ -199,7 +219,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                         </div>
                     @endif
 
-                    <form wire:submit="login">
+                    <form wire:submit.prevent="login">
 
                         <!-- Email -->
                         <div class="mb-4">
@@ -207,7 +227,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 Email Address
                             </label>
 
-                            <input type="email" wire:model="email"
+                            <input type="email" wire:model.defer="email"
                                 class="w-full px-4 py-3 border border-gray-300 rounded-md focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
                                 placeholder="Enter your email">
 
@@ -216,7 +236,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     {{ $message }}
                                 </span>
                             @enderror
-                            @if ($type === 'employer' && $showVerifyButton)
+                            @if ($showVerifyButton)
                                 <div class="mt-2">
                                     <button type="button" wire:click="resendVerification"
                                         class="text-sm text-primary-600 hover:text-primary-800 font-medium">
@@ -233,7 +253,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                             </label>
 
                             <div class="relative">
-                                <input :type="show ? 'text' : 'password'" wire:model="password"
+                                <input :type="show ? 'text' : 'password'" wire:model.defer="password"
                                     class="w-full px-4 py-3 border border-gray-300 rounded-md focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
                                     placeholder="Enter password">
 
@@ -292,10 +312,15 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                         </div>
 
-                        <button type="submit"
+                        <button type="submit" wire:loading.attr="disabled"
                             class="w-full py-3 bg-primary-800 hover:bg-primary-700 text-white rounded-md font-medium transition">
+                            <span wire:loading.remove>
 
-                            {{ $type === 'employer' ? 'Login as Employer' : 'Login as Candidate' }}
+                                {{ $type === 'employer' ? 'Login as Employer' : 'Login as Candidate' }}
+                            </span>
+                            <span wire:loading>
+                                Logging in...
+                            </span>
                         </button>
 
                         <div class="text-center mt-5">

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Auth\EmployerVerifyEmailController;
+use App\Http\Controllers\Auth\CandidateVerifyEmailController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -43,7 +44,7 @@ Route::middleware('guest:candidate')->group(function () {
     Volt::route('candidate/verify-email', 'pages.auth.verify-email')
         ->name('candidate.verification.notice');
 
-    Route::get('candidate/verify-email/{id}/{hash}', VerifyEmailController::class)
+    Route::get('candidate/verify-email/{id}/{hash}', CandidateVerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
         ->name('candidate.verification.verify');
 });

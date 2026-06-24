@@ -15,10 +15,15 @@ class Candidate extends Authenticatable implements MustVerifyEmail
     use Notifiable;
 
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
         'phone',
+        'cover_letter',
+        'resume_path',
+        'nationality',
+        'status',
     ];
 
     protected $hidden = [
@@ -29,13 +34,45 @@ class Candidate extends Authenticatable implements MustVerifyEmail
     protected function casts(): array
     {
         return [
-            'is_active' => 'boolean',
+            'status' => 'boolean',
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
         ];
     }
     public function sendEmailVerificationNotification(): void
     {
         $this->notify(new CandidateVerifyEmail());
+    }
+    public function sendPasswordResetNotification($token): void
+    {
+        $url = route('candidate.password.reset', [
+            'token' => $token,
+            'email' => $this->email,
+        ]);
+
+        $this->notify(new class($url) extends ResetPassword {
+            public function __construct(public string $url) {}
+
+            public function toMail($notifiable): MailMessage
+            {
+                return (new MailMessage)
+                    ->subject('Reset Password')
+                    ->line('Click the button below to reset your password.')
+                    ->action('Reset Password', $this->url);
+            }
+        });
+    }
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+    public function getResumeUrlAttribute(): ?string
+    {
+        return $this->resume_path
+            ? asset('storage/' . $this->resume_path)
+            : null;
+    }
+    public function applications()
+    {
+        return $this->hasMany(JobApplication::class);
     }
 }

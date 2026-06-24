@@ -20,6 +20,14 @@ Route::middleware([
     Volt::route('/job-application', 'pages.employer.job-application')
         ->name('job-application');
 });
+Route::middleware([
+    'auth:candidate',
+    'verified',
+    'candidate.active',
+])->prefix('candidate')->name('candidate.')->group(function () {
+    Volt::route('/profile', 'pages.candidate.profile')
+        ->name('profile');
+});
 
 Route::middleware('auth:candidate')
     ->prefix('candidate')
