@@ -3,6 +3,8 @@
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
@@ -40,94 +42,104 @@ new #[Layout('components.frontend.main')] class extends Component {
 
     public function register(): void
     {
-        if ($this->type === 'employer') {
+        try {
+            DB::beginTransaction();
+
+            if ($this->type === 'employer') {
+                $rules = [
+                    'name' => ['required', 'string', 'max:255'],
+                    'email' => ['required', 'email', 'unique:employers,email'],
+                    'description' => ['nullable', 'string'],
+                    'website' => ['nullable', 'url'],
+                    'phone' => ['nullable', 'regex:/^[0-9+\-\s()]+$/'],
+                    'address' => ['nullable', 'string', 'max:255'],
+                    'city' => ['nullable', 'string', 'max:100'],
+                    'state' => ['nullable', 'string', 'max:100'],
+                    'country' => ['nullable', 'string', 'max:100'],
+                    'postal_code' => ['nullable', 'string', 'max:20'],
+                    'logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+                    'password' => ['required', 'confirmed', Rules\Password::defaults()],
+                ];
+
+                $this->validate($rules);
+
+                $logoPath = null;
+                if ($this->logo) {
+                    $logoPath = $this->logo->store('employers', 'public');
+                }
+
+                $user = Employer::create([
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'description' => $this->description,
+                    'website' => $this->website,
+                    'phone' => $this->phone,
+                    'address' => $this->address,
+                    'city' => $this->city,
+                    'state' => $this->state,
+                    'country' => $this->country,
+                    'postal_code' => $this->postal_code,
+                    'password' => Hash::make($this->password),
+                    'logo' => $logoPath,
+                    'is_active' => false,
+                ]);
+
+                event(new Registered($user));
+                DB::commit();
+
+                session()->flash('registration-success', 'Your employer account has been created successfully. A verification email has been sent to your email address. Please verify your email before logging in. Your account will be reviewed and activated by our team.');
+                $this->redirect(route('employer.login'), navigate: false);
+                return;
+            }
+
+            // Candidate Logic
             $rules = [
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'email', 'unique:employers,email'],
-                'description' => ['nullable', 'string'],
-                'website' => ['nullable', 'url'],
+                'first_name' => ['required', 'string', 'max:255'],
+                'last_name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'email', 'unique:candidates,email'],
                 'phone' => ['nullable', 'regex:/^[0-9+\-\s()]+$/'],
-                'address' => ['nullable', 'string', 'max:255'],
-                'city' => ['nullable', 'string', 'max:100'],
-                'state' => ['nullable', 'string', 'max:100'],
-                'country' => ['nullable', 'string', 'max:100'],
-                'postal_code' => ['nullable', 'string', 'max:20'],
-                'logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+                'nationality' => ['nullable', 'string', 'max:100'],
+                'resume' => ['required', 'mimes:pdf,doc,docx', 'max:5120'],
+                'cover_letter' => ['nullable', 'string', 'max:250'],
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
             ];
 
-            $validated = $this->validate($rules);
+            $this->validate($rules);
 
-            $user = Employer::create([
-                'name' => $this->name,
-                'email' => $this->email,
-                'description' => $this->description,
-                'website' => $this->website,
-                'phone' => $this->phone,
-                'address' => $this->address,
-                'city' => $this->city,
-                'state' => $this->state,
-                'country' => $this->country,
-                'postal_code' => $this->postal_code,
-                'password' => Hash::make($this->password),
-                'is_active' => false,
-            ]);
-            if ($this->logo) {
-                $path = $this->logo->store('employers', 'public');
-
-                $user->update([
-                    'logo' => $path,
-                ]);
+            $resumePath = null;
+            if ($this->resume) {
+                $resumePath = $this->resume->store('resumes', 'public');
             }
 
-            event(new Registered($user));
-
-            session()->flash('registration-success', 'Your employer account has been created successfully. A verification email has been sent to your email address. Please verify your email before logging in. Your account will be reviewed and activated by our team.');
-
-            $this->redirect(route('employer.login'), navigate: false);
-
-            return;
-        }
-
-        $rules = [
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:candidates,email'],
-            'phone' => ['nullable', 'regex:/^[0-9+\-\s()]+$/'],
-            'nationality' => ['nullable', 'string', 'max:100'],
-            'resume' => ['required', 'mimes:pdf,doc,docx', 'max:5120'],
-            'cover_letter' => ['nullable', 'string', 'max:250'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ];
-
-        $validated = $this->validate($rules);
-
-        $user = Candidate::create([
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'nationality' => $this->nationality,
-            'cover_letter' => $this->cover_letter,
-            'status' => false,
-            'password' => Hash::make($this->password),
-        ]);
-        if ($this->resume) {
-            $path = $this->resume->store('resumes', 'public');
-
-            $user->update([
-                'resume_path' => $path,
+            $user = Candidate::create([
+                'first_name' => $this->first_name,
+                'last_name' => $this->last_name,
+                'email' => $this->email,
+                'phone' => $this->phone,
+                'nationality' => $this->nationality,
+                'cover_letter' => $this->cover_letter,
+                'resume_path' => $resumePath,
+                'status' => false,
+                'password' => Hash::make($this->password),
             ]);
+
+            event(new Registered($user));
+            DB::commit();
+
+            session()->flash('registration-success', 'Your account has been created successfully. A verification email has been sent to your email address. Please verify your email before logging in. Your account will be reviewed and activated by our team.');
+            $this->redirect(route('candidate.login'), navigate: false);
+            return;
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            throw $e;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Registration failed: ' . $e->getMessage());
+            session()->flash('registration-error', 'An unexpected error occurred during registration. Please try again later.');
         }
-        event(new Registered($user));
-        session()->flash('registration-success', 'Your account has been created successfully. A verification email has been sent to your email address. Please verify your email before logging in. Your account will be reviewed and activated by our team.');
-
-        $this->redirect(route('candidate.login'), navigate: false);
-
-        return;
-        // Auth::guard('candidate')->login($user);
     }
 }; ?>
+
 <div class="bg-gray-50 py-16 min-h-screen">
     <div class="container mx-auto px-4">
         <div class="row ">
@@ -136,15 +148,25 @@ new #[Layout('components.frontend.main')] class extends Component {
                     <div class="font-medium text-green-800">
                         Registration Successful
                     </div>
-
                     <div class="text-sm text-green-700 mt-1">
                         {{ session('registration-success') }}
                     </div>
                 </div>
             @endif
+
+            @if (session('registration-error'))
+                <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4">
+                    <div class="font-medium text-red-800">
+                        Registration Failed
+                    </div>
+                    <div class="text-sm text-red-700 mt-1">
+                        {{ session('registration-error') }}
+                    </div>
+                </div>
+            @endif
+
             <!-- Left Content -->
             <div class="col-lg-6 mb-5 mb-lg-0 mt-4">
-
                 <span
                     class="inline-flex items-center px-4 py-2 mb-4 text-sm font-medium rounded-full {{ $type === 'employer' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700' }}">
                     {{ $type === 'employer' ? 'Employer Account' : 'Candidate Account' }}
@@ -161,7 +183,6 @@ new #[Layout('components.frontend.main')] class extends Component {
                 </p>
 
                 <div class="space-y-6">
-
                     @if ($type === 'employer')
                         <div class="flex items-start">
                             <div class="mr-4 text-primary-800 text-2xl">🏢</div>
@@ -223,7 +244,6 @@ new #[Layout('components.frontend.main')] class extends Component {
                             </div>
                         </div>
                     @endif
-
                 </div>
             </div>
 
@@ -432,14 +452,9 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Uploading...
                                     </div>
 
-                                    {{-- @if ($logo instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
-                                        <div class="mt-2 text-sm text-green-600">
-                                            Selected: {{ $logo->getClientOriginalName() }}
-                                        </div>
-                                    @endif --}}
                                     @if ($logo instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
                                         <img src="{{ $logo->temporaryUrl() }}"
-                                            class="h-20 w-20 rounded object-cover">
+                                            class="h-20 w-20 rounded object-cover mt-2">
                                     @endif
                                 </div>
                             </div>

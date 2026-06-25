@@ -22,7 +22,7 @@ class VerifyEmailController extends Controller
         }
 
         if (auth('candidate')->check()) {
-            return redirect()->route('candidate.dashboard');
+            return redirect()->route('candidate.profile');
         }
 
         return redirect('/');

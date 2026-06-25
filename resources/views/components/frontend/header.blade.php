@@ -2,7 +2,6 @@
     use Datlechin\FilamentMenuBuilder\Models\Menu;
 
     $brandLogo = $generalSettings->brand_logo ?? null;
-    //    dump($siteSettings);
     $brandName = $generalSettings->brand_name ?? ($siteSettings->name ?? config('app.name', 'Dubai Job Finder'));
     $favicon = $generalSettings->site_favicon;
 
@@ -67,12 +66,52 @@
                     </div>
                 </div>
             </div>
-            {{--                <div class="header-right"> --}}
-            {{--                    <div class="block-signin"> --}}
-            {{--                        <a href="#" class="text-link-bd-btom hover-up">Apply Now</a> --}}
-            {{--                        <a href="#" class="btn btn-default btn-shadow ml-40 hover-up">Sign in</a> --}}
-            {{--                    </div> --}}
-            {{--                </div> --}}
+            <div class="header-right d-none d-xl-flex align-items-center">
+                <div class="d-flex align-items-center gap-3">
+
+                    <!-- Employer -->
+                    <div class="dropdown">
+                        <button class=" dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Employer
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a href="{{ route('employer.login') }}" class="dropdown-item">
+                                    Login
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ route('employer.register') }}" class="dropdown-item">
+                                    Register
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Candidate -->
+                    <div class="dropdown">
+                        <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Candidate
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a href="{{ route('candidate.login') }}" class="dropdown-item">
+                                    Login
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ route('candidate.register') }}" class="dropdown-item">
+                                    Register
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </header>
@@ -115,7 +154,6 @@
                                             <ul class="sub-menu" id="{{ $menuId }}">
                                                 @foreach ($item->children as $childIndex => $childItem)
                                                     @php
-
                                                         $submenuId = $menuId . '-' . ($childIndex + 1);
                                                     @endphp
 
@@ -123,9 +161,7 @@
                                                         <a href="{{ $childItem->url }}"
                                                             @if ($childItem->target) target="{{ $childItem->target }}" @endif>
                                                             <span>{{ $childItem->title }}</span>
-
                                                         </a>
-
                                                     </li>
                                                 @endforeach
                                             </ul>
@@ -133,11 +169,48 @@
                                     </li>
                                 @endforeach
                             @endif
+                            <li class="has-children">
+                                <a href="#">
+                                    <span>Employer</span>
+                                </a>
+                                <ul class="sub-menu">
+                                    <li>
+                                        <a href="{{ route('employer.register') }}">
+                                            <span>Register</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="sub-menu">
+                                    <li>
+                                        <a href="{{ route('employer.login') }}">
+                                            <span>Login</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="has-children">
+                                <a href="#">
+                                    <span>Candidate</span>
+                                </a>
+                                <ul class="sub-menu">
+                                    <li>
+                                        <a href="{{ route('candidate.register') }}">
+                                            <span>Register</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="sub-menu">
+                                    <li>
+                                        <a href="{{ route('candidate.login') }}">
+                                            <span>Login</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                         </ul>
                     </nav>
                     <!-- mobile menu end -->
                 </div>
-
                 <div class="mobile-social-icon mb-50">
                     <p class="mb-25">Follow Us</p>
                     @php

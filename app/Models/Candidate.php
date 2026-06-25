@@ -9,8 +9,9 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\URL;
 use App\Notifications\CandidateVerifyEmail;
+use Filament\Models\Contracts\HasName;
 
-class Candidate extends Authenticatable implements MustVerifyEmail
+class Candidate extends Authenticatable implements MustVerifyEmail, HasName
 {
     use Notifiable;
 
@@ -74,5 +75,14 @@ class Candidate extends Authenticatable implements MustVerifyEmail
     public function applications()
     {
         return $this->hasMany(JobApplication::class);
+    }
+
+    public function getFilamentName(): string
+    {
+        return trim($this->first_name . ' ' . $this->last_name);
+    }
+    public function getNameAttribute(): string
+    {
+        return trim($this->first_name . ' ' . $this->last_name);
     }
 }

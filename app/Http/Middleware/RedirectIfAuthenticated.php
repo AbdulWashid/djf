@@ -22,7 +22,7 @@ class RedirectIfAuthenticated
 
                 return match ($guard) {
                     'employer' => redirect()->route('employer.profile'),
-                    'candidate' => redirect()->route('candidate.dashboard'),
+                    'candidate' => redirect()->route('candidate.profile'),
                     default => redirect('/'),
                 };
             }

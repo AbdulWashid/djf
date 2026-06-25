@@ -6,6 +6,7 @@ use App\Models\Opening;
 use Illuminate\Support\Facades\Storage;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\Auth;
 
 new #[Layout('components.frontend.main')] class extends Component {
     use WithFileUploads;
@@ -20,9 +21,12 @@ new #[Layout('components.frontend.main')] class extends Component {
     public $nationality = '';
     public $cover_letter = '';
     public $cv;
+    public $candidate;
 
     public function mount($slug)
     {
+        $this->candidate = Auth::guard('candidate')->user();
+
         $this->job = Opening::where('slug', $slug)->where('status', 1)->with('employer', 'job_category')->first();
 
         abort_if(!$this->job, 404);
@@ -51,7 +55,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             'phone' => ['required', 'string', 'max:50'],
             'nationality' => ['required', 'string', 'max:120'],
             'cover_letter' => ['nullable', 'string', 'max:2000'],
-            'cv' => ['required', 'file', 'mimes:pdf,doc,docx', 'max:5120'],
+            'cv' => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:5120'],
         ];
     }
 
@@ -59,9 +63,13 @@ new #[Layout('components.frontend.main')] class extends Component {
     {
         $this->validate();
 
-        $resumePath = $this->cv->store('job-applications/resumes', 'public');
-
+        if ($this->cv) {
+            $resumePath = $this->cv->store('job-applications/resumes', 'public');
+        } else {
+            $resumePath = $this->candidate->resume_path;
+        }
         $data = JobApplications::create([
+            'candidate_id' => $this->candidate->id,
             'opening_id' => $this->job->id,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
@@ -200,6 +208,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     <label class="form-label fw-medium">First Name <span
                                             class="text-danger">*</span></label>
                                     <input type="text" wire:model.blur="first_name"
+                                        value="{{ $this->candidate->first_name }}"
                                         class="form-control form-control-lg @error('first_name') is-invalid @enderror"
                                         required>
                                     @error('first_name')
@@ -210,6 +219,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     <label class="form-label fw-medium">Last Name <span
                                             class="text-danger">*</span></label>
                                     <input type="text" wire:model.blur="last_name"
+                                        value="{{ $this->candidate->last_name }}"
                                         class="form-control form-control-lg @error('last_name') is-invalid @enderror"
                                         required>
                                     @error('last_name')
@@ -219,14 +229,14 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-medium">Email Address <span
                                             class="text-danger">*</span></label>
-                                    <input type="email" wire:model.blur="email"
+                                    <input type="email" wire:model.blur="email" value="{{ $this->candidate->email }}"
                                         class="form-control form-control-lg @error('email') is-invalid @enderror"
                                         required>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-medium">Phone Number <span
                                             class="text-danger">*</span></label>
-                                    <input type="text" wire:model.blur="phone"
+                                    <input type="text" wire:model.blur="phone" value="{{ $this->candidate->phone }}"
                                         class="form-control form-control-lg @error('phone') is-invalid @enderror"
                                         required>
                                 </div>
@@ -234,14 +244,42 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     <label class="form-label fw-medium">Nationality <span
                                             class="text-danger">*</span></label>
                                     <input type="text" wire:model.blur="nationality"
+                                        value="{{ $this->candidate->nationality }}"
                                         class="form-control form-control-lg @error('nationality') is-invalid @enderror"
                                         required>
                                 </div>
 
                                 <!-- Optimized CV Upload Section -->
+                                @if ($candidate->resume_path)
+                                    <div class="mb-3 p-3 border rounded bg-light">
+
+                                        <div class="d-flex justify-content-between align-items-center">
+
+                                            <div>
+                                                <strong>Current Resume</strong><br>
+                                                <small class="text-muted">
+                                                    {{ basename($candidate->resume_path) }}
+                                                </small>
+                                            </div>
+
+                                            <a href="{{ Storage::url($candidate->resume_path) }}" target="_blank"
+                                                class="btn btn-sm btn-outline-primary">
+                                                <i class="fi-rr-download me-1"></i>
+                                                Download
+                                            </a>
+
+                                        </div>
+
+                                    </div>
+                                @endif
                                 <div class="col-12 mb-4">
-                                    <label class="form-label fw-bold text-dark mb-2">Upload CV / Resume <span
-                                            class="text-danger">*</span></label>
+                                    <label class="form-label fw-bold text-dark mb-2">
+                                        Upload New Resume (Optional)
+                                    </label>
+
+                                    <p class="text-muted small">
+                                        Leave this empty if you want to use your existing resume.
+                                    </p>
 
                                     <label for="cv-upload"
                                         class="d-flex flex-column align-items-center justify-content-center w-100 p-4 border border-2 border-dashed rounded-3 bg-light cursor-pointer hover-border-primary transition-all">
@@ -276,7 +314,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 <div class="col-12 mb-4">
                                     <label class="form-label fw-medium">Cover Letter</label>
                                     <textarea wire:model.blur="cover_letter" rows="5" class="form-control form-control-lg"
-                                        placeholder="Tell us why you are a great fit..."></textarea>
+                                        value="{{ $this->candidate->cover_letter }}" placeholder="Tell us why you are a great fit..."></textarea>
                                 </div>
                             </div>
 

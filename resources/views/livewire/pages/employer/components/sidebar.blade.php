@@ -2,6 +2,7 @@
 
 use Livewire\Volt\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 new class extends Component {
     public $employer;
@@ -68,8 +69,7 @@ new class extends Component {
             </a>
         </li>
         <li class="mb-3">
-            <button onclick="if(confirm('Are you sure you want to logout?')) { $wire.logout() }"
-                class="text-red-600 font-medium">
+            <button wire:click="logout" class="text-red-600 font-medium">
                 Logout
             </button>
         </li>

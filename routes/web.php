@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Artisan;
 use Filament\Notifications\Notification;
 
 Route::middleware([
-    'auth:employer',
+    'employer.auth',
     'verified',
     'employer.active',
 ])->prefix('employer')->name('employer.')->group(function () {
@@ -21,33 +21,23 @@ Route::middleware([
         ->name('job-application');
 });
 Route::middleware([
-    'auth:candidate',
+    'candidate.auth',
     'verified',
     'candidate.active',
-])->prefix('candidate')->name('candidate.')->group(function () {
-    Volt::route('/profile', 'pages.candidate.profile')
-        ->name('profile');
-});
+])->group(function () {
+    Volt::route('/job/{slug}/apply', 'pages.apply')->name('jobs.apply.form');
 
-Route::middleware('auth:candidate')
-    ->prefix('candidate')
-    ->group(function () {
-        Route::view('/dashboard', 'dashboard')
-            ->name('candidate.dashboard');
+    Route::prefix('candidate')->name('candidate.')->group(function () {
+        Volt::route('/profile', 'pages.candidate.profile')
+            ->name('profile');
+        Volt::route('/applied', 'pages.candidate.applied')
+            ->name('applied');
     });
-
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
-Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');
+});
 
 Volt::route('/', 'pages.home')->name('home');
 
 Volt::route('/about-us/{slug?}', 'pages.static-page')->defaults('slug', 'about-us')->name('about-us');
-
-Volt::route('/job/{slug}/apply', 'pages.apply')->name('jobs.apply.form');
 
 Volt::route('/jobs/{slug}/thank-you', 'pages.thank-you')->name('jobs.apply.thankyou');
 
