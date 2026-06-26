@@ -538,6 +538,24 @@
                             @endif
                         </ul>
                     </div>
+                    <div class="col-xl-1 col-sm-3 col-6 mt-4">
+                        <p class="h6 text-nowrap">Popular-Jobs</p>
+                        @php
+                            $popularJobs = Menu::location('footer-5');
+                        @endphp
+                        <ul class="menu-footer mt-1">
+                            @if ($popularJobs)
+                                @foreach ($popularJobs->menuItems as $item)
+                                    <li>
+                                        <a href="{{ $item->url }}" class="text-nowrap"
+                                            @if ($item->target) target="{{ $item->target }}" @endif>
+                                            {{ $item->title }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            @endif
+                        </ul>
+                    </div>
                 </div>
                 <div class="footer-bottom mt-50">
                     <div class="row">
