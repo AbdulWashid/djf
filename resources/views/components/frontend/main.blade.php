@@ -623,9 +623,7 @@
         <script src="{{ asset('assets/js/plugins/scrollup.js') }}"></script>
         <script src="{{ asset('assets/js/plugins/swiper-bundle.min.js') }}"></script>
         <!-- Template  JS -->
-        <script src="{{ asset('assets/js/main.js?v=1.0') }}"></script>
-
-
+        <script src="{{ asset('assets/js/main.js') }}"></script>
 
         <!-- Cookie Consent -->
         @if (isset($scriptSettings->cookie_consent_enabled) && $scriptSettings->cookie_consent_enabled)
