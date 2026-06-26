@@ -50,12 +50,12 @@ Route::middleware('guest:candidate')->group(function () {
 });
 
 
-Route::middleware('auth:employer')->group(function () {
+Route::middleware('employer.auth')->group(function () {
     Volt::route('employer/confirm-password', 'pages.auth.confirm-password')
         ->name('employer.password.confirm');
 });
 
-Route::middleware('auth:candidate')->group(function () {
+Route::middleware('candidate.auth')->group(function () {
     Volt::route('candidate/confirm-password', 'pages.auth.confirm-password')
         ->name('candidate.password.confirm');
 });
