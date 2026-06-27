@@ -57,6 +57,12 @@ class JobCategoryResource extends Resource
                 ->required()
                 ->unique(ignoreRecord: true),
 
+            TextInput::make('position')
+                ->label('Position')
+                ->numeric()
+                ->required()
+                ->default(1),
+
             SpatieMediaLibraryFileUpload::make('logo')
                 ->label('Logo')
                 ->collection('job-categories')
@@ -71,7 +77,11 @@ class JobCategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([TextColumn::make('name')->searchable()->sortable(), ToggleColumn::make('status')])
+            ->columns([
+                TextColumn::make('name')->searchable()->sortable(),
+                TextColumn::make('position')->label('Position')->sortable(),
+                ToggleColumn::make('status'),
+            ])
             ->filters([TrashedFilter::make()])
             ->actions([EditAction::make(),DeleteAction::make()])
             ->bulkActions([BulkActionGroup::make([])]);
