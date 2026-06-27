@@ -57,9 +57,9 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         view()->share('pageType', 'job_listing');
 
-        view()->share('pageTitle', str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? JobCategory::find($this->category)?->name ?? '' : ''], $this->pageTitle));
+        view()->share('pageTitle', str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? $this->selectedCategoryName() ?? '' : ''], $this->pageTitle));
 
-        view()->share('pageDescription', str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? JobCategory::find($this->category)?->name ?? '' : ''], $this->pageDescription));
+        view()->share('pageDescription', str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? $this->selectedCategoryName() ?? '' : ''], $this->pageDescription));
 
         view()->share('schemaData', $this->buildSchemas());
     }
@@ -105,8 +105,8 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         $this->dispatch('url-updated', ['url' => $url]);
         $this->dispatch('seo-updated', [
-            'title' => str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? JobCategory::find($this->category)?->name ?? '' : ''], $this->pageTitle),
-            'description' => str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? JobCategory::find($this->category)?->name ?? '' : ''], $this->pageDescription),
+            'title' => str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? $this->selectedCategoryName() ?? '' : ''], $this->pageTitle),
+            'description' => str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? $this->selectedCategoryName() ?? '' : ''], $this->pageDescription),
         ]);
 
         $this->dispatch('schema-updated', [
@@ -123,7 +123,7 @@ new #[Layout('components.frontend.main')] class extends Component {
         }
 
         if (!empty($this->category)) {
-            $breadcrumbItems[] = ['label' => JobCategory::find($this->category)?->name ?? 'Category'];
+            $breadcrumbItems[] = ['label' => $this->selectedCategoryName() ?? 'Category'];
         }
 
         return [
@@ -219,18 +219,67 @@ new #[Layout('components.frontend.main')] class extends Component {
     {
         return $this->search();
     }
+    protected function selectedCategoryName(): ?string
+    {
+        if (!$this->category) {
+            return null;
+        }
+
+        return JobCategory::find($this->category)?->name;
+    }
+    protected function getHeading(): string
+    {
+        $category = $this->selectedCategoryName();
+        $location = $this->location ? Str::title($this->location) : null;
+
+        if ($category && $location) {
+            return "{$category} in {$location}";
+        }
+
+        if ($location) {
+            return "Jobs in {$location}";
+        }
+
+        if ($category) {
+            return "{$category}";
+        }
+
+        return 'Latest Jobs';
+    }
+
+    protected function getBreadcrumbTitle(): string
+    {
+        return $this->getHeading();
+    }
 }; ?>
 
 <div>
     <section class="section-box">
         <div class="box-head-single">
+            {{-- <div class="container">
+                    <h1 class="h1">Currently available Jobs @if (!empty($location))
+                            in {{ Str::ucwords($location) }}
+                        @endif!</h1>
+                    <ul class="breadcrumbs">
+                        <li><a href="{{ route('home') }}">Home</a></li>
+                        <li>Jobs listing</li>
+                    </ul>
+                </div> --}}
             <div class="container">
-                <h1 class="h1">Currently available Jobs @if (!empty($location))
-                        in {{ Str::ucwords($location) }}
-                    @endif!</h1>
+                <h1 class="h1">{{ $this->getHeading() }}</h1>
+
                 <ul class="breadcrumbs">
-                    <li><a href="{{ route('home') }}">Home</a></li>
-                    <li>Jobs listing</li>
+                    <li>
+                        <a href="{{ route('home') }}">Home</a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('jobs') }}">Jobs</a>
+                    </li>
+
+                    @if ($location || $category)
+                        <li>{{ $this->getBreadcrumbTitle() }}</li>
+                    @endif
                 </ul>
             </div>
         </div>
@@ -441,6 +490,13 @@ new #[Layout('components.frontend.main')] class extends Component {
                         {{ $this->jobs()->links() }}
                     </div>
                 </div>
+            </div>
+            <div class="row">
+                @php
+                    $selectedCategory = $category ? \App\Models\JobCategory::find($category)?->name : null;
+                @endphp
+
+                <livewire:pages.components.job-listing-content :category="$selectedCategory" :location="$location" :key="'job-content-' . md5(($location ?? 'all') . '-' . ($selectedCategory ?? 'all'))" />
             </div>
         </div>
     </section>
