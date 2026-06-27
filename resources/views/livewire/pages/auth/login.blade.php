@@ -293,7 +293,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 </button>
                             </div>
                             @error('password')
-                                <span class="text-red-500 text-sm">
+                                <span class="text-danger text-sm">
                                     {{ $message }}
                                 </span>
                             @enderror
