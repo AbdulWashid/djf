@@ -8,7 +8,6 @@ use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Concerns\InteractsWithForms;
-
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\Section;
@@ -78,7 +77,7 @@ class JobListingContent extends Page implements HasForms
 
     public function save(): void
     {
-        $content = JobListingContentModel::first();
+        $content = JobListingContentModel::firstOrCreate([]);
 
         $content->update($this->form->getState());
 
@@ -98,15 +97,6 @@ class JobListingContent extends Page implements HasForms
 
                         RichEditor::make("{$field}.content")
                             ->label('Content')
-                            ->toolbarButtons([
-                                'bold',
-                                'italic',
-                                'underline',
-                                'bulletList',
-                                'orderedList',
-                                'redo',
-                                'undo',
-                            ])
                             ->helperText(new \Illuminate\Support\HtmlString('
                                     <b>Available placeholders</b><br>
                                     {category-name} → Current category name<br>

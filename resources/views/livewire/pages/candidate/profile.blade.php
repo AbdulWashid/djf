@@ -48,7 +48,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', Rule::unique('candidates', 'email')->ignore($this->candidate->id)],
-            'phone' => ['required', 'string', 'max:20'],
+            'phone' => ['required', 'string', 'min:10', 'max:15'],
             'nationality' => ['nullable', 'string', 'max:255'],
             'cover_letter' => ['nullable', 'string'],
             'resume' => ['nullable', 'mimes:pdf,doc,docx', 'max:5120'],

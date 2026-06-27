@@ -140,7 +140,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                                     You haven't applied for any jobs yet.
                                                 </p>
 
-                                                <a href="{{ route('jobs.index') }}" class="btn btn-primary">
+                                                <a href="{{ route('jobs') }}" class="btn btn-primary">
 
                                                     Browse Jobs
 

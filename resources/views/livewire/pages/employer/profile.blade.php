@@ -45,14 +45,14 @@ new #[Layout('components.frontend.main')] class extends Component {
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', Rule::unique('employers', 'email')->ignore($this->employer->id)],
             'website' => ['nullable', 'url'],
-            'phone' => ['nullable', 'string', 'max:20'],
+            'phone' => ['nullable', 'string', 'min:10', 'max:15'],
             'description' => ['nullable', 'string'],
             'address' => ['nullable', 'string'],
             'city' => ['nullable', 'string'],
             'state' => ['nullable', 'string'],
             'country' => ['nullable', 'string'],
             'postal_code' => ['nullable', 'string'],
-            'logo' => ['nullable', 'image', 'max:2048'],
+            'logo' => ['required', 'image', 'max:2048'],
         ]);
 
         $path = $this->employer->logo;
