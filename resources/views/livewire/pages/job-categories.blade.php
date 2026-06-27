@@ -29,11 +29,11 @@ new #[Layout('components.frontend.main')] class extends Component {
             $page = $this->getPage();
 
             $categories = rememberIfEnabled('job_categories_all_page_' . $page, now()->addMinutes(30), function () {
-                return JobCategory::query()->active()->select('id', 'name', 'slug', 'logo')->withCount('openings')->orderByDesc('openings_count')->orderBy('name')->paginate(12);
+                return JobCategory::query()->active()->select('id', 'name', 'slug', 'logo')->withCount('openings')->orderBy('position')->orderByDesc('openings_count')->orderBy('name')->paginate(12);
             });
         } else {
             $categories = rememberIfEnabled('job_categories_home', now()->addMinutes(30), function () {
-                return JobCategory::query()->active()->select('id', 'name', 'slug', 'logo')->withCount('openings')->orderByDesc('openings_count')->orderBy('name')->limit(7)->get();
+                return JobCategory::query()->active()->select('id', 'name', 'slug', 'logo')->withCount('openings')->orderBy('position')->orderByDesc('openings_count')->orderBy('name')->limit(7)->get();
             });
         }
 

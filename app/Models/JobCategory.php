@@ -15,10 +15,13 @@ class JobCategory extends Model implements HasMedia
     protected $fillable = [
         'name',
         'slug',
+        'position',
         'logo',
         'status',
     ];
+
     protected $casts = [
+        'position' => 'integer',
         'status' => 'boolean',
     ];
 
