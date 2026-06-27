@@ -12,6 +12,7 @@ class JobApplications extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'candidate_id',
         'opening_id',
         'first_name',
         'last_name',
@@ -32,18 +33,18 @@ class JobApplications extends Model
         return $this->belongsTo(Candidate::class);
     }
 
-    public function job()
-    {
-        return $this->belongsTo(Opening::class, 'opening_id');
-    }
-    protected static function booted(): void
-    {
-        static::creating(function ($model) {
-            $model->slug = Str::slug($model->name);
-        });
+    // public function job()
+    // {
+    //     return $this->belongsTo(Opening::class, 'opening_id');
+    // }
+    // protected static function booted(): void
+    // {
+    //     static::creating(function ($model) {
+    //         $model->slug = Str::slug($model->name);
+    //     });
 
-        static::updating(function ($model) {
-            $model->slug = Str::slug($model->name);
-        });
-    }
+    //     static::updating(function ($model) {
+    //         $model->slug = Str::slug($model->name);
+    //     });
+    // }
 }

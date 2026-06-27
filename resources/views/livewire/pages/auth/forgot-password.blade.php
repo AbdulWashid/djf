@@ -158,7 +158,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 class="w-full px-4 py-3 border border-gray-300 rounded-md focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
                                 placeholder="Enter your email address">
                             @error('email')
-                                <span class="text-sm text-red-500">
+                                <span class="text-sm text-danger">
                                     {{ $message }}
                                 </span>
                             @enderror

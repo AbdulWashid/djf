@@ -10,6 +10,8 @@ use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\URL;
 use App\Notifications\CandidateVerifyEmail;
 use Filament\Models\Contracts\HasName;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class Candidate extends Authenticatable implements MustVerifyEmail, HasName
 {

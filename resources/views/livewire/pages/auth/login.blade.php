@@ -91,6 +91,15 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         $this->redirectIntended(default: $redirect, navigate: false);
     }
+
+    public function resendVerification()
+    {
+        if ($this->type === 'employer') {
+            return $this->redirect(route('employer.verification.notice'), navigate: false);
+        }
+
+        return $this->redirect(route('candidate.verification.notice'), navigate: false);
+    }
 };
 ?>
 
