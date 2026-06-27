@@ -25,7 +25,15 @@ new #[Layout('components.frontend.main')] class extends Component {
 
     public function mount($slug)
     {
-        $this->candidate = Auth::guard('candidate')->user();
+        $candidate = Auth::guard('candidate')->user();
+        $this->candidate = $candidate;
+
+        $this->first_name = $candidate->first_name;
+        $this->last_name = $candidate->last_name;
+        $this->email = $candidate->email;
+        $this->phone = $candidate->phone;
+        $this->nationality = $candidate->nationality;
+        $this->cover_letter = $candidate->cover_letter;
 
         $this->job = Opening::where('slug', $slug)->where('status', 1)->with('employer', 'job_category')->first();
 
@@ -263,9 +271,8 @@ new #[Layout('components.frontend.main')] class extends Component {
                                             </div>
 
                                             <a href="{{ Storage::url($candidate->resume_path) }}" target="_blank"
-                                                class="btn btn-sm btn-outline-primary">
+                                                class="btn btn-sm">
                                                 <i class="fi-rr-download me-1"></i>
-                                                Download
                                             </a>
 
                                         </div>

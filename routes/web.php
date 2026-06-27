@@ -8,7 +8,6 @@ use Filament\Notifications\Notification;
 
 Route::middleware([
     'employer.auth',
-    'verified',
     'employer.active',
 ])->prefix('employer')->name('employer.')->group(function () {
     Volt::route('/profile', 'pages.employer.profile')
@@ -22,7 +21,6 @@ Route::middleware([
 });
 Route::middleware([
     'candidate.auth',
-    'verified',
     'candidate.active',
 ])->group(function () {
     Volt::route('/job/{slug}/apply', 'pages.apply')->name('jobs.apply.form');
