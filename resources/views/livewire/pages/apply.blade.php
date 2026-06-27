@@ -138,6 +138,17 @@ new #[Layout('components.frontend.main')] class extends Component {
 
 <div>
     <div class="container py-5">
+        @if ($errors->any())
+            <div class="alert alert-danger mb-4">
+                <strong>Please correct the following errors:</strong>
+
+                <ul class="mb-0 mt-2">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="row">
             <!-- Sidebar: Employer & Job Summary -->
             <div class="col-lg-4 mb-4">
@@ -146,7 +157,8 @@ new #[Layout('components.frontend.main')] class extends Component {
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-3">
                             <img src="{{ $job->employer->logo ? Storage::url($job->employer->logo) : 'https://placehold.co/100x100?text=' . urlencode($job->employer->name) }}"
-                                alt="{{ $job->employer->name }}" width="60" height="60" class="rounded border me-3">
+                                alt="{{ $job->employer->name }}" width="60" height="60"
+                                class="rounded border me-3">
                             <div>
                                 <h5 class="mb-0">{{ $job->employer->name }}</h5>
                                 <small class="text-muted">Employer</small>

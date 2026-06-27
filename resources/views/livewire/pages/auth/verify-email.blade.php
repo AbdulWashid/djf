@@ -50,7 +50,17 @@ new #[Layout('components.frontend.main')] class extends Component {
 
 <div class="bg-gray-50 py-16 min-h-screen flex items-center">
     <div class="container mx-auto px-4">
+        @if ($errors->any())
+            <div class="alert alert-danger mb-4">
+                <strong>Please correct the following errors:</strong>
 
+                <ul class="mb-0 mt-2">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="row items-center">
             @if (session('status'))
                 <div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-4">
