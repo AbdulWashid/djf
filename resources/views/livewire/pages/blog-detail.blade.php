@@ -376,44 +376,9 @@ new #[Layout('components.frontend.main')] class extends Component {
                         </div>  --}}
 
                         @if ($post->faqs)
-
-                            <div class="row mt-50">
-                                <div class="col-lg-12">
-                                    <h2 class="heading-border"><span>{{ $post->faq_title }}</span></h2>
-                                    <div class="accordion accordion-flush">
-                                        @php
-                                            $fqlist = [];
-                                        @endphp
-                                        @forelse($post->faqs as $key=> $faq)
-                                            @php
-                                                $fqlist[$faq['question']] = strip_tags($faq['answer']);
-                                            @endphp
-                                            <div class="accordion-item">
-                                                <p class="accordion-header" id="flush-headingOne2">
-                                                    <button class="accordion-button collapsed" type="button"
-                                                        data-bs-toggle="collapse"
-                                                        data-bs-target="#flush-collapseOne{{ $key }}"
-                                                        aria-expanded="false"
-                                                        aria-controls="flush-collapseOne{{ $key }}">
-                                                        {{ $faq['question'] }}
-                                                    </button>
-                                                </p>
-                                                <div id="flush-collapseOne{{ $key }}"
-                                                    class="accordion-collapse collapse"
-                                                    aria-labelledby="flush-headingOne"
-                                                    data-bs-parent="#accordionFlushExample2">
-                                                    <div class="accordion-body">
-                                                        <div class="mb-15">
-                                                            {!! $faq['answer'] !!}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @empty
-                                            <h5 class="text-center">No FAQs found</h5>
-                                        @endforelse
-                                    </div>
-                                </div>
+                            <div class="blog-faq-section mt-50">
+                                <h2 class="heading-border"><span>{{ $post->faq_title }}</span></h2>
+                                <x-frontend.faq-grid :items="$post->faqs" />
                             </div>
                             @if (isset($faqSchema))
                                 @push('js')
