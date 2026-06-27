@@ -9,10 +9,21 @@ new #[Layout('components.frontend.main')] class extends Component {
     use WithPagination;
     public function with(): array
     {
+        // dd(
+        //     JobApplications::query()
+        //         ->with(['candidate', 'opening.employer'])
+        //         ->whereHas('opening', function ($query) {
+        //             $query->where('employer_id', auth('employer')->id());
+        //         })
+        //         ->latest()
+        //         ->paginate(10),
+        // );
         return [
             'applications' => JobApplications::query()
-                ->with(['candidate', 'opening'])
-                ->whereHas('job', fn($query) => $query->where('employer_id', auth('employer')->id()))
+                ->with(['candidate', 'opening.employer'])
+                ->whereHas('opening', function ($query) {
+                    $query->where('employer_id', auth('employer')->id());
+                })
                 ->latest()
                 ->paginate(10),
         ];
@@ -79,7 +90,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                             </td>
 
                                             <td>
-                                                {{ $application->job?->title }}
+                                                {{ $application->opening?->title }}
                                             </td>
 
                                             <td>
@@ -96,9 +107,9 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                             <td>
 
-                                                @if ($application->resume)
-                                                    <a href="{{ Storage::url($application->resume) }}" target="_blank"
-                                                        class="text-primary-600">
+                                                @if ($application->resume_path)
+                                                    <a href="{{ Storage::url($application->resume_path) }}"
+                                                        target="_blank" class="text-primary-600">
 
                                                         View CV
 
@@ -127,11 +138,8 @@ new #[Layout('components.frontend.main')] class extends Component {
                         <div class="mt-4">
                             {{ $applications->links() }}
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
         </div>
     </section>

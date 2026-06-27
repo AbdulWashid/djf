@@ -164,7 +164,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 readonly>
 
                             @error('email')
-                                <span class="text-sm text-red-500">
+                                <span class="text-sm text-danger">
                                     {{ $message }}
                                 </span>
                             @enderror
@@ -181,7 +181,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 placeholder="Enter new password">
 
                             @error('password')
-                                <span class="text-sm text-red-500">
+                                <span class="text-sm text-danger">
                                     {{ $message }}
                                 </span>
                             @enderror
@@ -198,7 +198,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 placeholder="Confirm new password">
 
                             @error('password_confirmation')
-                                <span class="text-sm text-red-500">
+                                <span class="text-sm text-danger">
                                     {{ $message }}
                                 </span>
                             @enderror

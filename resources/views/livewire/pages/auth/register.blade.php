@@ -3,6 +3,8 @@
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
@@ -40,111 +42,142 @@ new #[Layout('components.frontend.main')] class extends Component {
 
     public function register(): void
     {
-        if ($this->type === 'employer') {
+        try {
+            DB::beginTransaction();
+
+            if ($this->type === 'employer') {
+                $rules = [
+                    'name' => ['required', 'string', 'max:255'],
+                    'email' => ['required', 'email', 'unique:employers,email'],
+                    'description' => ['nullable', 'string'],
+                    'website' => ['nullable', 'url'],
+                    'phone' => ['nullable', 'regex:/^[0-9+\-\s()]+$/'],
+                    'address' => ['nullable', 'string', 'max:255'],
+                    'city' => ['nullable', 'string', 'max:100'],
+                    'state' => ['nullable', 'string', 'max:100'],
+                    'country' => ['nullable', 'string', 'max:100'],
+                    'postal_code' => ['nullable', 'string', 'max:20'],
+                    'logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+                    'password' => ['required', 'confirmed', Rules\Password::defaults()],
+                ];
+
+                $this->validate($rules);
+
+                $logoPath = null;
+                if ($this->logo) {
+                    $logoPath = $this->logo->store('employers', 'public');
+                }
+
+                $user = Employer::create([
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'description' => $this->description,
+                    'website' => $this->website,
+                    'phone' => $this->phone,
+                    'address' => $this->address,
+                    'city' => $this->city,
+                    'state' => $this->state,
+                    'country' => $this->country,
+                    'postal_code' => $this->postal_code,
+                    'password' => Hash::make($this->password),
+                    'logo' => $logoPath,
+                    'is_active' => false,
+                ]);
+
+                event(new Registered($user));
+                DB::commit();
+
+                session()->flash('registration-success', 'Your employer account has been created successfully. A verification email has been sent to your email address. Please verify your email before logging in. Your account will be reviewed and activated by our team.');
+                $this->redirect(route('employer.login'), navigate: false);
+                return;
+            }
+
+            // Candidate Logic
             $rules = [
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'email', 'unique:employers,email'],
-                'description' => ['nullable', 'string'],
-                'website' => ['nullable', 'url'],
+                'first_name' => ['required', 'string', 'max:255'],
+                'last_name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'email', 'unique:candidates,email'],
                 'phone' => ['nullable', 'regex:/^[0-9+\-\s()]+$/'],
-                'address' => ['nullable', 'string', 'max:255'],
-                'city' => ['nullable', 'string', 'max:100'],
-                'state' => ['nullable', 'string', 'max:100'],
-                'country' => ['nullable', 'string', 'max:100'],
-                'postal_code' => ['nullable', 'string', 'max:20'],
-                'logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+                'nationality' => ['nullable', 'string', 'max:100'],
+                'resume' => ['required', 'mimes:pdf,doc,docx', 'max:5120'],
+                'cover_letter' => ['nullable', 'string', 'max:250'],
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
             ];
 
-            $validated = $this->validate($rules);
+            $this->validate($rules);
 
-            $user = Employer::create([
-                'name' => $this->name,
-                'email' => $this->email,
-                'description' => $this->description,
-                'website' => $this->website,
-                'phone' => $this->phone,
-                'address' => $this->address,
-                'city' => $this->city,
-                'state' => $this->state,
-                'country' => $this->country,
-                'postal_code' => $this->postal_code,
-                'password' => Hash::make($this->password),
-                'is_active' => false,
-            ]);
-            if ($this->logo) {
-                $path = $this->logo->store('employers', 'public');
-
-                $user->update([
-                    'logo' => $path,
-                ]);
+            $resumePath = null;
+            if ($this->resume) {
+                $resumePath = $this->resume->store('resumes', 'public');
             }
 
-            event(new Registered($user));
-
-            session()->flash('registration-success', 'Your employer account has been created successfully. A verification email has been sent to your email address. Please verify your email before logging in. Your account will be reviewed and activated by our team.');
-
-            $this->redirect(route('employer.login'), navigate: false);
-
-            return;
-        }
-
-        $rules = [
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:candidates,email'],
-            'phone' => ['nullable', 'regex:/^[0-9+\-\s()]+$/'],
-            'nationality' => ['nullable', 'string', 'max:100'],
-            'resume' => ['required', 'mimes:pdf,doc,docx', 'max:5120'],
-            'cover_letter' => ['nullable', 'string', 'max:250'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ];
-
-        $validated = $this->validate($rules);
-
-        $user = Candidate::create([
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'nationality' => $this->nationality,
-            'cover_letter' => $this->cover_letter,
-            'status' => false,
-            'password' => Hash::make($this->password),
-        ]);
-        if ($this->resume) {
-            $path = $this->resume->store('resumes', 'public');
-
-            $user->update([
-                'resume_path' => $path,
+            $user = Candidate::create([
+                'first_name' => $this->first_name,
+                'last_name' => $this->last_name,
+                'email' => $this->email,
+                'phone' => $this->phone,
+                'nationality' => $this->nationality,
+                'cover_letter' => $this->cover_letter,
+                'resume_path' => $resumePath,
+                'status' => false,
+                'password' => Hash::make($this->password),
             ]);
+
+            event(new Registered($user));
+            DB::commit();
+
+            session()->flash('registration-success', 'Your account has been created successfully. A verification email has been sent to your email address. Please verify your email before logging in. Your account will be reviewed and activated by our team.');
+            $this->redirect(route('candidate.login'), navigate: false);
+            return;
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            throw $e;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Registration failed: ' . $e->getMessage());
+            session()->flash('registration-error', 'An unexpected error occurred during registration. Please try again later.');
         }
-        event(new Registered($user));
-        session()->flash('registration-success', 'Your account has been created successfully. A verification email has been sent to your email address. Please verify your email before logging in. Your account will be reviewed and activated by our team.');
-
-        $this->redirect(route('candidate.login'), navigate: false);
-
-        return;
-        // Auth::guard('candidate')->login($user);
     }
 }; ?>
+
 <div class="bg-gray-50 py-16 min-h-screen">
     <div class="container mx-auto px-4">
+        @if ($errors->any())
+            <div class="alert alert-danger mb-4">
+                <strong>Please correct the following errors:</strong>
+
+                <ul class="mb-0 mt-2">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="row ">
             @if (session('registration-success'))
                 <div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-4">
                     <div class="font-medium text-green-800">
                         Registration Successful
                     </div>
-
                     <div class="text-sm text-green-700 mt-1">
                         {{ session('registration-success') }}
                     </div>
                 </div>
             @endif
+
+            @if (session('registration-error'))
+                <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4">
+                    <div class="font-medium text-red-800">
+                        Registration Failed
+                    </div>
+                    <div class="text-sm text-red-700 mt-1">
+                        {{ session('registration-error') }}
+                    </div>
+                </div>
+            @endif
+
             <!-- Left Content -->
             <div class="col-lg-6 mb-5 mb-lg-0 mt-4">
-
                 <span
                     class="inline-flex items-center px-4 py-2 mb-4 text-sm font-medium rounded-full {{ $type === 'employer' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700' }}">
                     {{ $type === 'employer' ? 'Employer Account' : 'Candidate Account' }}
@@ -161,7 +194,6 @@ new #[Layout('components.frontend.main')] class extends Component {
                 </p>
 
                 <div class="space-y-6">
-
                     @if ($type === 'employer')
                         <div class="flex items-start">
                             <div class="mr-4 text-primary-800 text-2xl">🏢</div>
@@ -223,7 +255,6 @@ new #[Layout('components.frontend.main')] class extends Component {
                             </div>
                         </div>
                     @endif
-
                 </div>
             </div>
 
@@ -253,12 +284,12 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     Company Name
                                 </label>
 
-                                <input type="text" wire:model="name"
-                                    class="w-full rounded-md border border-gray-300 px-4 py-3 focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
+                                <input type="text" wire:model.live="name"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror "
                                     placeholder="Enter your name">
 
                                 @error('name')
-                                    <span class="text-red-500 text-sm">
+                                    <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
@@ -269,12 +300,12 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     First Name
                                 </label>
 
-                                <input type="text" wire:model="first_name"
-                                    class="w-full rounded-md border border-gray-300 px-4 py-3 focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
+                                <input type="text" wire:model.live="first_name"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror "
                                     placeholder="Enter your full name">
 
                                 @error('first_name')
-                                    <span class="text-red-500 text-sm">
+                                    <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
@@ -284,12 +315,12 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     Last Name
                                 </label>
 
-                                <input type="text" wire:model="last_name"
-                                    class="w-full rounded-md border border-gray-300 px-4 py-3 focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
+                                <input type="text" wire:model.live="last_name"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror "
                                     placeholder="Enter your last name">
 
                                 @error('last_name')
-                                    <span class="text-red-500 text-sm">
+                                    <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
@@ -301,12 +332,12 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 Email Address
                             </label>
 
-                            <input type="email" wire:model="email"
-                                class="w-full rounded-md border border-gray-300 px-4 py-3 focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
+                            <input type="email" wire:model.live="email"
+                                class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror"
                                 placeholder="Enter your email">
 
                             @error('email')
-                                <span class="text-red-500 text-sm">
+                                <span class="text-danger text-sm">
                                     {{ $message }}
                                 </span>
                             @enderror
@@ -314,9 +345,10 @@ new #[Layout('components.frontend.main')] class extends Component {
                         @if ($type === 'employer')
                             <div class="mb-4">
                                 <label>Company Description</label>
-                                <textarea wire:model="description" rows="1" class="w-full rounded-md border border-gray-300 px-4 py-3"></textarea>
+                                <textarea wire:model.live="description" rows="1"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror"></textarea>
                                 @error('description')
-                                    <span class="text-red-500 text-sm">
+                                    <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
@@ -326,10 +358,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                 <div>
                                     <label>Website</label>
-                                    <input type="url" wire:model="website"
-                                        class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    <input type="url" wire:model.live="website"
+                                        class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                     @error('website')
-                                        <span class="text-red-500 text-sm">
+                                        <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
@@ -337,10 +369,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                 <div>
                                     <label>Phone</label>
-                                    <input type="text" wire:model="phone"
-                                        class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    <input type="text" wire:model.live="phone"
+                                        class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                     @error('phone')
-                                        <span class="text-red-500 text-sm">
+                                        <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
@@ -348,10 +380,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                 <div>
                                     <label>Address</label>
-                                    <input type="text" wire:model="address"
-                                        class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    <input type="text" wire:model.live="address"
+                                        class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                     @error('address')
-                                        <span class="text-red-500 text-sm">
+                                        <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
@@ -359,10 +391,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                 <div>
                                     <label>City</label>
-                                    <input type="text" wire:model="city"
-                                        class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    <input type="text" wire:model.live="city"
+                                        class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                     @error('city')
-                                        <span class="text-red-500 text-sm">
+                                        <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
@@ -370,10 +402,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                 <div>
                                     <label>State</label>
-                                    <input type="text" wire:model="state"
-                                        class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    <input type="text" wire:model.live="state"
+                                        class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                     @error('state')
-                                        <span class="text-red-500 text-sm">
+                                        <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
@@ -381,10 +413,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                 <div>
                                     <label>Country</label>
-                                    <input type="text" wire:model="country"
-                                        class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    <input type="text" wire:model.live="country"
+                                        class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                     @error('country')
-                                        <span class="text-red-500 text-sm">
+                                        <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
@@ -392,10 +424,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                 <div>
                                     <label>Postal Code</label>
-                                    <input type="text" wire:model="postal_code"
-                                        class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    <input type="text" wire:model.live="postal_code"
+                                        class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                     @error('postal_code')
-                                        <span class="text-red-500 text-sm">
+                                        <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
@@ -424,7 +456,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         <input type="file" wire:model="logo" accept="image/*" class="hidden">
                                     </label>
                                     @error('logo')
-                                        <span class="text-red-500 text-sm">
+                                        <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
@@ -432,24 +464,19 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Uploading...
                                     </div>
 
-                                    {{-- @if ($logo instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
-                                        <div class="mt-2 text-sm text-green-600">
-                                            Selected: {{ $logo->getClientOriginalName() }}
-                                        </div>
-                                    @endif --}}
                                     @if ($logo instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
                                         <img src="{{ $logo->temporaryUrl() }}"
-                                            class="h-20 w-20 rounded object-cover">
+                                            class="h-20 w-20 rounded object-cover mt-2">
                                     @endif
                                 </div>
                             </div>
                         @elseif ($type === 'candidate')
                             <div class="mb-4">
                                 <label>Phone</label>
-                                <input type="text" wire:model="phone"
-                                    class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                <input type="text" wire:model.live="phone"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                 @error('phone')
-                                    <span class="text-red-500 text-sm">
+                                    <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
@@ -457,10 +484,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                             <div class="mb-4">
                                 <label>Nationality</label>
-                                <input type="text" wire:model="nationality"
-                                    class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                <input type="text" wire:model.live="nationality"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                 @error('nationality')
-                                    <span class="text-red-500 text-sm">
+                                    <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
@@ -490,7 +517,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         class="hidden">
                                 </label>
                                 @error('resume')
-                                    <span class="text-red-500 text-sm">
+                                    <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
@@ -507,9 +534,10 @@ new #[Layout('components.frontend.main')] class extends Component {
                             </div>
                             <div class="mb-4">
                                 <label>Cover Letter</label>
-                                <textarea wire:model="cover_letter" rows="1" class="w-full rounded-md border border-gray-300 px-4 py-3"></textarea>
+                                <textarea wire:model.live="cover_letter" rows="1"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror"></textarea>
                                 @error('cover_letter')
-                                    <span class="text-red-500 text-sm">
+                                    <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
@@ -523,8 +551,8 @@ new #[Layout('components.frontend.main')] class extends Component {
                             </label>
 
                             <div class="relative">
-                                <input :type="show ? 'text' : 'password'" wire:model="password"
-                                    class="w-full rounded-md border border-gray-300 px-4 py-3 pr-12"
+                                <input :type="show ? 'text' : 'password'" wire:model.live="password"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror pr-12"
                                     placeholder="Enter password">
 
                                 <button type="button" @click="show = !show"
@@ -553,7 +581,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 </button>
                             </div>
                             @error('password')
-                                <span class="text-red-500 text-sm">
+                                <span class="text-danger text-sm">
                                     {{ $message }}
                                 </span>
                             @enderror
@@ -566,8 +594,9 @@ new #[Layout('components.frontend.main')] class extends Component {
                             </label>
 
                             <div class="relative">
-                                <input :type="showConfirm ? 'text' : 'password'" wire:model="password_confirmation"
-                                    class="w-full rounded-md border border-gray-300 px-4 py-3 pr-12"
+                                <input :type="showConfirm ? 'text' : 'password'"
+                                    wire:model.live="password_confirmation"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror pr-12"
                                     placeholder="Confirm password">
 
                                 <button type="button" @click="showConfirm = !showConfirm"
@@ -596,7 +625,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 </button>
                             </div>
                             @error('password_confirmation')
-                                <span class="text-red-500 text-sm">
+                                <span class="text-danger text-sm">
                                     {{ $message }}
                                 </span>
                             @enderror

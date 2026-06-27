@@ -12,7 +12,13 @@ new class extends Component {
 
     public function mount(): void
     {
-        $this->faqs = Faq::active()->where('section', $this->section)->get();
+        $query = Faq::active()->where('section', $this->section);
+
+        if ($this->section === 'homepage') {
+            $query->take(10);
+        }
+
+        $this->faqs = $query->get();
         $this->faqsSchema = $this->generateFaqSchema();
     }
 
@@ -33,6 +39,7 @@ new class extends Component {
                 ],
             ];
         }
+
         return json_encode([
             '@context' => 'https://schema.org',
             '@type' => 'FAQPage',
@@ -42,41 +49,18 @@ new class extends Component {
 }; ?>
 
 <div>
-    @php($rand = uniqid())
-    <div class="accordion accordion-flush" id="accordionFlushExample-{{ $rand }}">
-        @forelse($faqs as $faq)
-            <div class="accordion-item">
-                <p class="accordion-header" id="flush-headingOne2">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#flush-collapseOne{{ $faq->id }}" aria-expanded="false"
-                        aria-controls="flush-collapseOne{{ $faq->id }}">
+    <x-frontend.faq-grid
+        :items="$faqs"
+        :category="$category"
+        :location="$location"
+        :columns-of="$section === 'homepage' ? 5 : null"
+    />
 
-                        {{ strtr($faq->question, ['{category-name}' => $category ?? '', '{place-name}' => $location ?? '']) }}
-                    </button>
-                </p>
-                <div id="flush-collapseOne{{ $faq->id }}" class="accordion-collapse collapse"
-                    aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample-{{ $rand }}">
-                    <div class="accordion-body">
-                        <div class="mb-15" style="color: #374151">
-                            {!! strtr($faq->answer, ['{category-name}' => $category ?? '', '{place-name}' => $location ?? '']) !!}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @empty
-            <h5 class="text-center">No FAQs found</h5>
-        @endforelse
-
-        @if (isset($faqsSchema))
-            @push('schema')
-                <script>
-                    const ques = document.querySelectorAll('.accordion-button');
-                    const ans = document.querySelectorAll('.accordion-body');
-                </script>
-                <script type="application/ld+json">
-                    {!! $faqsSchema !!}
-                </script>
-            @endpush
-        @endif
-    </div>
+    @if (isset($faqsSchema) && $faqsSchema)
+        @push('schema')
+            <script type="application/ld+json">
+                {!! $faqsSchema !!}
+            </script>
+        @endpush
+    @endif
 </div>

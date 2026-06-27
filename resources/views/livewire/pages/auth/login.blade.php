@@ -91,6 +91,15 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         $this->redirectIntended(default: $redirect, navigate: false);
     }
+
+    public function resendVerification()
+    {
+        if ($this->type === 'employer') {
+            return $this->redirect(route('employer.verification.notice'), navigate: false);
+        }
+
+        return $this->redirect(route('candidate.verification.notice'), navigate: false);
+    }
 };
 ?>
 
@@ -284,7 +293,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 </button>
                             </div>
                             @error('password')
-                                <span class="text-red-500 text-sm">
+                                <span class="text-danger text-sm">
                                     {{ $message }}
                                 </span>
                             @enderror

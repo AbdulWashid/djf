@@ -159,7 +159,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                            focus:border-primary-600">
 
                             @error('password')
-                                <span class="text-sm text-red-500">
+                                <span class="text-sm text-danger">
                                     {{ $message }}
                                 </span>
                             @enderror

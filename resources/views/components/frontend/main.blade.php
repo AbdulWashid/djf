@@ -538,6 +538,24 @@
                             @endif
                         </ul>
                     </div>
+                    <div class="col-xl-1 col-sm-3 col-6 mt-4">
+                        <p class="h6 text-nowrap">Popular-Jobs</p>
+                        @php
+                            $popularJobs = Menu::location('footer-5');
+                        @endphp
+                        <ul class="menu-footer mt-1">
+                            @if ($popularJobs)
+                                @foreach ($popularJobs->menuItems as $item)
+                                    <li>
+                                        <a href="{{ $item->url }}" class="text-nowrap"
+                                            @if ($item->target) target="{{ $item->target }}" @endif>
+                                            {{ $item->title }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            @endif
+                        </ul>
+                    </div>
                 </div>
                 <div class="footer-bottom mt-50">
                     <div class="row">
@@ -623,9 +641,7 @@
         <script src="{{ asset('assets/js/plugins/scrollup.js') }}"></script>
         <script src="{{ asset('assets/js/plugins/swiper-bundle.min.js') }}"></script>
         <!-- Template  JS -->
-        <script src="{{ asset('assets/js/main.js?v=1.0') }}"></script>
-
-
+        <script src="{{ asset('assets/js/main.js') }}"></script>
 
         <!-- Cookie Consent -->
         @if (isset($scriptSettings->cookie_consent_enabled) && $scriptSettings->cookie_consent_enabled)

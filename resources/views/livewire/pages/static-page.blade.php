@@ -86,32 +86,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                         <h4 class="heading-border"><span>{{ $page->faq_title ?? 'Frequently asked questions' }}</span>
                         </h4>
 
-                        <div class="accordion accordion-flush">
-                            @forelse($page->faqs as $key=> $faq)
-                                <div class="accordion-item">
-                                    <p class="accordion-header" id="flush-headingOne2">
-                                        <button class="accordion-button collapsed" type="button"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#flush-collapseOne{{ $key }}" aria-expanded="false"
-                                            aria-controls="flush-collapseOne{{ $key }}">
-                                            {{ $faq['question'] }}
-                                        </button>
-                                    </p>
-                                    <div id="flush-collapseOne{{ $key }}" class="accordion-collapse collapse"
-                                        aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample2">
-                                        <div class="accordion-body">
-                                            <div class="mb-15">
-                                                {!! $faq['answer'] !!}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @empty
-                                <h5 class="text-center">No FAQs found</h5>
-                            @endforelse
-
-
-                        </div>
+                        <x-frontend.faq-grid :items="$page->faqs" />
                     </div>
                 </div>
 

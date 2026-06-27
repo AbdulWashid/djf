@@ -173,7 +173,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     placeholder="Enter your email">
 
                                 @error('email')
-                                    <span class="text-sm text-red-500">
+                                    <span class="text-sm text-danger">
                                         {{ $message }}
                                     </span>
                                 @enderror

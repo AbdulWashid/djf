@@ -32,7 +32,7 @@ class extends Component {
             </div>
             <div class="row">
 
-                <div class="col-lg-8">
+                <div class="col-lg-12">
                     <livewire:pages.components.faqs-list section="general" />
                 </div>
             </div>
