@@ -142,6 +142,17 @@ new #[Layout('components.frontend.main')] class extends Component {
 
 <div class="bg-gray-50 py-16 min-h-screen">
     <div class="container mx-auto px-4">
+        @if ($errors->any())
+            <div class="alert alert-danger mb-4">
+                <strong>Please correct the following errors:</strong>
+
+                <ul class="mb-0 mt-2">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="row ">
             @if (session('registration-success'))
                 <div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-4">
@@ -273,12 +284,12 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     Company Name
                                 </label>
 
-                                <input type="text" wire:model="name"
-                                    class="w-full rounded-md border border-gray-300 px-4 py-3 focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
+                                <input type="text" wire:model.live="name"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror "
                                     placeholder="Enter your name">
 
                                 @error('name')
-                                    <span class="text-red-500 text-sm">
+                                    <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
@@ -289,12 +300,12 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     First Name
                                 </label>
 
-                                <input type="text" wire:model="first_name"
-                                    class="w-full rounded-md border border-gray-300 px-4 py-3 focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
+                                <input type="text" wire:model.live="first_name"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror "
                                     placeholder="Enter your full name">
 
                                 @error('first_name')
-                                    <span class="text-red-500 text-sm">
+                                    <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
@@ -304,12 +315,12 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     Last Name
                                 </label>
 
-                                <input type="text" wire:model="last_name"
-                                    class="w-full rounded-md border border-gray-300 px-4 py-3 focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
+                                <input type="text" wire:model.live="last_name"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror "
                                     placeholder="Enter your last name">
 
                                 @error('last_name')
-                                    <span class="text-red-500 text-sm">
+                                    <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
@@ -321,12 +332,12 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 Email Address
                             </label>
 
-                            <input type="email" wire:model="email"
-                                class="w-full rounded-md border border-gray-300 px-4 py-3 focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
+                            <input type="email" wire:model.live="email"
+                                class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror"
                                 placeholder="Enter your email">
 
                             @error('email')
-                                <span class="text-red-500 text-sm">
+                                <span class="text-danger text-sm">
                                     {{ $message }}
                                 </span>
                             @enderror
@@ -334,9 +345,10 @@ new #[Layout('components.frontend.main')] class extends Component {
                         @if ($type === 'employer')
                             <div class="mb-4">
                                 <label>Company Description</label>
-                                <textarea wire:model="description" rows="1" class="w-full rounded-md border border-gray-300 px-4 py-3"></textarea>
+                                <textarea wire:model.live="description" rows="1"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror"></textarea>
                                 @error('description')
-                                    <span class="text-red-500 text-sm">
+                                    <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
@@ -346,10 +358,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                 <div>
                                     <label>Website</label>
-                                    <input type="url" wire:model="website"
-                                        class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    <input type="url" wire:model.live="website"
+                                        class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                     @error('website')
-                                        <span class="text-red-500 text-sm">
+                                        <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
@@ -357,10 +369,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                 <div>
                                     <label>Phone</label>
-                                    <input type="text" wire:model="phone"
-                                        class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    <input type="text" wire:model.live="phone"
+                                        class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                     @error('phone')
-                                        <span class="text-red-500 text-sm">
+                                        <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
@@ -368,10 +380,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                 <div>
                                     <label>Address</label>
-                                    <input type="text" wire:model="address"
-                                        class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    <input type="text" wire:model.live="address"
+                                        class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                     @error('address')
-                                        <span class="text-red-500 text-sm">
+                                        <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
@@ -379,10 +391,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                 <div>
                                     <label>City</label>
-                                    <input type="text" wire:model="city"
-                                        class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    <input type="text" wire:model.live="city"
+                                        class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                     @error('city')
-                                        <span class="text-red-500 text-sm">
+                                        <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
@@ -390,10 +402,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                 <div>
                                     <label>State</label>
-                                    <input type="text" wire:model="state"
-                                        class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    <input type="text" wire:model.live="state"
+                                        class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                     @error('state')
-                                        <span class="text-red-500 text-sm">
+                                        <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
@@ -401,10 +413,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                 <div>
                                     <label>Country</label>
-                                    <input type="text" wire:model="country"
-                                        class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    <input type="text" wire:model.live="country"
+                                        class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                     @error('country')
-                                        <span class="text-red-500 text-sm">
+                                        <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
@@ -412,10 +424,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                 <div>
                                     <label>Postal Code</label>
-                                    <input type="text" wire:model="postal_code"
-                                        class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                    <input type="text" wire:model.live="postal_code"
+                                        class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                     @error('postal_code')
-                                        <span class="text-red-500 text-sm">
+                                        <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
@@ -444,7 +456,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         <input type="file" wire:model="logo" accept="image/*" class="hidden">
                                     </label>
                                     @error('logo')
-                                        <span class="text-red-500 text-sm">
+                                        <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
@@ -461,10 +473,10 @@ new #[Layout('components.frontend.main')] class extends Component {
                         @elseif ($type === 'candidate')
                             <div class="mb-4">
                                 <label>Phone</label>
-                                <input type="text" wire:model="phone"
-                                    class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                <input type="text" wire:model.live="phone"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                 @error('phone')
-                                    <span class="text-red-500 text-sm">
+                                    <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
@@ -472,10 +484,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                             <div class="mb-4">
                                 <label>Nationality</label>
-                                <input type="text" wire:model="nationality"
-                                    class="w-full rounded-md border border-gray-300 px-4 py-3">
+                                <input type="text" wire:model.live="nationality"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
                                 @error('nationality')
-                                    <span class="text-red-500 text-sm">
+                                    <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
@@ -505,7 +517,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         class="hidden">
                                 </label>
                                 @error('resume')
-                                    <span class="text-red-500 text-sm">
+                                    <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
@@ -522,9 +534,10 @@ new #[Layout('components.frontend.main')] class extends Component {
                             </div>
                             <div class="mb-4">
                                 <label>Cover Letter</label>
-                                <textarea wire:model="cover_letter" rows="1" class="w-full rounded-md border border-gray-300 px-4 py-3"></textarea>
+                                <textarea wire:model.live="cover_letter" rows="1"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror"></textarea>
                                 @error('cover_letter')
-                                    <span class="text-red-500 text-sm">
+                                    <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
@@ -538,8 +551,8 @@ new #[Layout('components.frontend.main')] class extends Component {
                             </label>
 
                             <div class="relative">
-                                <input :type="show ? 'text' : 'password'" wire:model="password"
-                                    class="w-full rounded-md border border-gray-300 px-4 py-3 pr-12"
+                                <input :type="show ? 'text' : 'password'" wire:model.live="password"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror pr-12"
                                     placeholder="Enter password">
 
                                 <button type="button" @click="show = !show"
@@ -568,7 +581,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 </button>
                             </div>
                             @error('password')
-                                <span class="text-red-500 text-sm">
+                                <span class="text-danger text-sm">
                                     {{ $message }}
                                 </span>
                             @enderror
@@ -581,8 +594,9 @@ new #[Layout('components.frontend.main')] class extends Component {
                             </label>
 
                             <div class="relative">
-                                <input :type="showConfirm ? 'text' : 'password'" wire:model="password_confirmation"
-                                    class="w-full rounded-md border border-gray-300 px-4 py-3 pr-12"
+                                <input :type="showConfirm ? 'text' : 'password'"
+                                    wire:model.live="password_confirmation"
+                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror pr-12"
                                     placeholder="Confirm password">
 
                                 <button type="button" @click="showConfirm = !showConfirm"
@@ -611,7 +625,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 </button>
                             </div>
                             @error('password_confirmation')
-                                <span class="text-red-500 text-sm">
+                                <span class="text-danger text-sm">
                                     {{ $message }}
                                 </span>
                             @enderror
