@@ -55,7 +55,8 @@ class OptimizePerformance
             'Link' => '</css>; rel=preload; as=style, </js>; rel=preload; as=script',
 
             // Cache control for static assets
-            'Cache-Control' => 'public, max-age=31536000, immutable',
+            // 'Cache-Control' => 'public, max-age=31536000, immutable',
+            'Cache-Control' => 'no-cache, private',
 
             // Compression
             'Vary' => 'Accept-Encoding',

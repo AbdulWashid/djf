@@ -21,8 +21,8 @@ new #[Layout('components.frontend.main')] class extends Component {
     public $salary_range;
     public $salary_ranges;
 
-    public $pageTitle = 'Urgent {Category} Jobs in {location} | Dubaijobfinder';
-    public $pageDescription = 'Find the latest {Category} jobs in {location}. Apply online for urgent vacancies and career opportunities on Dubaijobfinder.';
+    // public $pageTitle = 'Urgent {Category} Jobs in {location} | Dubaijobfinder';
+    // public $pageDescription = 'Find the latest {Category} jobs in {location}. Apply online for urgent vacancies and career opportunities on Dubaijobfinder.';
 
     public function mount($location = null, $category_slug = null): void
     {
@@ -57,9 +57,13 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         view()->share('pageType', 'job_listing');
 
-        view()->share('pageTitle', str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? $this->selectedCategoryName() ?? '' : ''], $this->pageTitle));
+        // view()->share('pageTitle', str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? $this->selectedCategoryName() ?? '' : ''], $this->pageTitle));
 
-        view()->share('pageDescription', str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? $this->selectedCategoryName() ?? '' : ''], $this->pageDescription));
+        // view()->share('pageDescription', str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? $this->selectedCategoryName() ?? '' : ''], $this->pageDescription));
+
+        view()->share('pageTitle', $this->getSeoTitle());
+
+        view()->share('pageDescription', $this->getSeoDescription());
 
         view()->share('schemaData', $this->buildSchemas());
     }
@@ -104,11 +108,14 @@ new #[Layout('components.frontend.main')] class extends Component {
         }
 
         $this->dispatch('url-updated', ['url' => $url]);
+        // $this->dispatch('seo-updated', [
+        //     'title' => str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? $this->selectedCategoryName() ?? '' : ''], $this->pageTitle),
+        //     'description' => str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? $this->selectedCategoryName() ?? '' : ''], $this->pageDescription),
+        // ]);
         $this->dispatch('seo-updated', [
-            'title' => str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? $this->selectedCategoryName() ?? '' : ''], $this->pageTitle),
-            'description' => str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? $this->selectedCategoryName() ?? '' : ''], $this->pageDescription),
+            'title' => $this->getSeoTitle(),
+            'description' => $this->getSeoDescription(),
         ]);
-
         $this->dispatch('schema-updated', [
             'schemas' => $this->buildSchemas(),
         ]);
@@ -250,6 +257,31 @@ new #[Layout('components.frontend.main')] class extends Component {
     protected function getBreadcrumbTitle(): string
     {
         return $this->getHeading();
+    }
+
+    protected function getSeoTitle(): string
+    {
+        return $this->getHeading() . ' | Dubaijobfinder';
+    }
+
+    protected function getSeoDescription(): string
+    {
+        $category = $this->selectedCategoryName();
+        $location = $this->location ? Str::title($this->location) : null;
+
+        if ($category && $location) {
+            return "Browse the latest {$category} jobs in {$location}. Apply online for full-time, part-time, and urgent job vacancies on Dubaijobfinder.";
+        }
+
+        if ($location) {
+            return "Discover the latest jobs in {$location}. Find full-time, part-time, and urgent vacancies across multiple industries on Dubaijobfinder.";
+        }
+
+        if ($category) {
+            return "Explore the latest {$category} jobs. Apply online for verified vacancies and career opportunities on Dubaijobfinder.";
+        }
+
+        return 'Browse the latest job vacancies across the UAE. Search by category and location and apply online with Dubaijobfinder.';
     }
 }; ?>
 
