@@ -172,6 +172,29 @@ new #[Layout('components.frontend.main')] class extends Component {
                             <div class="h5 font-bold">Benefits</div>
                             <div> {!! $job->benefits !!}</div>
                         @endif
+                        <div class="h5 font-bold">How to apply</div>
+                        <div>
+                            <p>Applicants interested in data entry specialist jobs in dubai for indian professionals,
+                                and data entry jobs vacancies in dubai can apply by submitting:</p>
+                            <ul>
+                                <li>Updated resume</li>
+                                <li>Short cover letter explaining your interest in data entry roles</li>
+                                <li>Only shortlisted applicants will be contacted for further recruitment procedures.
+                                </li>
+                            </ul>
+                            {{-- <p>
+                                You may also explore other openings like-
+                                <a href="https://dubaijobfinder.net/job/philosophy-lecturer">
+                                    <span style="text-decoration: underline;">Philosophy Lecturer</span>
+                                </a> ,
+                                <a href="https://dubaijobfinder.net/job/production-engineer">
+                                    <span style="text-decoration: underline;">Production Engineer</span>
+                                </a> ,
+                                <a href="https://dubaijobfinder.net/job/labor-relations-officer">
+                                    <span style="text-decoration: underline;">Labor Relations Officer</span>
+                                </a>
+                            </p> --}}
+                        </div>
                     </div>
 
                     <div class="single-apply-jobs">
