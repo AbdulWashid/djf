@@ -1,8 +1,9 @@
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>
-
+    RewriteRule ^test123$ does-not-exist.php [L]
     RewriteEngine On
 
     # Force HTTPS
