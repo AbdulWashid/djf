@@ -24,8 +24,8 @@ new #[Layout('components.frontend.main')] class extends Component {
     public $recentPosts = [];
     public $popularTags = [];
     public $isSearching = false;
-    public $pageTitle = 'Blogs';
-    public $pageDescription = 'Discover our latest insights, tips, and updates...';
+    public $pageTitle = 'Advance Your Career in Dubai: Expert Tips & Blog | DubaiJobFinder';
+    public $pageDescription = ' Unlock your professional potential in the UAE. Explore actionable job search strategies, visa insights, and workplace tips designed to land your dream role.';
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -251,17 +251,20 @@ new #[Layout('components.frontend.main')] class extends Component {
         $categoryName = $this->activeCategory ? $this->categories->firstWhere('id', $this->activeCategory)?->name : null;
 
         if (!empty($this->search)) {
-            $this->pageTitle = 'Search results for "' . $this->search . '" | Blogs';
-            $this->pageDescription = 'Search results for "' . $this->search . '" on Blogs.';
+            $this->pageTitle = 'Search Results for "' . $this->search . '" | DubaiJobFinder Blog';
+
+            $this->pageDescription = 'Browse blog articles related to "' . $this->search . '" on DubaiJobFinder. Find career advice, UAE job market insights, CV tips, interview guidance, and workplace updates.';
         } elseif ($categoryName) {
-            $this->pageTitle = $categoryName . ' Articles | Blogs';
-            $this->pageDescription = 'Browse the latest ' . $categoryName . ' articles on Blogs.';
+            $this->pageTitle = $categoryName . ' Articles | DubaiJobFinder Blog';
+
+            $this->pageDescription = 'Explore the latest ' . $categoryName . ' articles, expert career advice, hiring trends, and job search tips for professionals in Dubai and across the UAE.';
         } elseif ($this->featuredOnly) {
-            $this->pageTitle = 'Featured Blog Posts | Blogs';
-            $this->pageDescription = 'Explore featured blog posts, insights, tips, and updates on Blogs.';
+            $this->pageTitle = 'Featured Career Articles | DubaiJobFinder Blog';
+
+            $this->pageDescription = 'Read our featured articles covering Dubai jobs, CV writing, interview preparation, visa guidance, career growth, and workplace success in the UAE.';
         } else {
-            $this->pageTitle = 'Blogs';
-            $this->pageDescription = 'Discover our latest insights, tips, and updates...';
+            $this->pageTitle = 'Advance Your Career in Dubai: Expert Tips & Blog | DubaiJobFinder';
+            $this->pageDescription = 'Unlock your professional potential in the UAE. Explore actionable job search strategies, visa insights, and workplace tips designed to land your dream role.';
         }
 
         $this->dispatch('seo-updated', [
