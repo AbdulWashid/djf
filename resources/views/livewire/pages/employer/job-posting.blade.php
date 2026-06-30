@@ -53,58 +53,6 @@ new #[Layout('components.frontend.main')] class extends Component {
             'expected_nationalities' => 'required|array|min:1',
         ];
     }
-    // public function save()
-    // {
-    //     $this->validate([
-    //         'title' => 'required|max:255',
-    //         'job_category_id' => 'required|exists:job_categories,id',
-
-    //         'description' => 'required',
-
-    //         'responsibilities' => 'nullable',
-    //         'skills' => 'nullable',
-    //         'benefits' => 'nullable',
-
-    //         'job_type' => 'required',
-    //         'location' => 'required|max:255',
-    //         'salary_range' => 'required|max:255',
-
-    //         'gender' => 'required',
-    //         'required_experience' => 'required',
-
-    //         'expected_nationalities' => 'required|array|min:1',
-    //     ]);
-
-    //     Opening::create([
-    //         'employer_id' => auth('employer')->id(),
-    //         'job_category_id' => $this->job_category_id,
-
-    //         'title' => $this->title,
-    //         'slug' => Str::slug($this->title) . '-' . time(),
-
-    //         'description' => $this->description,
-    //         'responsibilities' => $this->responsibilities,
-    //         'skills' => $this->skills,
-    //         'benefits' => $this->benefits,
-
-    //         'job_type' => $this->job_type,
-    //         'location' => $this->location,
-    //         'salary_range' => $this->salary_range,
-
-    //         'expected_nationalities' => $this->expected_nationalities,
-    //         'gender' => $this->gender,
-    //         'required_experience' => $this->required_experience,
-
-    //         'featured' => false,
-    //         'status' => false,
-    //     ]);
-
-    //     $this->reset(['title', 'job_category_id', 'description', 'responsibilities', 'skills', 'benefits', 'job_type', 'location', 'salary_range', 'gender', 'required_experience', 'expected_nationalities']);
-
-    //     $this->resetPage();
-
-    //     session()->flash('success', 'Job posted successfully.');
-    // }
     public function save()
     {
         $this->validate();
@@ -257,8 +205,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Job Title <span class="text-danger">*</span>
                                     </label>
 
-                                    <input type="text" wire:model="title" class="form-control"
-                                        placeholder="Senior Laravel Developer">
+                                    <input type="text" wire:model="title" class="form-control">
 
                                     @error('title')
                                         <small class="text-danger">{{ $message }}</small>
@@ -313,8 +260,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Location <span class="text-danger">*</span>
                                     </label>
 
-                                    <input type="text" wire:model="location" class="form-control"
-                                        placeholder="Dubai">
+                                    <input type="text" wire:model="location" class="form-control">
 
                                     @error('location')
                                         <small class="text-danger">{{ $message }}</small>
@@ -327,8 +273,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Salary Range <span class="text-danger">*</span>
                                     </label>
 
-                                    <input type="text" wire:model="salary_range" class="form-control"
-                                        placeholder="AED 5,000 - 8,000">
+                                    <input type="text" wire:model="salary_range" class="form-control">
 
                                     @error('salary_range')
                                         <small class="text-danger">{{ $message }}</small>
@@ -341,8 +286,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Required Experience <span class="text-danger">*</span>
                                     </label>
 
-                                    <input type="text" wire:model="required_experience" class="form-control"
-                                        placeholder="2+ Years">
+                                    <input type="text" wire:model="required_experience" class="form-control">
 
                                     @error('required_experience')
                                         <small class="text-danger">{{ $message }}</small>
@@ -399,7 +343,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Job Description <span class="text-danger">*</span>
                                     </label>
 
-                                    <textarea rows="6" wire:model="description" class="form-control" placeholder="Describe the job role..."></textarea>
+                                    <textarea rows="6" wire:model="description" class="form-control"></textarea>
 
                                     @error('description')
                                         <small class="text-danger">{{ $message }}</small>
@@ -412,7 +356,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Responsibilities
                                     </label>
 
-                                    <textarea rows="5" wire:model="responsibilities" class="form-control" placeholder="List job responsibilities..."></textarea>
+                                    <textarea rows="5" wire:model="responsibilities" class="form-control"></textarea>
 
                                     @error('responsibilities')
                                         <small class="text-danger">{{ $message }}</small>
@@ -425,7 +369,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Skills
                                     </label>
 
-                                    <textarea rows="5" wire:model="skills" class="form-control" placeholder="Required skills..."></textarea>
+                                    <textarea rows="5" wire:model="skills" class="form-control"></textarea>
 
                                     @error('skills')
                                         <small class="text-danger">{{ $message }}</small>
@@ -438,8 +382,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Benefits
                                     </label>
 
-                                    <textarea rows="5" wire:model="benefits" class="form-control"
-                                        placeholder="Salary, Visa, Insurance, Accommodation etc..."></textarea>
+                                    <textarea rows="5" wire:model="benefits" class="form-control"></textarea>
 
                                     @error('benefits')
                                         <small class="text-danger">{{ $message }}</small>
@@ -474,15 +417,11 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                     {{-- My Jobs Card --}}
                     <div class="bg-white border border-gray-200 rounded-lg shadow-md p-6">
-
                         <h2 class="text-2xl font-bold text-primary-800 mb-4">
                             My Job Postings
                         </h2>
-
                         <div class="table-responsive">
-
                             <table class="table">
-
                                 <thead>
                                     <tr>
                                         <th>Title</th>
@@ -492,26 +431,19 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         <th width="150">Action</th>
                                     </tr>
                                 </thead>
-
                                 <tbody>
-
                                     @forelse($jobs as $job)
                                         <tr>
-
                                             <td>
                                                 {{ $job->title }}
                                             </td>
-
                                             <td>
                                                 {{ $job->job_category?->name }}
                                             </td>
-
                                             <td>
                                                 {{ $job->job_type }}
                                             </td>
-
                                             <td>
-
                                                 @if ($job->status)
                                                     <span class="badge bg-success">
                                                         Active
@@ -521,48 +453,33 @@ new #[Layout('components.frontend.main')] class extends Component {
                                                         Inactive
                                                     </span>
                                                 @endif
-
                                             </td>
-
                                             <td>
-
                                                 <button type="button" wire:click="edit({{ $job->id }})"
                                                     class="text-primary me-2">
-
                                                     Edit
                                                 </button>
 
                                                 <button wire:click="delete({{ $job->id }})"
                                                     wire:confirm="Are you sure you want to delete this job?"
                                                     class="text-danger">
-
                                                     Delete
-
                                                 </button>
-
                                             </td>
-
                                         </tr>
-
                                     @empty
-
                                         <tr>
                                             <td colspan="5" class="text-center py-4">
                                                 No jobs found.
                                             </td>
                                         </tr>
                                     @endforelse
-
                                 </tbody>
-
                             </table>
-
                         </div>
-
-                        <div class="mt-4">
+                        <div class="mt-4 px-3">
                             {{ $jobs->links() }}
                         </div>
-
                     </div>
                 </div>
             </div>

@@ -118,19 +118,22 @@
                     <div class="dropdown">
                         <button class="btn p-0 border-0 bg-transparent d-flex align-items-center gap-2" type="button"
                             data-bs-toggle="dropdown">
+
                             @if (!empty($user->logo))
-                                <img src="{{ Storage::url($user->logo) }}" alt="{{ $userName }}" width="45"
-                                    height="45" class="rounded-circle" style="object-fit:cover;">
+                                <img src="{{ Storage::url($user->logo) }}" alt="{{ $userName }}" width="70"
+                                    height="70" class="rounded-circle border border-2 border-primary shadow-sm p-1"
+                                    style="object-fit: cover;">
                             @else
-                                <img src="https://placehold.co/45x45?text={{ strtoupper(substr($userName, 0, 1)) }}"
-                                    alt="{{ $userName }}" width="45" height="45" class="rounded-circle">
+                                <img src="https://placehold.co/70x70?text={{ strtoupper(substr($userName, 0, 1)) }}"
+                                    alt="{{ $userName }}" width="70" height="70"
+                                    class="rounded-circle border border-2 border-primary shadow-sm p-1">
                             @endif
-                            <span class="fw-semibold">{{ $userName }}</span>
+
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
                                 <a href="{{ route($guard . '.profile') }}" class="dropdown-item">
-                                    <i class="bi bi-person me-2"></i> My Profile
+                                    {{ $userName }}
                                 </a>
                             </li>
                             <li>
@@ -303,19 +306,7 @@
                                     alt="Dubai Job Finder" />
                             </a>
                         @endif
-
-                        {{--                            @if ($platform == 'tiktok') continue; --}}
-
-                        {{--                            <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" --}}
-                        {{--                               class="icon-socials icon-{{ $platform }}" --}}
-                        {{--                               aria-label="{{ $platform }}"> --}}
-                        {{--                                <i class="{{ $faIcons[$platform] ?? 'fa-brands fa-'.$platform }}"></i> --}}
-                        {{--                            </a> --}}
-                        {{--                        @endif --}}
                     @endforeach
-
-
-
                 </div>
                 <div class="site-copyright">Copyright {{ date('Y') }} &copy; Dubai Job Finder.</div>
             </div>
