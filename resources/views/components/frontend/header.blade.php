@@ -210,57 +210,6 @@ new class extends Component {
                 </div>
 
             @endif
-            {{-- @dump()
-            @if (!(auth('employer')->check() || auth('candidate')->check()))
-                <div class="header-right d-none d-xl-flex align-items-center">
-                    <div class="d-flex align-items-center gap-3">
-
-                        <!-- Employer -->
-                        <div class="dropdown">
-                            <button class=" dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Employer
-                            </button>
-
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <a href="{{ route('employer.login') }}" class="dropdown-item">
-                                        Login
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a href="{{ route('employer.register') }}" class="dropdown-item">
-                                        Register
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Candidate -->
-                        <div class="dropdown">
-                            <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Candidate
-                            </button>
-
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <a href="{{ route('candidate.login') }}" class="dropdown-item">
-                                        Login
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a href="{{ route('candidate.register') }}" class="dropdown-item">
-                                        Register
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            @endif --}}
         </div>
     </div>
 </header>

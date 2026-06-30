@@ -5,10 +5,13 @@ use App\Models\Opening;
 use App\Models\Faq;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
+use App\Models\JobApplications;
+use Illuminate\Support\Facades\Auth;
 
 new #[Layout('components.frontend.main')] class extends Component {
     public $slug;
     public $job;
+    public bool $alreadyApplied = false;
 
     public function mount($slug)
     {
@@ -16,6 +19,12 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         if (!$this->job) {
             abort(404);
+        }
+
+        if (auth('candidate')->check()) {
+            $this->alreadyApplied = JobApplications::where('opening_id', $this->job->id)
+                ->where('candidate_id', auth('candidate')->id())
+                ->exists();
         }
 
         view()->share('pageType', 'job_posting');
@@ -200,9 +209,25 @@ new #[Layout('components.frontend.main')] class extends Component {
                     <div class="single-apply-jobs">
                         <div class="row align-items-center">
                             <div class="col-md-5">
-                                <a href="{{ route('jobs.apply.form', $job->slug) }}" class="btn btn-default mr-15">
-                                    Apply Now
-                                </a>
+                                @if (auth('candidate')->check())
+
+                                    @if ($alreadyApplied)
+                                        <button class="btn btn-success mr-15" disabled>
+                                            <i class="fi fi-rr-check me-1"></i>
+                                            Already Applied
+                                        </button>
+                                    @else
+                                        <a href="{{ route('jobs.apply.form', $job->slug) }}"
+                                            class="btn btn-default mr-15">
+                                            Apply Now
+                                        </a>
+                                    @endif
+                                @else
+                                    <a href="{{ route('candidate.login') }}" class="btn btn-default mr-15">
+                                        Login to Apply
+                                    </a>
+
+                                @endif
                             </div>
                             <div class="col-md-7 text-lg-end social-share">
                                 <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->full()) }}"

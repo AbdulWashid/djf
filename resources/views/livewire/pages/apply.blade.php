@@ -71,6 +71,17 @@ new #[Layout('components.frontend.main')] class extends Component {
     {
         $this->validate();
 
+        if (auth('candidate')->check()) {
+            $exists = JobApplications::where('opening_id', $this->job->id)
+                ->where('candidate_id', auth('candidate')->id())
+                ->exists();
+
+            if ($exists) {
+                session()->flash('error', 'You have already applied for this job.');
+                return;
+            }
+        }
+
         if ($this->cv) {
             $resumePath = $this->cv->store('job-applications/resumes', 'public');
         } else {
