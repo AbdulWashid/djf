@@ -5,69 +5,25 @@
 
 # Block AI training crawlers
 User-agent: GPTBot
-Disallow: /
-
 User-agent: ClaudeBot
-Disallow: /
-
 User-agent: anthropic-ai
-Disallow: /
-
 User-agent: Google-Extended
-Disallow: /
-
 User-agent: CCBot
-Disallow: /
-
 User-agent: Bytespider
-Disallow: /
-
 User-agent: AI2Bot
-Disallow: /
-
 User-agent: Meta-WebIndexer
-Disallow: /
-
+User-agent: PetalBot
 User-agent: TikTokSpider
 Disallow: /
 
 # Allow AI search citation bots
 User-agent: ChatGPT-User
-Allow: /
-
 User-agent: OAI-SearchBot
-Allow: /
-
 User-agent: PerplexityBot
-Allow: /
-
 User-agent: Applebot
 Allow: /
 
-# Googlebot — specific rules
-User-agent: Googlebot
-Disallow: /admin/
-Disallow: /dashboard/
-Disallow: /api/
-Disallow: /cdn-cgi/
-Disallow: /*?filter=
-Disallow: /*?sort=
-Disallow: /*?job_type=
-Disallow: /*?salary=
-Disallow: /*?location=
-Disallow: /*?q=
-Disallow: /*?category=
-Allow: /
-
-# Bingbot — specific rules
-User-agent: Bingbot
-Disallow: /admin/
-Disallow: /dashboard/
-Disallow: /api/
-Disallow: /cdn-cgi/
-Allow: /
-
-# Catch-all for all other crawlers
+# Catch-all for Googlebot, Bingbot, DuckDuckBot, YandexBot, and everyone else not listed above
 User-agent: *
 Disallow: /admin/
 Disallow: /dashboard/
@@ -78,6 +34,7 @@ Disallow: /*?sort=
 Disallow: /*?job_type=
 Disallow: /*?salary=
 Disallow: /*?location=
+Disallow: /*?page=
 Disallow: /*?q=
 Disallow: /*?category=
 Allow: /

@@ -5,6 +5,7 @@ use Livewire\Volt\Volt;
 use Lab404\Impersonate\Services\ImpersonateManager;
 use Illuminate\Support\Facades\Artisan;
 use Filament\Notifications\Notification;
+use App\Http\Controllers\Auth\LogoutController;
 
 Route::middleware([
     'employer.auth',
@@ -32,6 +33,8 @@ Route::middleware([
             ->name('applied');
     });
 });
+
+Route::post('/logout', LogoutController::class)->name('logout');
 
 Volt::route('/', 'pages.home')->name('home');
 
