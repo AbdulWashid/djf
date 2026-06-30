@@ -5,9 +5,17 @@ namespace App\Models;
 use App\Enums\EmploymentType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Cache;
 
 class Opening extends Model
 {
+    protected $casts = [
+            'expected_nationalities' => 'array',
+            'meta_keywords' => 'array',
+            'status' => 'boolean',
+            'job_type' => EmploymentType::class,
+        ];
+
     protected $fillable = [
         'employer_id',
         'job_category_id',
@@ -58,12 +66,18 @@ class Opening extends Model
     {
         return $query->where('status', 1);
     }
+    protected static function booted(): void
+    {
+        static::saved(function () {
+            Cache::forget('feature_jobs');
+            Cache::forget('recent_jobs');
+        });
 
-    protected $casts = [
-            'expected_nationalities' => 'array',
-            'meta_keywords' => 'array',
-            'status' => 'boolean',
-            'job_type' => EmploymentType::class,
-        ];
+        static::deleted(function () {
+            Cache::forget('feature_jobs');
+            Cache::forget('recent_jobs');
+        });
+    }
+    
 
 }

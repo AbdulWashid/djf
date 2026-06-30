@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class Category extends Model
 {
@@ -164,5 +165,15 @@ class Category extends Model
         }
 
         return $ancestors;
+    }
+    protected static function booted(): void
+    {
+        static::saved(function () {
+            Cache::forget('active_categories');
+        });
+
+        static::deleted(function () {
+            Cache::forget('active_categories');
+        });
     }
 }

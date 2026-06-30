@@ -18,6 +18,7 @@ use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Tags\HasTags;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class Post extends Model implements HasMedia
 {
@@ -406,5 +407,20 @@ class Post extends Model implements HasMedia
             ->where('published_at', '>', $this->published_at)
             ->orderBy('published_at', 'asc')
             ->first();
+    }
+
+    protected static function booted(): void
+    {
+        static::saved(function () {
+            Cache::forget('recent_posts_home');
+            Cache::forget('recent_posts');
+            Cache::forget('popular_tags_en');
+        });
+
+        static::deleted(function () {
+            Cache::forget('recent_posts_home');
+            Cache::forget('recent_posts');
+            Cache::forget('popular_tags_en');
+        });
     }
 }

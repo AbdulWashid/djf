@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Support\Facades\Cache;
 
 class JobCategory extends Model implements HasMedia
 {
@@ -44,5 +45,24 @@ class JobCategory extends Model implements HasMedia
     public function scopeActive($query)
     {
         return $query->where('status', true);
+    }
+
+    protected static function booted(): void
+    {
+        static::saved(function () {
+            Cache::forget('job_categories_active_count');
+            Cache::forget('job_categories_home');
+            for ($i = 1; $i <= 20; $i++) {
+                Cache::forget("job_categories_all_page_{$i}");
+            }
+        });
+
+        static::deleted(function () {
+            Cache::forget('job_categories_active_count');
+            Cache::forget('job_categories_home');
+            for ($i = 1; $i <= 20; $i++) {
+                Cache::forget("job_categories_all_page_{$i}");
+            }
+        });
     }
 }

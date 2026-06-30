@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class JobListingContent extends Model
 {
@@ -19,5 +20,14 @@ class JobListingContent extends Model
         'category' => 'array',
         'location_category' => 'array',
     ];
+    protected static function booted(): void
+    {
+        static::saved(function () {
+            Cache::forget('job_listing_content');
+        });
 
+        static::deleted(function () {
+            Cache::forget('job_listing_content');
+        });
+    }
 }
