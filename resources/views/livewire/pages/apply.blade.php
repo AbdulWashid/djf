@@ -77,7 +77,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                 ->exists();
 
             if ($exists) {
-                session()->flash('error', 'You have already applied for this job.');
+                $this->addError('application', 'You have already applied for this job.');
                 return;
             }
         }
@@ -158,6 +158,12 @@ new #[Layout('components.frontend.main')] class extends Component {
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
+            </div>
+        @endif
+        @if (session()->has('application'))
+            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                {{ session('application') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
         <div class="row">

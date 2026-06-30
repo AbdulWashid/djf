@@ -261,9 +261,24 @@ new #[Layout('components.frontend.main')] class extends Component {
                         </div>
 
                         <div class="text-start mt-20">
-                            <a href="{{ route('jobs.apply.form', $job->slug) }}" class="btn btn-default mr-15">
-                                Apply Now
-                            </a>
+                            @if (auth('candidate')->check())
+
+                                @if ($alreadyApplied)
+                                    <button class="btn btn-success mr-15" disabled>
+                                        <i class="fi fi-rr-check me-1"></i>
+                                        Already Applied
+                                    </button>
+                                @else
+                                    <a href="{{ route('jobs.apply.form', $job->slug) }}" class="btn btn-default mr-15">
+                                        Apply Now
+                                    </a>
+                                @endif
+                            @else
+                                <a href="{{ route('candidate.login') }}" class="btn btn-default mr-15">
+                                    Login to Apply
+                                </a>
+
+                            @endif
                         </div>
 
                         <div class="sidebar-list-job">
