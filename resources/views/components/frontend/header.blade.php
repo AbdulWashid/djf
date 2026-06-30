@@ -1,38 +1,23 @@
-<?php
-
-use Livewire\Volt\Component;
-use Illuminate\Support\Facades\Auth;
-
-new class extends Component {
-    public function logout()
-    {
-        if (Auth::guard('employer')->check()) {
-            Auth::guard('employer')->logout();
-
-            session()->invalidate();
-            session()->regenerateToken();
-
-            return redirect()->route('employer.login');
-        }
-
-        if (Auth::guard('candidate')->check()) {
-            Auth::guard('candidate')->logout();
-
-            session()->invalidate();
-            session()->regenerateToken();
-
-            return redirect()->route('candidate.login');
-        }
-    }
-};
-?>
-
 @php
     use Datlechin\FilamentMenuBuilder\Models\Menu;
 
     $brandLogo = $generalSettings->brand_logo ?? null;
     $brandName = $generalSettings->brand_name ?? ($siteSettings->name ?? config('app.name', 'Dubai Job Finder'));
     $favicon = $generalSettings->site_favicon;
+
+    // Resolve Auth State
+    $guard = null;
+    $user = null;
+
+    if (auth('employer')->check()) {
+        $guard = 'employer';
+        $user = auth('employer')->user();
+    } elseif (auth('candidate')->check()) {
+        $guard = 'candidate';
+        $user = auth('candidate')->user();
+    }
+
+    $userName = $guard === 'employer' ? $user->name ?? '' : $user->first_name ?? '';
 
 @endphp
 
@@ -111,105 +96,60 @@ new class extends Component {
                 }
             @endphp
 
-            @if (!$user)
-
-                <div class="header-right d-none d-xl-flex align-items-center">
+            <div class="header-right d-none d-xl-flex align-items-center">
+                @if (!$user)
                     <div class="d-flex align-items-center gap-3">
-
                         <div class="dropdown">
-                            <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                Employer
-                            </button>
-
+                            <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown">Employer</button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <a href="{{ route('employer.login') }}" class="dropdown-item">
-                                        Login
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a href="{{ route('employer.register') }}" class="dropdown-item">
-                                        Register
-                                    </a>
-                                </li>
+                                <li><a href="{{ route('employer.login') }}" class="dropdown-item">Login</a></li>
+                                <li><a href="{{ route('employer.register') }}" class="dropdown-item">Register</a></li>
                             </ul>
                         </div>
-
                         <div class="dropdown">
-                            <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                Candidate
-                            </button>
-
+                            <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown">Candidate</button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <a href="{{ route('candidate.login') }}" class="dropdown-item">
-                                        Login
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a href="{{ route('candidate.register') }}" class="dropdown-item">
-                                        Register
-                                    </a>
-                                </li>
+                                <li><a href="{{ route('candidate.login') }}" class="dropdown-item">Login</a></li>
+                                <li><a href="{{ route('candidate.register') }}" class="dropdown-item">Register</a></li>
                             </ul>
                         </div>
-
                     </div>
-                </div>
-            @else
-                <div class="header-right d-none d-xl-flex align-items-center">
-
+                @else
                     <div class="dropdown">
-
                         <button class="btn p-0 border-0 bg-transparent d-flex align-items-center gap-2" type="button"
                             data-bs-toggle="dropdown">
-
                             @if (!empty($user->logo))
-                                <img src="{{ Storage::url($user->logo) }}" alt="{{ $name }}" width="45"
+                                <img src="{{ Storage::url($user->logo) }}" alt="{{ $userName }}" width="45"
                                     height="45" class="rounded-circle" style="object-fit:cover;">
                             @else
-                                <img src="https://placehold.co/45x45?text={{ strtoupper(substr($name, 0, 1)) }}"
-                                    alt="{{ $name }}" width="45" height="45" class="rounded-circle">
+                                <img src="https://placehold.co/45x45?text={{ strtoupper(substr($userName, 0, 1)) }}"
+                                    alt="{{ $userName }}" width="45" height="45" class="rounded-circle">
                             @endif
-
-                            <span class="fw-semibold">{{ $name }}</span>
-
+                            <span class="fw-semibold">{{ $userName }}</span>
                         </button>
-
                         <ul class="dropdown-menu dropdown-menu-end">
-
                             <li>
-                                <a href="{{ $guard == 'employer' ? route('employer.profile') : route('candidate.profile') }}"
-                                    class="dropdown-item">
-
-                                    <i class="bi bi-person me-2"></i>
-                                    My Profile
+                                <a href="{{ route($guard . '.profile') }}" class="dropdown-item">
+                                    <i class="bi bi-person me-2"></i> My Profile
                                 </a>
                             </li>
-
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-
                             <li>
-                                <button wire:click="logout" wire:loading.attr="disabled"
-                                    class="dropdown-item text-danger">
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
 
-                                    <i class="bi bi-box-arrow-right me-2"></i>
-
-                                    Logout
-                                </button>
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="bi bi-box-arrow-right me-2"></i>
+                                        Logout
+                                    </button>
+                                </form>
                             </li>
-
                         </ul>
-
                     </div>
-
-                </div>
-
-            @endif
+                @endif
+            </div>
         </div>
     </div>
 </header>
