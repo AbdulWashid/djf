@@ -82,7 +82,15 @@ class AdminPanelProvider extends PanelProvider
             ->pages([Pages\Dashboard::class])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                //                Widgets\FilamentInfoWidget::class,
+                \App\Filament\Widgets\AdminStats::class,
+                \App\Filament\Widgets\ServerStats::class,
+
+                \App\Filament\Widgets\ApplicationsChart::class,
+                \App\Filament\Widgets\JobsChart::class,
+
+                \App\Filament\Widgets\LatestApplications::class,
+                \App\Filament\Widgets\LatestMessages::class,
+                 
             ])
             ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\\Filament\\Clusters')
             ->middleware([
