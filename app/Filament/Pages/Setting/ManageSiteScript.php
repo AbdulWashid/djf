@@ -57,7 +57,7 @@ class ManageSiteScript extends SettingsPage
                                     ->schema([
                                         AceEditor::make('header_scripts')
                                             ->label('Header Scripts')
-                                            ->mode('html')
+                                            ->mode('html_ruby')
                                             ->height('200px')
                                             ->helperText('These scripts will be added to the <head> section of your site'),
                                     ]),
@@ -66,13 +66,13 @@ class ManageSiteScript extends SettingsPage
                                     ->schema([
                                         AceEditor::make('body_start_scripts')
                                             ->label('Body Start Scripts')
-                                            ->mode('html')
+                                            ->mode('html_ruby')
                                             ->height('150px')
                                             ->helperText('These scripts will be added right after the opening <body> tag'),
 
                                         AceEditor::make('body_end_scripts')
                                             ->label('Body End Scripts')
-                                            ->mode('html')
+                                            ->mode('html_ruby')
                                             ->height('150px')
                                             ->helperText('These scripts will be added right before the closing </body> tag'),
                                     ]),
@@ -81,7 +81,7 @@ class ManageSiteScript extends SettingsPage
                                     ->schema([
                                         AceEditor::make('footer_scripts')
                                             ->label('Footer Scripts')
-                                            ->mode('html')
+                                            ->mode('html_ruby')
                                             ->height('150px')
                                             ->helperText('These scripts will be added to the footer section of your site'),
                                     ]),
@@ -122,13 +122,13 @@ class ManageSiteScript extends SettingsPage
                                     ->schema([
                                         AceEditor::make('custom_css')
                                             ->label('Custom CSS')
-                                            ->mode('css')
+                                            ->mode('text')
                                             ->height('300px')
                                             ->helperText('Custom CSS styles will be added to the head of your site'),
 
                                         AceEditor::make('custom_js')
                                             ->label('Custom JavaScript')
-                                            ->mode('javascript')
+                                            ->mode('text')
                                             ->height('300px')
                                             ->helperText('Custom JavaScript will be added before the closing body tag'),
                                     ]),

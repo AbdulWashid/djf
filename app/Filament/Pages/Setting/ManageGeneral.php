@@ -154,12 +154,12 @@ class ManageGeneral extends SettingsPage
                                 Forms\Components\Grid::make()->schema([
                                     AceEditor::make('theme-editor')
                                         ->label('theme.css')
-                                        ->mode('css')
+                                        ->mode('text')
                                         ->height('24rem')
                                         ->helperText('Edit the CSS theme directly (changes will be applied after saving)'),
                                     AceEditor::make('tw-config-editor')
                                         ->label('tailwind.config.js')
-                                        ->mode('javascript')
+                                        ->mode('text')
                                         ->height('24rem')
                                         ->helperText('Edit the Tailwind configuration (changes will be applied after saving)'),
                                 ])->columns(1)

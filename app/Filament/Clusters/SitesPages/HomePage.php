@@ -248,7 +248,7 @@ class HomePage extends Page implements HasForms
                 AceEditor::make('fileContent')
                     ->label('Home Page Content')
                     ->hiddenLabel()
-                    ->mode('html')
+                    ->mode('html_ruby')
                     ->height('768px')
                     // ->helperText('Edit the home page content. HTML is allowed, but scripts and PHP code are not permitted for security reasons.')
                     ->required()

@@ -508,8 +508,7 @@ class ManageSiteSeo extends SettingsPage
                     ->schema([
                         AceEditor::make('head_additional_meta')
                             ->label('Additional Head Meta Tags')
-                            ->mode('html')
-                            ->theme('monokai')
+                            ->mode('html_ruby')
                             ->height('200px')
                             ->helperText('Enter additional meta tags, scripts, or links to be included in the head section'),
                     ]),

@@ -248,7 +248,7 @@ class ComingSoonPage extends Page implements HasForms
                 AceEditor::make('fileContent')
                     ->label('Coming Soon Page Content')
                     ->hiddenLabel()
-                    ->mode('html')
+                    ->mode('html_ruby')
                     ->height('768px')
                     // ->helperText('Edit the coming soon page content. HTML is allowed, but scripts and PHP code are not permitted for security reasons.')
                     ->required()

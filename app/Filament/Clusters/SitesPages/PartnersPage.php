@@ -227,7 +227,7 @@ class PartnersPage extends Page implements HasForms
                 AceEditor::make('fileContent')
                     ->label('Partners Page Content')
                     ->hiddenLabel()
-                    ->mode('html')
+                    ->mode('html_ruby')
                     ->height('768px')
                     ->required()
                     ->rules([
