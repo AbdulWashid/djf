@@ -10,14 +10,6 @@ use Illuminate\Support\Facades\Storage;
 new #[Layout('components.frontend.main')] class extends Component {
     use WithFileUploads;
 
-    // public $candidate;
-    // public $resume;
-
-    // public function mount()
-    // {
-    //     $candidate = Auth::guard('candidate')->user();
-    //     $this->candidate = $candidate;
-    // }
     public $candidate;
 
     public $resume;
@@ -44,6 +36,8 @@ new #[Layout('components.frontend.main')] class extends Component {
     }
     public function save()
     {
+        $emailChanged = $this->email !== $this->candidate->email;
+
         $this->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
@@ -72,7 +66,21 @@ new #[Layout('components.frontend.main')] class extends Component {
             'nationality' => $this->nationality,
             'cover_letter' => $this->cover_letter,
             'resume_path' => $resumePath,
+            'email_verified_at' => $emailChanged ? null : $this->employer->email_verified_at,
         ]);
+
+        if ($emailChanged) {
+            $this->candidate->refresh();
+
+            $this->candidate->sendEmailVerificationNotification();
+
+            Auth::guard('candidate')->logout();
+
+            session()->invalidate();
+            session()->regenerateToken();
+
+            return redirect()->route('candidate.verification.notice')->with('status', 'We have sent a verification link to your new email address.');
+        }
 
         session()->flash('success', 'Profile updated successfully.');
     }

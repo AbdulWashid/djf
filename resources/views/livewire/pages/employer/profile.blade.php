@@ -5,6 +5,7 @@ use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 use Livewire\WithFileUploads;
 use Illuminate\Validation\Rule;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 new #[Layout('components.frontend.main')] class extends Component {
     use WithFileUploads;
@@ -41,6 +42,8 @@ new #[Layout('components.frontend.main')] class extends Component {
 
     public function save()
     {
+        $emailChanged = $this->email !== $this->employer->email;
+
         $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', Rule::unique('employers', 'email')->ignore($this->employer->id)],
@@ -52,7 +55,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             'state' => ['nullable', 'string'],
             'country' => ['nullable', 'string'],
             'postal_code' => ['nullable', 'string'],
-            'logo' => ['required', 'image', 'max:2048'],
+            'logo' => ['nullable', 'image', 'max:2048'],
         ]);
 
         $path = $this->employer->logo;
@@ -79,7 +82,21 @@ new #[Layout('components.frontend.main')] class extends Component {
             'country' => $this->country,
             'postal_code' => $this->postal_code,
             'logo' => $path,
+            'email_verified_at' => $emailChanged ? null : $this->employer->email_verified_at,
         ]);
+
+        if ($emailChanged) {
+            $this->employer->refresh();
+
+            $this->employer->sendEmailVerificationNotification();
+
+            Auth::guard('employer')->logout();
+
+            session()->invalidate();
+            session()->regenerateToken();
+
+            return redirect()->route('employer.verification.notice')->with('status', 'We have sent a verification link to your new email address.');
+        }
 
         session()->flash('success', 'Profile updated successfully.');
     }
@@ -269,9 +286,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         </span>
                                     </button>
                                 </div>
-
                             </div>
-
                         </form>
                     </div>
                 </div>
