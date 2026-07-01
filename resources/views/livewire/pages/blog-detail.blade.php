@@ -26,7 +26,6 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         $this->loadPost();
         $this->loadSidebarData();
-
     }
 
     protected function loadPost()
@@ -224,7 +223,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             'ogTags' => $this->post->og_tags ?? '',
             'twitterTags' => $this->post->twitter_tags ?? '',
             'canonicalUrl' => $this->post ? $this->post->getCanonicalUrl() : '',
-            'ogImage' => ($this->post && $this->post->hasLargeImage()) ? $this->post->getLargeImageUrl() : null,
+            'ogImage' => $this->post && $this->post->hasLargeImage() ? $this->post->getLargeImageUrl() : null,
             'schemaData' => $schemaJson,
         ];
     }
@@ -300,10 +299,11 @@ new #[Layout('components.frontend.main')] class extends Component {
             <div class="post-meta text-muted d-flex align-items-center mx-auto justify-content-center">
                 <div class="author d-flex align-items-center mr-30">
                     @if ($post->author && $post->author->profile_photo_path)
-                        <img src="{{ Storage::url($post->author->profile_photo_path) }}" alt="{{ $post->author->name }}"
-                            width="30" height="30" class="rounded-[50%]" />
+                        <img loading="lazy" src="{{ Storage::url($post->author->profile_photo_path) }}"
+                            alt="{{ $post->author->name }}" width="30" height="30" class="rounded-[50%]" />
                     @else
-                        <img src="https://placehold.co/45x45?text={{ substr($post->author->name ?? 'A', 0, 1) }}"
+                        <img loading="lazy"
+                            src="https://placehold.co/45x45?text={{ substr($post->author->name ?? 'A', 0, 1) }}"
                             alt="{{ $post->author->name ?? 'Author' }}" width="30" height="30"
                             class="rounded-[50%]" />
                     @endif
@@ -339,9 +339,10 @@ new #[Layout('components.frontend.main')] class extends Component {
                         <figure class="mb-30">
                             <a href="{{ $post->getUrl() }}" wire:click="trackView('{{ $post->id }}')">
                                 @if ($post->hasLargeImage())
-                                    <img src="{{ $post->getLargeImageUrl() }}" alt="{{ $post->title }}" />
+                                    <img loading="lazy" src="{{ $post->getLargeImageUrl() }}"
+                                        alt="{{ $post->title }}" />
                                 @else
-                                    <img src="https://placehold.co/1600x900?text={{ $post->title }}"
+                                    <img loading="lazy" src="https://placehold.co/1600x900?text={{ $post->title }}"
                                         alt="{{ $post->title }}" />
                                 @endif
                             </a>
@@ -356,7 +357,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                         {{-- <div class="author-bio p-30 mt-50 border-radius-15 bg-white"> 
                             <div class="author-image mb-15"> 
                                 <a href="author.html">
-                                    <img src="assets/imgs/avatar/ava_14.png" alt="" class="avatar">
+                                    <img loading="lazy" src="assets/imgs/avatar/ava_14.png" alt="" class="avatar">
                                 </a> 
                                 <div class="author-infor"> 
                                     <h5 class="mb-5">Steven Job</h5> 
@@ -401,10 +402,12 @@ new #[Layout('components.frontend.main')] class extends Component {
                                                         <a href="{{ $related->getUrl() }}">
                                                             <figure class="thumb mr-15">
                                                                 @if ($related->hasLargeImage())
-                                                                    <img src="{{ $related->getLargeImageUrl() }}"
+                                                                    <img loading="lazy"
+                                                                        src="{{ $related->getLargeImageUrl() }}"
                                                                         alt="{{ $related->title }}" />
                                                                 @else
-                                                                    <img src="https://placehold.co/1600x900?text={{ substr($related->title, 0, 10) }}"
+                                                                    <img loading="lazy"
+                                                                        src="https://placehold.co/1600x900?text={{ substr($related->title, 0, 10) }}"
                                                                         alt="{{ $related->title }}" />
                                                                 @endif
                                                             </figure>
@@ -432,10 +435,11 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 <div class="post-list-small-item d-flex align-items-center">
                                     <figure class="thumb mr-15">
                                         @if ($recentPost->hasLargeImage())
-                                            <img src="{{ $recentPost->getLargeImageUrl() }}"
+                                            <img loading="lazy" src="{{ $recentPost->getLargeImageUrl() }}"
                                                 alt="{{ $recentPost->title }}" />
                                         @else
-                                            <img src="https://placehold.co/600x600?text={{ substr($recentPost->title, 0, 10) }}"
+                                            <img loading="lazy"
+                                                src="https://placehold.co/600x600?text={{ substr($recentPost->title, 0, 10) }}"
                                                 alt="{{ $recentPost->title }}" />
                                         @endif
                                     </figure>

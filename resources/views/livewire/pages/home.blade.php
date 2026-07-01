@@ -71,24 +71,24 @@ new #[Layout('components.frontend.main')] class extends Component {
                     </div>
                     <div class="col-lg-4 col-md-6">
                         <div class="banner-imgs">
-                            <img alt="Dubai Job Finder" src="{{ asset('assets/imgs/banner/banner.png') }}"
-                                class="img-responsive shape-1" />
-                            <span class="union-icon"><img alt="Dubai Job Finder"
+                            <img loading="lazy" alt="Dubai Job Finder"
+                                src="{{ asset('assets/imgs/banner/banner.png') }}" class="img-responsive shape-1" />
+                            <span class="union-icon"><img loading="lazy" alt="Dubai Job Finder"
                                     src="{{ asset('assets/imgs/banner/union.svg') }}"
                                     class="img-responsive shape-3" /></span>
-                            <span class="congratulation-icon"><img alt="Dubai Job Finder"
+                            <span class="congratulation-icon"><img loading="lazy" alt="Dubai Job Finder"
                                     src="{{ asset('assets/imgs/banner/congratulation.svg') }}"
                                     class="img-responsive shape-2" /></span>
-                            <span class="docs-icon"><img alt="Dubai Job Finder"
+                            <span class="docs-icon"><img loading="lazy" alt="Dubai Job Finder"
                                     src="{{ asset('assets/imgs/banner/docs.svg') }}"
                                     class="img-responsive shape-2" /></span>
-                            <span class="course-icon"><img alt="Dubai Job Finder"
+                            <span class="course-icon"><img loading="lazy" alt="Dubai Job Finder"
                                     src="{{ asset('assets/imgs/banner/course.svg') }}"
                                     class="img-responsive shape-3" /></span>
-                            <span class="web-dev-icon"><img alt="Dubai Job Finder"
+                            <span class="web-dev-icon"><img loading="lazy" alt="Dubai Job Finder"
                                     src="{{ asset('assets/imgs/banner/web-dev.svg') }}"
                                     class="img-responsive shape-3" /></span>
-                            <span class="tick-icon"><img alt="Dubai Job Finder"
+                            <span class="tick-icon"><img loading="lazy" alt="Dubai Job Finder"
                                     src="{{ asset('assets/imgs/banner/tick.svg') }}"
                                     class="img-responsive shape-3" /></span>
                         </div>
@@ -126,7 +126,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                     </div>
                     <div class="col-lg-6 col-sm-12">
                         <div class="box-image-job">
-                            <figure class=" wow animate__animated animate__fadeIn"><img alt="Dubai Job Finder"
+                            <figure class=" wow animate__animated animate__fadeIn"><img loading="lazy" alt="Dubai Job Finder"
                                     src="assets/imgs/blog/img-job.png" />
                             </figure>
                             <div class="job-top-creator">
@@ -136,7 +136,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 <ul>
                                     <li>
                                         <div>
-                                            <figure><img alt="Dubai Job Finder" src="assets/imgs/avatar/ava_13.png" />
+                                            <figure><img loading="lazy" alt="Dubai Job Finder" src="assets/imgs/avatar/ava_13.png" />
                                             </figure>
                                             <div class="job-info-creator">
                                                 <strong>Kate Adie</strong>
@@ -146,7 +146,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     </li>
                                     <li>
                                         <div>
-                                            <figure><img alt="Dubai Job Finder" src="assets/imgs/avatar/ava_14.png" />
+                                            <figure><img loading="lazy" alt="Dubai Job Finder" src="assets/imgs/avatar/ava_14.png" />
                                             </figure>
                                             <div class="job-info-creator">
                                                 <strong>John Lennon</strong>
@@ -156,7 +156,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     </li>
                                     <li>
                                         <div>
-                                            <figure><img alt="Dubai Job Finder" src="assets/imgs/avatar/ava_15.png" />
+                                            <figure><img loading="lazy" alt="Dubai Job Finder" src="assets/imgs/avatar/ava_15.png" />
                                             </figure>
                                             <div class="job-info-creator">
                                                 <strong>Nadine Coyle</strong>
@@ -166,7 +166,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     </li>
                                     <li>
                                         <div>
-                                            <figure><img alt="Dubai Job Finder" src="assets/imgs/avatar/ava_16.png" />
+                                            <figure><img loading="lazy" alt="Dubai Job Finder" src="assets/imgs/avatar/ava_16.png" />
                                             </figure>
                                             <div class="job-info-creator">
                                                 <strong>Sarah Harding</strong>
@@ -191,55 +191,63 @@ new #[Layout('components.frontend.main')] class extends Component {
             <ul class="list-partners">
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay="0s">
                     <a href="#">
-                        <figure><img alt="Dubai Job Finder" src="{{ asset('assets/imgs/jobs/logos/samsung.svg') }}" />
+                        <figure><img loading="lazy" alt="Dubai Job Finder"
+                                src="{{ asset('assets/imgs/jobs/logos/samsung.svg') }}" />
                         </figure>
                     </a>
                 </li>
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay=".1s">
                     <a href="#">
-                        <figure><img alt="Dubai Job Finder" src="{{ asset('assets/imgs/jobs/logos/google.svg') }}" />
+                        <figure><img loading="lazy" alt="Dubai Job Finder"
+                                src="{{ asset('assets/imgs/jobs/logos/google.svg') }}" />
                         </figure>
                     </a>
                 </li>
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay=".2s">
                     <a href="#">
-                        <figure><img alt="Dubai Job Finder" src="{{ asset('assets/imgs/jobs/logos/facebook.svg') }}" />
+                        <figure><img loading="lazy" alt="Dubai Job Finder"
+                                src="{{ asset('assets/imgs/jobs/logos/facebook.svg') }}" />
                         </figure>
                     </a>
                 </li>
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay=".3s">
                     <a href="#">
-                        <figure><img alt="Dubai Job Finder"
+                        <figure><img loading="lazy" alt="Dubai Job Finder"
                                 src="{{ asset('assets/imgs/jobs/logos/pinterest.svg') }}" /></figure>
                     </a>
                 </li>
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay=".4s">
                     <a href="#">
-                        <figure><img alt="Dubai Job Finder" src="{{ asset('assets/imgs/jobs/logos/avaya.svg') }}" />
+                        <figure><img loading="lazy" alt="Dubai Job Finder"
+                                src="{{ asset('assets/imgs/jobs/logos/avaya.svg') }}" />
                         </figure>
                     </a>
                 </li>
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay=".5s">
                     <a href="#">
-                        <figure><img alt="Dubai Job Finder" src="{{ asset('assets/imgs/jobs/logos/forbes.svg') }}" />
+                        <figure><img loading="lazy" alt="Dubai Job Finder"
+                                src="{{ asset('assets/imgs/jobs/logos/forbes.svg') }}" />
                         </figure>
                     </a>
                 </li>
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay=".1s">
                     <a href="#">
-                        <figure><img alt="Dubai Job Finder" src="{{ asset('assets/imgs/jobs/logos/avis.svg') }}" />
+                        <figure><img loading="lazy" alt="Dubai Job Finder"
+                                src="{{ asset('assets/imgs/jobs/logos/avis.svg') }}" />
                         </figure>
                     </a>
                 </li>
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay=".2s">
                     <a href="#">
-                        <figure><img alt="Dubai Job Finder" src="{{ asset('assets/imgs/jobs/logos/nielsen.svg') }}" />
+                        <figure><img loading="lazy" alt="Dubai Job Finder"
+                                src="{{ asset('assets/imgs/jobs/logos/nielsen.svg') }}" />
                         </figure>
                     </a>
                 </li>
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay=".3s">
                     <a href="#">
-                        <figure><img alt="Dubai Job Finder" src="{{ asset('assets/imgs/jobs/logos/doordash.svg') }}" />
+                        <figure><img loading="lazy" alt="Dubai Job Finder"
+                                src="{{ asset('assets/imgs/jobs/logos/doordash.svg') }}" />
                         </figure>
                     </a>
                 </li>

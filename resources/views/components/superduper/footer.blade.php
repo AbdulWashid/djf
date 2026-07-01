@@ -39,8 +39,8 @@
                                 @endphp
 
                                 @if ($footerLogo)
-                                    <img src="{{ Storage::url($footerLogo) }}" alt="{{ $brandName }}" width="220"
-                                        height="auto" />
+                                    <img loading="lazy" src="{{ Storage::url($footerLogo) }}" alt="{{ $brandName }}"
+                                        width="220" height="auto" />
                                 @endif
                             </a>
 

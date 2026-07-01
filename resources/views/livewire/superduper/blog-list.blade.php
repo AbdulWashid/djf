@@ -121,11 +121,12 @@
                                         <a href="{{ $post->getUrl() }}" class="block overflow-hidden"
                                             wire:click="trackView('{{ $post->id }}')">
                                             @if ($post->hasFeaturedImage())
-                                                <img src="{{ $post->getLargeImageUrl() }}" alt="{{ $post->title }}"
-                                                    width="856" height="450"
+                                                <img loading="lazy" src="{{ $post->getLargeImageUrl() }}"
+                                                    alt="{{ $post->title }}" width="856" height="450"
                                                     class="object-cover w-full h-auto transition-all duration-300 scale-100 group-hover:scale-105" />
                                             @else
-                                                <img src="https://placehold.co/856x450?text={{ urlencode($post->title) }}"
+                                                <img loading="lazy"
+                                                    src="https://placehold.co/856x450?text={{ urlencode($post->title) }}"
                                                     alt="{{ $post->title }}" width="856" height="450"
                                                     class="object-cover w-full h-auto transition-all duration-300 scale-100 group-hover:scale-105" />
                                             @endif
@@ -139,11 +140,13 @@
                                                         class="flex items-center gap-x-[10px] hover:text-primary-600"
                                                         wire:click="trackView('{{ $post->id }}')">
                                                         @if ($post->author && $post->author->profile_photo_path)
-                                                            <img src="{{ Storage::url($post->author->profile_photo_path) }}"
+                                                            <img loading="lazy"
+                                                                src="{{ Storage::url($post->author->profile_photo_path) }}"
                                                                 alt="{{ $post->author->name }}" width="45"
                                                                 height="45" class="rounded-[50%]" />
                                                         @else
-                                                            <img src="https://placehold.co/45x45?text={{ substr($post->author->name ?? 'A', 0, 1) }}"
+                                                            <img loading="lazy"
+                                                                src="https://placehold.co/45x45?text={{ substr($post->author->name ?? 'A', 0, 1) }}"
                                                                 alt="{{ $post->author->name ?? 'Author' }}"
                                                                 width="45" height="45" class="rounded-[50%]" />
                                                         @endif
@@ -334,11 +337,12 @@
                                             class="inline-block h-[100px] w-full overflow-hidden rounded-[5px] sm:w-[150px]"
                                             wire:click="trackView('{{ $recentPost->id }}')">
                                             @if ($recentPost->hasFeaturedImage())
-                                                <img src="{{ $recentPost->getLargeImageUrl() }}"
+                                                <img loading="lazy" src="{{ $recentPost->getLargeImageUrl() }}"
                                                     alt="{{ $recentPost->title }}" width="150" height="100"
                                                     class="object-cover w-full h-full transition-all duration-300 scale-100 group-hover:scale-105" />
                                             @else
-                                                <img src="https://placehold.co/150x100?text={{ substr($recentPost->title, 0, 10) }}"
+                                                <img loading="lazy"
+                                                    src="https://placehold.co/150x100?text={{ substr($recentPost->title, 0, 10) }}"
                                                     alt="{{ $recentPost->title }}" width="150" height="100"
                                                     class="object-cover w-full h-full transition-all duration-300 scale-100 group-hover:scale-105" />
                                             @endif

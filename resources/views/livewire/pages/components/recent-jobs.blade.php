@@ -25,7 +25,7 @@ new class extends Component {
                             <div class="card-job-top">
                                 <div class="card-job-top--image">
                                     <figure>
-                                        <img alt="{{ $job->title ?? 'Dubai job Finder' }}"
+                                        <img loading="lazy" alt="{{ $job->title ?? 'Dubai job Finder' }}"
                                             src="{{ $job->employer->logo ? Storage::url($job->employer->logo) : Storage::url($generalSettings->site_favicon) }}" />
                                     </figure>
                                 </div>

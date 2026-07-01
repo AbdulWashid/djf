@@ -164,11 +164,12 @@ new class extends Component {
                                                 wire:click="trackView('{{ $article->id }}')">
                                                 <div class="relative overflow-hidden aspect-video">
                                                     @if ($article->hasFeaturedImage())
-                                                        <img src="{{ $article->getLargeImageUrl() }}"
+                                                        <img loading="lazy" src="{{ $article->getLargeImageUrl() }}"
                                                             alt="{{ $article->title }}"
                                                             class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110">
                                                     @else
-                                                        <img src="https://placehold.co/800x450?text={{ urlencode($article->title) }}"
+                                                        <img loading="lazy"
+                                                            src="https://placehold.co/800x450?text={{ urlencode($article->title) }}"
                                                             alt="{{ $article->title }}"
                                                             class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110">
                                                     @endif
@@ -225,11 +226,13 @@ new class extends Component {
                                                     class="flex items-center justify-between pt-4 mt-auto border-t border-background-light">
                                                     <div class="flex items-center">
                                                         @if ($article->author && $article->author->profile_photo_path)
-                                                            <img src="{{ Storage::url($article->author->profile_photo_path) }}"
+                                                            <img loading="lazy"
+                                                                src="{{ Storage::url($article->author->profile_photo_path) }}"
                                                                 alt="{{ $article->author->name }}"
                                                                 class="mr-3 border-2 border-white shadow-sm w-9 h-9">
                                                         @else
-                                                            <img src="https://placehold.co/40x40?text={{ substr($article->author->name ?? 'A', 0, 2) }}"
+                                                            <img loading="lazy"
+                                                                src="https://placehold.co/40x40?text={{ substr($article->author->name ?? 'A', 0, 2) }}"
                                                                 alt="{{ $article->author->name ?? 'Author' }}"
                                                                 class="mr-3 border-2 border-white shadow-sm w-9 h-9">
                                                         @endif

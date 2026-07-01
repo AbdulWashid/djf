@@ -267,8 +267,8 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                     @if ($employer->logo)
                                         <div class="mt-2">
-                                            <img src="{{ Storage::url($employer->logo) }}" alt="Company Logo"
-                                                class="img-thumbnail" style="max-height:100px;">
+                                            <img loading="lazy" src="{{ Storage::url($employer->logo) }}"
+                                                alt="Company Logo" class="img-thumbnail" style="max-height:100px;">
                                         </div>
                                     @endif
                                 </div>

@@ -1,7 +1,6 @@
 <div class="section-packages">
     <div class="jos">
-        <div
-            class="py-[60px] md:py-20 lg:py-[100px] bg-gradient-to-t from-background-white to-background-wheat">
+        <div class="py-[60px] md:py-20 lg:py-[100px] bg-gradient-to-t from-background-white to-background-wheat">
             <!-- Section Container -->
             <div class="container-default">
                 <!-- Section Title -->
@@ -21,7 +20,8 @@
                             <div class="flex items-center p-6 border-b border-background-light">
                                 <div
                                     class="flex items-center justify-center w-10 h-10 mr-3 overflow-hidden rounded-full bg-primary-100">
-                                    <img src="https://github.com/bezhanSalleh.png" alt="bezhansalleh" class="w-10 h-10">
+                                    <img loading="lazy" src="https://github.com/bezhanSalleh.png" alt="bezhansalleh"
+                                        class="w-10 h-10">
                                 </div>
                                 <div class="text-left">
                                     <div class="font-semibold text-primary-800">bezhanSalleh</div>
@@ -44,7 +44,8 @@
                             <div class="flex items-center p-6 border-b border-background-light">
                                 <div
                                     class="flex items-center justify-center w-10 h-10 mr-3 overflow-hidden rounded-full bg-primary-100">
-                                    <img src="https://github.com/jeffgreco13.png" alt="jeffgreco13" class="w-10 h-10">
+                                    <img loading="lazy" src="https://github.com/jeffgreco13.png" alt="jeffgreco13"
+                                        class="w-10 h-10">
                                 </div>
                                 <div class="text-left">
                                     <div class="font-semibold text-primary-800">jeffgreco13</div>
@@ -67,7 +68,8 @@
                             <div class="flex items-center p-6 border-b border-background-light">
                                 <div
                                     class="flex items-center justify-center w-10 h-10 mr-3 overflow-hidden rounded-full bg-primary-100">
-                                    <img src="https://github.com/filamentphp.png" alt="filamentphp" class="w-10 h-10">
+                                    <img loading="lazy" src="https://github.com/filamentphp.png" alt="filamentphp"
+                                        class="w-10 h-10">
                                 </div>
                                 <div class="text-left">
                                     <div class="font-semibold text-primary-800">filamentphp</div>
@@ -90,7 +92,8 @@
                             <div class="flex items-center p-6 border-b border-background-light">
                                 <div
                                     class="flex items-center justify-center w-10 h-10 mr-3 overflow-hidden rounded-full bg-primary-100">
-                                    <img src="https://github.com/z3d0x.png" alt="z3d0x" class="w-10 h-10">
+                                    <img loading="lazy" src="https://github.com/z3d0x.png" alt="z3d0x"
+                                        class="w-10 h-10">
                                 </div>
                                 <div class="text-left">
                                     <div class="font-semibold text-primary-800">z3d0x</div>
@@ -113,7 +116,8 @@
                             <div class="flex items-center p-6 border-b border-background-light">
                                 <div
                                     class="flex items-center justify-center w-10 h-10 mr-3 overflow-hidden rounded-full bg-primary-100">
-                                    <img src="https://github.com/bezhanSalleh.png" alt="bezhansalleh" class="w-10 h-10">
+                                    <img loading="lazy" src="https://github.com/bezhanSalleh.png" alt="bezhansalleh"
+                                        class="w-10 h-10">
                                 </div>
                                 <div class="text-left">
                                     <div class="font-semibold text-primary-800">bezhanSalleh</div>
@@ -136,7 +140,8 @@
                             <div class="flex items-center p-6 border-b border-background-light">
                                 <div
                                     class="flex items-center justify-center w-10 h-10 mr-3 overflow-hidden rounded-full bg-primary-100">
-                                    <img src="https://github.com/filamentphp.png" alt="filamentphp" class="w-10 h-10">
+                                    <img loading="lazy" src="https://github.com/filamentphp.png" alt="filamentphp"
+                                        class="w-10 h-10">
                                 </div>
                                 <div class="text-left">
                                     <div class="font-semibold text-primary-800">filamentphp</div>
@@ -159,7 +164,8 @@
                             <div class="flex items-center p-6 border-b border-background-light">
                                 <div
                                     class="flex items-center justify-center w-10 h-10 mr-3 overflow-hidden rounded-full bg-primary-100">
-                                    <img src="https://github.com/riodwanto.png" alt="riodwanto" class="w-10 h-10">
+                                    <img loading="lazy" src="https://github.com/riodwanto.png" alt="riodwanto"
+                                        class="w-10 h-10">
                                 </div>
                                 <div class="text-left">
                                     <div class="font-semibold text-primary-800">riodwanto</div>
@@ -182,7 +188,8 @@
                             <div class="flex items-center p-6 border-b border-background-light">
                                 <div
                                     class="flex items-center justify-center w-10 h-10 mr-3 overflow-hidden rounded-full bg-primary-100">
-                                    <img src="https://github.com/datlechin.png" alt="datlechin" class="w-10 h-10">
+                                    <img loading="lazy" src="https://github.com/datlechin.png" alt="datlechin"
+                                        class="w-10 h-10">
                                 </div>
                                 <div class="text-left">
                                     <div class="font-semibold text-primary-800">datlechin</div>
@@ -205,7 +212,7 @@
                             <div class="flex items-center p-6 border-b border-background-light">
                                 <div
                                     class="flex items-center justify-center w-10 h-10 mr-3 overflow-hidden rounded-full bg-primary-100">
-                                    <img src="https://github.com/filamentphp.png" alt="filamentphp"
+                                    <img loading="lazy" src="https://github.com/filamentphp.png" alt="filamentphp"
                                         class="w-10 h-10">
                                 </div>
                                 <div class="text-left">

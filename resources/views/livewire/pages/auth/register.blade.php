@@ -465,7 +465,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     </div>
 
                                     @if ($logo instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
-                                        <img src="{{ $logo->temporaryUrl() }}"
+                                        <img loading="lazy" src="{{ $logo->temporaryUrl() }}"
                                             class="h-20 w-20 rounded object-cover mt-2">
                                     @endif
                                 </div>

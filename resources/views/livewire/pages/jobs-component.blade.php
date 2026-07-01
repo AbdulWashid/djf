@@ -21,9 +21,6 @@ new #[Layout('components.frontend.main')] class extends Component {
     public $salary_range;
     public $salary_ranges;
 
-    // public $pageTitle = 'Urgent {Category} Jobs in {location} | Dubaijobfinder';
-    // public $pageDescription = 'Find the latest {Category} jobs in {location}. Apply online for urgent vacancies and career opportunities on Dubaijobfinder.';
-
     public function mount($location = null, $category_slug = null): void
     {
         $this->categories = JobCategory::active()->pluck('name', 'id');
@@ -270,7 +267,7 @@ new #[Layout('components.frontend.main')] class extends Component {
         $location = $this->location ? Str::title($this->location) : null;
 
         if ($category && $location) {
-            return "Browse the latest {$category} jobs in {$location}. Apply online for full-time, part-time, and urgent job vacancies on Dubaijobfinder.";
+            return "Browse the latest {$category} in {$location}. Apply online for full-time, part-time, and urgent job vacancies on Dubaijobfinder.";
         }
 
         if ($location) {
@@ -278,7 +275,7 @@ new #[Layout('components.frontend.main')] class extends Component {
         }
 
         if ($category) {
-            return "Explore the latest {$category} jobs. Apply online for verified vacancies and career opportunities on Dubaijobfinder.";
+            return "Explore the latest {$category}. Apply online for verified vacancies and career opportunities on Dubaijobfinder.";
         }
 
         return 'Browse the latest job vacancies across the UAE. Search by category and location and apply online with Dubaijobfinder.';
@@ -448,7 +445,8 @@ new #[Layout('components.frontend.main')] class extends Component {
                                                     <a href="{{ route('jobs.show', $job->slug) }}"
                                                         class="card-2-img-text card-grid-2-img-medium">
                                                         <span class="card-grid-2-img-small">
-                                                            <img alt="{{ $job->title ?? 'Dubai Job Finder' }}"
+                                                            <img loading="lazy"
+                                                                alt="{{ $job->title ?? 'Dubai Job Finder' }}"
                                                                 src="{{ $job->employer->logo ? Storage::url($job->employer->logo) : Storage::url($generalSettings->site_favicon) }}" />
                                                         </span>
                                                         <span>{{ $job->title }}</span>
@@ -537,47 +535,47 @@ new #[Layout('components.frontend.main')] class extends Component {
             <ul class="list-partners"> 
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay="0s"> 
                     <a href="#"> 
-                        <figure><img alt="jobhub" src="assets/imgs/jobs/logos/samsung.svg"/></figure> 
+                        <figure><img loading="lazy" alt="jobhub" src="assets/imgs/jobs/logos/samsung.svg"/></figure> 
                     </a> 
                 </li> 
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay=".1s"> 
                     <a href="#"> 
-                        <figure><img alt="jobhub" src="assets/imgs/jobs/logos/google.svg"/></figure> 
+                        <figure><img loading="lazy" alt="jobhub" src="assets/imgs/jobs/logos/google.svg"/></figure> 
                     </a> 
                 </li> 
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay=".2s"> 
                     <a href="#"> 
-                        <figure><img alt="jobhub" src="assets/imgs/jobs/logos/facebook.svg"/></figure> 
+                        <figure><img loading="lazy" alt="jobhub" src="assets/imgs/jobs/logos/facebook.svg"/></figure> 
                     </a> 
                 </li> 
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay=".3s"> 
                     <a href="#"> 
-                        <figure><img alt="jobhub" src="assets/imgs/jobs/logos/pinterest.svg"/></figure>}
+                        <figure><img loading="lazy" alt="jobhub" src="assets/imgs/jobs/logos/pinterest.svg"/></figure>}
                     </a> 
                 </li> 
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay=".4s"> 
                     <a href="#"> 
-                        <figure><img alt="jobhub" src="assets/imgs/jobs/logos/avaya.svg"/></figure> 
+                        <figure><img loading="lazy" alt="jobhub" src="assets/imgs/jobs/logos/avaya.svg"/></figure> 
                     </a> 
                 </li> 
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay=".5s"> 
                     <a href="#"> 
-                        <figure><img alt="jobhub" src="assets/imgs/jobs/logos/forbes.svg"/></figure> 
+                        <figure><img loading="lazy" alt="jobhub" src="assets/imgs/jobs/logos/forbes.svg"/></figure> 
                     </a> 
                 </li> 
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay=".1s"> 
                     <a href="#"> 
-                        <figure><img alt="jobhub" src="assets/imgs/jobs/logos/avis.svg"/></figure> 
+                        <figure><img loading="lazy" alt="jobhub" src="assets/imgs/jobs/logos/avis.svg"/></figure> 
                     </a> 
                 </li> 
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay=".2s"> 
                     <a href="#"> 
-                        <figure><img alt="jobhub" src="assets/imgs/jobs/logos/nielsen.svg"/></figure> 
+                        <figure><img loading="lazy" alt="jobhub" src="assets/imgs/jobs/logos/nielsen.svg"/></figure> 
                     </a> 
                 </li> 
                 <li class="wow animate__animated animate__fadeInUp hover-up" data-wow-delay=".3s"> 
                     <a href="#"> 
-                        <figure><img alt="jobhub" src="assets/imgs/jobs/logos/doordash.svg"/></figure> 
+                        <figure><img loading="lazy" alt="jobhub" src="assets/imgs/jobs/logos/doordash.svg"/></figure> 
                     </a> 
                 </li> 
             </ul> 

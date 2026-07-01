@@ -102,11 +102,12 @@ new class extends Component {
                                         <div class="card-image mb-3 overflow-hidden">
                                             <a href="{{ $recentPost->getUrl() }}">
                                                 @if ($recentPost->hasLargeImage())
-                                                    <img src="{{ $recentPost->getLargeImageUrl() }}"
+                                                    <img loading="lazy" src="{{ $recentPost->getLargeImageUrl() }}"
                                                         alt="{{ $recentPost->title }}"
                                                         class="img-fluid w-100 blog-card-image">
                                                 @else
-                                                    <img src="https://placehold.co/1600x900?text={{ urlencode(substr($recentPost->title, 0, 20)) }}"
+                                                    <img loading="lazy"
+                                                        src="https://placehold.co/1600x900?text={{ urlencode(substr($recentPost->title, 0, 20)) }}"
                                                         alt="{{ $recentPost->title }}"
                                                         class="img-fluid w-100 blog-card-image">
                                                 @endif

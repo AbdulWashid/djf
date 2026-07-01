@@ -79,7 +79,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                             <div class="text-center">
                                 <a href="{{ route('jobs.category', ['category' => $category->slug]) }}">
                                     <figure class="d-flex justify-content-center">
-                                        <img alt="{{ $category->name }}"
+                                        <img loading="lazy" alt="{{ $category->name }}"
                                             src="{{ $category->logo ?: 'http://placehold.co/125x125?text=' . $category->slug }}"
                                             height="125" width="125" />
                                     </figure>

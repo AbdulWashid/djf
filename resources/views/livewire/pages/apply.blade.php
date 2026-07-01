@@ -173,7 +173,8 @@ new #[Layout('components.frontend.main')] class extends Component {
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-3">
-                            <img src="{{ $job->employer->logo ? Storage::url($job->employer->logo) : 'https://placehold.co/100x100?text=' . urlencode($job->employer->name) }}"
+                            <img loading="lazy"
+                                src="{{ $job->employer->logo ? Storage::url($job->employer->logo) : 'https://placehold.co/100x100?text=' . urlencode($job->employer->name) }}"
                                 alt="{{ $job->employer->name }}" width="60" height="60"
                                 class="rounded border me-3">
                             <div>

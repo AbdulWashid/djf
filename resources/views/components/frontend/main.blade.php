@@ -279,8 +279,8 @@
         <meta property="og:url" content="{{ url()->current() }}">
         <meta property="og:image"
             content="{{ $ogImage ?? ($seoSettings->og_image ?? ($brandLogo ? Storage::url($brandLogo) : asset('storage/images/logo.png'))) }}">
-        <meta property="og:image:width" content="1500">
-        <meta property="og:image:height" content="1500">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
         <meta property="og:image:type" content="image/jpeg">
         <meta property="og:image:alt" content="{{ $siteName }}">
     @endif
@@ -428,8 +428,8 @@
                             @endphp
 
                             @if ($footerLogo)
-                                <img src="{{ Storage::url($footerLogo) }}" alt="{{ $brandName }}" width="220"
-                                    height="auto">
+                                <img loading="lazy" src="{{ Storage::url($footerLogo) }}" alt="{{ $brandName }}"
+                                    width="220" height="auto">
                             @endif
                         </a>
                         <div class="mt-20 mb-20 w-3/4">

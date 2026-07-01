@@ -231,11 +231,11 @@ new #[Layout('components.frontend.main')] class extends Component {
                             </div>
                             <div class="col-md-7 text-lg-end social-share">
                                 <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->full()) }}"
-                                    class="btn btn-border btn-sm mr-10"><img alt="{{ $job->title }}"
+                                    class="btn btn-border btn-sm mr-10"><img loading="lazy" alt="{{ $job->title }}"
                                         src="{{ asset('assets/imgs/theme/icons/share-fb.svg') }}" /> Share</a>
                                 <a href="https://twitter.com/intent/tweet?text=Check out this job {{ trim($job->title) }}&url={{ urlencode(url()->full()) }}"
                                     target="_blank" rel="noopener noreferrer" class="btn btn-border btn-sm mr-10"><img
-                                        alt="{{ $job->title }}"
+                                        loading="lazy" alt="{{ $job->title }}"
                                         src="{{ asset('assets/imgs/theme/icons/share-tw.svg') }}" /> Tweet</a>
                             </div>
                         </div>
@@ -246,7 +246,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                     <div class="sidebar-shadow">
                         <div class="sidebar-heading">
                             <div class="avatar-sidebar">
-                                <figure><img alt="{{ $job->title }}"
+                                <figure><img loading="lazy" alt="{{ $job->title }}"
                                         src="{{ $job->employer->logo ? Storage::url($job->employer->logo) : Storage::url($generalSettings->site_favicon) }}" />
                                 </figure>
                                 <div class="sidebar-info">

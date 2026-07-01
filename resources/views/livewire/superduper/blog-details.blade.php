@@ -54,11 +54,12 @@
                                 {{-- Featured Image --}}
                                 <div class="mb-7 block overflow-hidden rounded-[10px]">
                                     @if ($post->hasFeaturedImage())
-                                        <img src="{{ $post->getLargeImageUrl() }}" alt="{{ $post->title }}"
-                                            width="856" height="540"
+                                        <img loading="lazy" src="{{ $post->getLargeImageUrl() }}"
+                                            alt="{{ $post->title }}" width="856" height="540"
                                             class="object-cover w-full h-auto scale-100" />
                                     @else
-                                        <img src="https://placehold.co/856x540?text={{ urlencode($post->title) }}"
+                                        <img loading="lazy"
+                                            src="https://placehold.co/856x540?text={{ urlencode($post->title) }}"
                                             alt="{{ $post->title }}" width="856" height="540"
                                             class="object-cover w-full h-auto scale-100" />
                                     @endif
@@ -72,11 +73,13 @@
                                         <li>
                                             <div class="flex items-center gap-x-[10px]">
                                                 @if ($post->author && $post->author->profile_photo_path)
-                                                    <img src="{{ Storage::url($post->author->profile_photo_path) }}"
+                                                    <img loading="lazy"
+                                                        src="{{ Storage::url($post->author->profile_photo_path) }}"
                                                         alt="{{ $post->author->name }}" width="45" height="45"
                                                         class="rounded-[50%]" />
                                                 @else
-                                                    <img src="https://placehold.co/45x45?text={{ substr($post->author->name ?? 'A', 0, 1) }}"
+                                                    <img loading="lazy"
+                                                        src="https://placehold.co/45x45?text={{ substr($post->author->name ?? 'A', 0, 1) }}"
                                                         alt="{{ $post->author->name ?? 'Author' }}" width="45"
                                                         height="45" class="rounded-[50%]" />
                                                 @endif
@@ -155,7 +158,8 @@
                                     <div class="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
                                         <div class="flex-shrink-0 w-20 h-20">
                                             @if ($post->author->profile_photo_path)
-                                                <img src="{{ Storage::url($post->author->profile_photo_path) }}"
+                                                <img loading="lazy"
+                                                    src="{{ Storage::url($post->author->profile_photo_path) }}"
                                                     alt="{{ $post->author->name }}"
                                                     class="object-cover w-full h-full rounded-full" />
                                             @else
@@ -228,7 +232,7 @@
                                                 class="bg-white rounded-[10px] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                                                 <a href="{{ $related->getUrl() }}" class="block overflow-hidden">
                                                     @if ($related->hasFeaturedImage())
-                                                        <img src="{{ $related->getSmallImageUrl() }}"
+                                                        <img loading="lazy" src="{{ $related->getSmallImageUrl() }}"
                                                             alt="{{ $related->title }}"
                                                             class="object-cover w-full h-48 transition-transform hover:scale-105" />
                                                     @else
@@ -278,11 +282,12 @@
                                         <a href="{{ $recentPost->getUrl() }}"
                                             class="inline-block h-[100px] w-full overflow-hidden rounded-[5px] sm:w-[150px]">
                                             @if ($recentPost->hasFeaturedImage())
-                                                <img src="{{ $recentPost->getSmallImageUrl() }}"
+                                                <img loading="lazy" src="{{ $recentPost->getSmallImageUrl() }}"
                                                     alt="{{ $recentPost->title }}" width="150" height="100"
                                                     class="object-cover w-full h-full transition-all duration-300 scale-100 group-hover:scale-105" />
                                             @else
-                                                <img src="https://placehold.co/150x100?text={{ substr($recentPost->title, 0, 10) }}"
+                                                <img loading="lazy"
+                                                    src="https://placehold.co/150x100?text={{ substr($recentPost->title, 0, 10) }}"
                                                     alt="{{ $recentPost->title }}" width="150" height="100"
                                                     class="object-cover w-full h-full" />
                                             @endif

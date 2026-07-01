@@ -39,7 +39,7 @@ new class extends Component {
                                 style="border-color: #FFC107;">
                                 <div class="card-job-top">
                                     <div class="card-job-top--image">
-                                        <figure><img alt="{{ $job->title }}"
+                                        <figure><img loading="lazy" alt="{{ $job->title }}"
                                                 src="{{ $job->employer->logo ? Storage::url($job->employer->logo) : Storage::url($generalSettings->site_favicon) }}" />
                                         </figure>
                                     </div>

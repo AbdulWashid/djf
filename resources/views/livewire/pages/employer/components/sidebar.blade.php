@@ -27,10 +27,10 @@ new class extends Component {
     <div class="text-center">
 
         @if ($employer->logo)
-            <img src="{{ Storage::url($employer->logo) }}" class="mx-auto rounded-full mb-3"
+            <img loading="lazy" src="{{ Storage::url($employer->logo) }}" class="mx-auto rounded-full mb-3"
                 style="width:120px;height:120px;object-fit:cover;">
         @else
-            <img src="https://placehold.co/120x120?text={{ substr($employer->name, 0, 1) }}"
+            <img loading="lazy" src="https://placehold.co/120x120?text={{ substr($employer->name, 0, 1) }}"
                 class="mx-auto rounded-full mb-3">
         @endif
 

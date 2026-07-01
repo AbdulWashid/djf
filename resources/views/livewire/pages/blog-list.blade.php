@@ -482,9 +482,10 @@ new #[Layout('components.frontend.main')] class extends Component {
                                                         ? $post->getMediumImageUrl()
                                                         : 'https://placehold.co/300x400?text=' . urlencode($post->title) }}">
 
-                                                <img src="{{ $post->hasLargeImage()
-                                                    ? $post->getLargeImageUrl()
-                                                    : 'https://placehold.co/1600x900?text=' . urlencode($post->title) }}"
+                                                <img loading="lazy"
+                                                    src="{{ $post->hasLargeImage()
+                                                        ? $post->getLargeImageUrl()
+                                                        : 'https://placehold.co/1600x900?text=' . urlencode($post->title) }}"
                                                     alt="{{ $post->title }}" class="img-fluid w-100 rounded">
                                             </picture>
 
@@ -501,11 +502,13 @@ new #[Layout('components.frontend.main')] class extends Component {
                                             <div class="post-meta text d-flex align-items-center mb-15">
                                                 <div class="author d-flex align-items-center mr-30">
                                                     @if ($post->author && $post->author->profile_photo_path)
-                                                        <img src="{{ Storage::url($post->author->profile_photo_path) }}"
+                                                        <img loading="lazy"
+                                                            src="{{ Storage::url($post->author->profile_photo_path) }}"
                                                             alt="{{ $post->author->name }}" width="45"
                                                             height="45" class="rounded-[50%]" />
                                                     @else
-                                                        <img src="https://placehold.co/45x45?text={{ substr($post->author->name ?? 'A', 0, 1) }}"
+                                                        <img loading="lazy"
+                                                            src="https://placehold.co/45x45?text={{ substr($post->author->name ?? 'A', 0, 1) }}"
                                                             alt="{{ $post->author->name ?? 'Author' }}" width="25"
                                                             height="25" class="rounded-[50%]" />
                                                     @endif
@@ -678,10 +681,11 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 <div class="post-list-small-item d-flex align-items-center">
                                     <figure class="thumb mr-15">
                                         @if ($recentPost->hasLargeImage())
-                                            <img src="{{ $recentPost->getLargeImageUrl() }}"
+                                            <img loading="lazy" src="{{ $recentPost->getLargeImageUrl() }}"
                                                 alt="{{ $recentPost->title }}" />
                                         @else
-                                            <img src="https://placehold.co/600x600?text={{ substr($recentPost->title, 0, 10) }}"
+                                            <img loading="lazy"
+                                                src="https://placehold.co/600x600?text={{ substr($recentPost->title, 0, 10) }}"
                                                 alt="{{ $recentPost->title }}" />
                                         @endif
                                     </figure>
