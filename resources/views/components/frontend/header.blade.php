@@ -120,12 +120,12 @@
                             data-bs-toggle="dropdown">
 
                             @if (!empty($user->logo))
-                                <img src="{{ Storage::url($user->logo) }}" alt="{{ $userName }}" width="70"
-                                    height="70" class="rounded-circle border border-2 border-primary shadow-sm p-1"
+                                <img src="{{ Storage::url($user->logo) }}" alt="{{ $userName }}" width="45"
+                                    height="45" class="rounded-circle border border-2 border-primary shadow-sm p-1"
                                     style="object-fit: cover;">
                             @else
-                                <img src="https://placehold.co/70x70?text={{ strtoupper(substr($userName, 0, 1)) }}"
-                                    alt="{{ $userName }}" width="70" height="70"
+                                <img src="https://placehold.co/45x45?text={{ strtoupper(substr($userName, 0, 1)) }}"
+                                    alt="{{ $userName }}" width="45" height="45"
                                     class="rounded-circle border border-2 border-primary shadow-sm p-1">
                             @endif
 
