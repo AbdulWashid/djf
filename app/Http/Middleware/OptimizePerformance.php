@@ -98,6 +98,7 @@ class OptimizePerformance
     /**
      * Optimize HTML content for production
      */
+
     private function optimizeHtmlContent(Response $response): void
     {
         $content = $response->getContent();
@@ -106,14 +107,21 @@ class OptimizePerformance
             return;
         }
 
-        // Minify HTML by removing unnecessary whitespace
-        // $content = preg_replace('/\s+/', ' ', $content);
-        $content = preg_replace('/>\s+</', '><', $content);
+        $result = preg_replace('/>\s+</', '><', $content);
+        if ($result !== null) {
+            $content = $result;
+        }
 
-        // Remove HTML comments (but keep conditional comments)
-        $content = preg_replace('/<!--(?!\s*(?:\[if [^\]]+]|<!|>))(?:(?!-->).)*-->/s', '', $content);
+        $result = preg_replace(
+            '/<!--(?!\s*(?:\[if [^\]]+]|<!|>))(?:(?!-->).)*-->/s',
+            '',
+            $content
+        );
 
-        // Optimize inline CSS and JS
+        if ($result !== null) {
+            $content = $result;
+        }
+
         $content = $this->optimizeInlineAssets($content);
 
         $response->setContent($content);
