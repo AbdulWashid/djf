@@ -11,8 +11,6 @@ use Filament\Notifications\Notification;
 use Filament\Pages\SettingsPage;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Contracts\Support\Htmlable;
-use Riodwanto\FilamentAceEditor\AceEditor;
-
 use function Filament\Support\is_app_url;
 
 class ManageGeneral extends SettingsPage
@@ -152,15 +150,23 @@ class ManageGeneral extends SettingsPage
                             ->icon('heroicon-o-code-bracket')
                             ->schema([
                                 Forms\Components\Grid::make()->schema([
-                                    AceEditor::make('theme-editor')
+                                    Forms\Components\Textarea::make('theme-editor')
                                         ->label('theme.css')
-                                        ->mode('text')
-                                        ->height('24rem')
+                                        ->rows(18)
+                                        ->columnSpanFull()
+                                        ->extraInputAttributes([
+                                            'style' => 'font-family: monospace;',
+                                            'spellcheck' => 'false',
+                                        ])
                                         ->helperText('Edit the CSS theme directly (changes will be applied after saving)'),
-                                    AceEditor::make('tw-config-editor')
+                                    Forms\Components\Textarea::make('tw-config-editor')
                                         ->label('tailwind.config.js')
-                                        ->mode('text')
-                                        ->height('24rem')
+                                        ->rows(18)
+                                        ->columnSpanFull()
+                                        ->extraInputAttributes([
+                                            'style' => 'font-family: monospace;',
+                                            'spellcheck' => 'false',
+                                        ])
                                         ->helperText('Edit the Tailwind configuration (changes will be applied after saving)'),
                                 ])->columns(1)
                             ]),

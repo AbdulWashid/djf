@@ -5,12 +5,11 @@ namespace App\Filament\Clusters\SitesPages;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\File;
 use Filament\Notifications\Notification;
-use Riodwanto\FilamentAceEditor\AceEditor;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-
+use Filament\Forms\Components\Textarea;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Log;
 use Exception;
@@ -224,11 +223,31 @@ class AboutPage extends Page implements HasForms
     {
         return $form
             ->schema([
-                AceEditor::make('fileContent')
+                // Textarea::make('fileContent')
+                //     ->label('About Page Content')
+                //     ->rows(15)
+                //     ->columnSpanFull()
+                //     ->extraInputAttributes([
+                //         'style' => 'font-family: monospace;',
+                //         'spellcheck' => 'false',
+                //     ])
+                //     ->required()
+                //     ->rules([
+                //         'string',
+                //         'max:1048576', // 1MB limit
+                //     ])
+                //     ->validationMessages([
+                //         'required' => 'Content cannot be empty',
+                //         'max' => 'Content is too large (maximum 1MB)',
+                //     ]),
+                Textarea::make('fileContent')
                     ->label('About Page Content')
-                    ->hiddenLabel()
-                    ->mode('html_ruby')
-                    ->height('768px')
+                    ->rows(15)
+                    ->columnSpanFull()
+                    ->extraInputAttributes([
+                        'style' => 'font-family: monospace;',
+                        'spellcheck' => 'false',
+                    ])
                     ->required()
                     ->rules([
                         'string',
@@ -237,7 +256,7 @@ class AboutPage extends Page implements HasForms
                     ->validationMessages([
                         'required' => 'Content cannot be empty',
                         'max' => 'Content is too large (maximum 1MB)',
-                    ])
+                    ]),
             ])
             ->statePath('');
     }

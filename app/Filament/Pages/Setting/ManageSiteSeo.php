@@ -11,12 +11,12 @@ use Filament\Pages\SettingsPage;
 use Filament\Support\Enums\IconPosition;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Contracts\Support\Htmlable;
-use Riodwanto\FilamentAceEditor\AceEditor;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
 use Illuminate\Support\HtmlString;
+use Filament\Forms\Components\Textarea;
 
 use function Filament\Support\is_app_url;
 
@@ -506,11 +506,22 @@ class ManageSiteSeo extends SettingsPage
                     ->description('Add custom meta tags to the head section')
                     ->collapsible()
                     ->schema([
-                        AceEditor::make('head_additional_meta')
-                            ->label('Additional Head Meta Tags')
-                            ->mode('html_ruby')
-                            ->height('200px')
-                            ->helperText('Enter additional meta tags, scripts, or links to be included in the head section'),
+                        // Textarea::make('head_additional_meta')
+                        //     ->label('Additional Head Meta Tags')
+                        //     ->rows(6)
+                        //     ->columnSpanFull()
+                        //     ->extraInputAttributes([
+                        //         'style' => 'font-family: monospace;',
+                        //         'spellcheck' => 'false',
+                        //     ])
+                        //     ->helperText('Enter additional meta tags, scripts, or links to be included in the head section'),
+                        Textarea::make('head_additional_meta')
+                            ->rows(15)
+                            ->columnSpanFull()
+                            ->extraInputAttributes([
+                                'style' => 'font-family: monospace;',
+                                'spellcheck' => 'false',
+                            ]),
                     ]),
                 Section::make('Site Verification')
                     ->description('Add verification codes for search engines')
@@ -541,11 +552,14 @@ class ManageSiteSeo extends SettingsPage
                     ->description('Configure your robots.txt file')
                     ->collapsible()
                     ->schema([
-                        AceEditor::make('robots_txt_content')
+                        Textarea::make('robots_txt_content')
                             ->label('Robots.txt Content')
-                            ->mode('text')
-                            ->theme('github')
-                            ->height('200px')
+                            ->rows(8)
+                            ->columnSpanFull()
+                            ->extraInputAttributes([
+                                'style' => 'font-family: monospace;',
+                                'spellcheck' => 'false',
+                            ])
                             ->helperText('Use {site_url} as a placeholder for your site URL'),
                     ]),
                 Section::make('Sitemap')
