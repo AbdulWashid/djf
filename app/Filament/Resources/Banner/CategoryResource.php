@@ -21,12 +21,12 @@ class CategoryResource extends Resource
     protected static ?string $model = Category::class;
 
     protected static ?string $recordTitleAttribute = 'name';
-    protected static bool $shouldRegisterNavigation = false;
+    // protected static bool $shouldRegisterNavigation = false;
     protected static ?string $slug = 'banner/categories';
-
+    protected static ?string $navigationGroup = 'Banner';
+    protected static ?string $navigationLabel = 'Categories';
     protected static ?int $navigationSort = -1;
     protected static ?string $navigationIcon = 'fluentui-stack-20';
-    protected static ?string $navigationLabel = 'Categories';
 
     public static function form(Form $form): Form
     {
