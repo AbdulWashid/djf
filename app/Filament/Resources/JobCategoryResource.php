@@ -35,10 +35,9 @@ class JobCategoryResource extends Resource
 
     protected static ?string $slug = 'job-categories';
     protected static ?string $navigationGroup = 'Jobs';
-
-    protected static ?int $navigationSort = -1;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Job Categories';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
 
     public static function form(Form $form): Form
     {

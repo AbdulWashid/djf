@@ -28,11 +28,12 @@ class ContactUsResource extends Resource
 {
     protected static ?string $model = ContactUs::class;
 
-    protected static ?string $slug = 'contact-us/inbox';
+    protected static ?string $slug = 'inbox';
 
     // protected static ?string $recordTitleAttribute = 'firstname . " " . lastname';
 
     protected static ?string $navigationIcon = 'fluentui-mail-inbox-28';
+    protected static ?string $navigationGroup = 'Marketing';
 
     protected static ?int $navigationSort = 0;
 

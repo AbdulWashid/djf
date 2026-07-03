@@ -31,12 +31,11 @@ use Illuminate\Support\Facades\Auth;
 class PostResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Post::class;
-
     protected static ?string $recordTitleAttribute = 'title';
-
     protected static ?string $navigationIcon = 'fluentui-news-20';
-
-    protected static ?int $navigationSort = -2;
+    protected static ?string $navigationLabel = 'Blog Postings';
+    protected static ?string $slug = 'blog/postings';
+    protected static ?int $navigationSort = 2;
 
     public static function getPermissionPrefixes(): array
     {

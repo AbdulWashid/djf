@@ -26,7 +26,8 @@ class JobApplicationsResource extends Resource
     protected static ?string $navigationLabel = 'Job Applications';
     protected static ?string $modelLabel = 'Job Application';
     protected static ?string $pluralModelLabel = 'Job Applications';
-    protected static ?int $navigationSort = 20;
+    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Jobs';
 
     public static function form(Form $form): Form
     {

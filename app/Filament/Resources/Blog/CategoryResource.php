@@ -18,12 +18,10 @@ use Filament\Forms\Components\Tabs;
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
-
     protected static ?string $recordTitleAttribute = 'name';
-
     protected static ?string $slug = 'blog/categories';
-
-    protected static ?int $navigationSort = -1;
+    protected static ?string $navigationLabel = 'Blog Categories';
+    protected static ?int $navigationSort = 1;
     protected static ?string $navigationIcon = 'fluentui-stack-20';
 
     public static function form(Form $form): Form

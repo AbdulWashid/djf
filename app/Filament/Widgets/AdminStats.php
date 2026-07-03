@@ -65,7 +65,7 @@ class AdminStats extends BaseWidget
                 )
                 ->descriptionIcon('heroicon-m-chat-bubble-left-right')
                 ->color('danger')
-                ->url(route('filament.admin.resources.contact-us.inbox.index')),
+                ->url(route('filament.admin.resources.inbox.index')),
         ];
     }
 }

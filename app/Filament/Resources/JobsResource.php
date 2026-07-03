@@ -38,6 +38,7 @@ class JobsResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Job Postings';
     protected static ?string $modelLabel = 'Job Posting';
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $slug = 'jobs';
 
