@@ -10,6 +10,7 @@ use Illuminate\Support\ServiceProvider;
 use Opcodes\LogViewer\Facades\LogViewer;
 use App\Models\Blog\Post;
 use App\Observers\PostObserver;
+use App\Settings\MailSettings;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -58,5 +59,13 @@ class AppServiceProvider extends ServiceProvider
             PanelsRenderHook::BODY_END,
             fn() => view('filament.components.impersonate-banner')
         );
+
+        if (app()->bound(MailSettings::class)) {
+            try {
+                app(MailSettings::class)->loadMailSettingsToConfig();
+            } catch (\Throwable $e) {
+                // ignore if settings table isn't ready
+            }
+        }
     }
 }
