@@ -400,7 +400,7 @@ class ManageMail extends SettingsPage
             ->statePath('data');
     }
 
-    public function save(MailSettings $settings = null): void
+    public function save(?MailSettings $settings = null): void
     {
         try {
             $this->callHook('beforeValidate');
@@ -504,7 +504,7 @@ class ManageMail extends SettingsPage
         }
     }
 
-    public function sendTestMail(MailSettings $settings = null)
+    public function sendTestMail(?MailSettings $settings = null)
     {
         $data = $this->form->getState();
 
@@ -512,6 +512,14 @@ class ManageMail extends SettingsPage
         $this->prepareNullableFields($data);
 
         $settings->loadMailSettingsToConfig($data);
+
+        $theme = [
+            'logo' => $data['logo_path'] ?? 'sites/email-logo.png',
+            'primaryColor' => $data['primary_color'] ?? '#2D2B8D',
+            'secondaryColor' => $data['secondary_color'] ?? '#FFC903',
+            'footer' => $data['footer_text'] ?? ('© ' . date('Y') . ' Dubai Job Finder. All rights reserved.'),
+            'theme' => $data['template_theme'] ?? 'default',
+        ];
 
         try {
             $mailTo = $data['test_to_address'] ?? null;
@@ -524,13 +532,7 @@ class ManageMail extends SettingsPage
             $mailData = [
                 'title' => 'Email Testing from Dubai Job Finder',
                 'body' => 'This is a test email to verify your email configuration settings are working correctly.',
-                'theme' => [
-                    'logo' => $data['logo_path'] ?? 'sites/logo.png',
-                    'primaryColor' => $data['primary_color'] ?? '#2D2B8D',
-                    'secondaryColor' => $data['secondary_color'] ?? '#FFC903',
-                    'footer' => $data['footer_text'] ?? ('© ' . date('Y') . ' Dubai Job Finder. All rights reserved.'),
-                    'theme' => $data['template_theme'] ?? 'default',
-                ],
+                'theme' => $theme,
                 'include_sample_attachment' => $data['include_sample_attachment'] ?? false,
             ];
 

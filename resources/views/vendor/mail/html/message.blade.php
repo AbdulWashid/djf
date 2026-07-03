@@ -7,7 +7,8 @@
     </x-slot:header>
 
     {{-- Body --}}
-    {!! $slot !!}
+    {{-- {!! $slot !!} --}}
+    {{ $slot }}
 
     {{-- Subcopy --}}
     @isset($subcopy)
@@ -21,7 +22,8 @@
     {{-- Footer --}}
     <x-slot:footer>
         <x-mail::footer>
-            © {{ date('Y') }} {{ config('app.name') }}. {{ __('All rights reserved.') }}
+            {{-- © {{ date('Y') }} {{ config('app.name') }}. {{ __('All rights reserved.') }} --}}
+            {{ app(\App\Settings\MailSettings::class)->footer_text }}
         </x-mail::footer>
     </x-slot:footer>
 </x-mail::layout>

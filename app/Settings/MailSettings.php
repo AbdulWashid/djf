@@ -153,10 +153,8 @@ class MailSettings extends Settings
     {
         return [
             'logo' => $this->logo_path,
-            'colors' => [
-                'primary' => $this->primary_color,
-                'secondary' => $this->secondary_color,
-            ],
+            'primaryColor' => $this->primary_color,
+            'secondaryColor' => $this->secondary_color,
             'footer' => $this->footer_text,
             'theme' => $this->template_theme,
         ];

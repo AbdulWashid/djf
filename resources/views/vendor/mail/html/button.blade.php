@@ -1,3 +1,6 @@
+@php
+    $settings = app(\App\Settings\MailSettings::class);
+@endphp
 @props(['url', 'color' => 'primary', 'align' => 'center'])
 <table class="action" align="{{ $align }}" width="100%" cellpadding="0" cellspacing="0" role="presentation">
     <tr>
@@ -9,7 +12,11 @@
                             <tr>
                                 <td>
                                     <a href="{{ $url }}" class="button button-{{ $color }}"
-                                        target="_blank" rel="noopener">{!! $slot !!}</a>
+                                        target="_blank" rel="noopener"
+                                        style="background: {{ $settings->primary_color }};
+                                            border-color: {{ $settings->primary_color }};">
+                                        {!! $slot !!}
+                                    </a>
                                 </td>
                             </tr>
                         </table>
