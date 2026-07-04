@@ -24,9 +24,10 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
 {
     use InteractsWithMedia;
     use MediaManagerFolders;
-    use HasUuids, HasRoles;
+    use HasUuids;
     use HasApiTokens, HasFactory, Notifiable;
     use Impersonate;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -75,10 +76,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
 
     public function canAccessPanel(Panel $panel): bool
     {
-        // if ($panel->getId() === 'admin') {
-        //     return str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail();
-        // }
-        return true;
+        // Allow users with any assigned role or permission to enter the admin panel.
+        // Shield then applies resource/page/widget authorization inside the panel.
+        return $this->isSuperAdmin() || $this->roles()->exists() || $this->getAllPermissions()->isNotEmpty();
     }
 
     public function getFilamentName(): string

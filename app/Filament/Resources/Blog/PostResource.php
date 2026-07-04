@@ -249,7 +249,13 @@ class PostResource extends Resource implements HasShieldPermissions
                                                 $allowedStatuses = [];
                                                 if ($user && $user->isSuperAdmin()) {
                                                     $allowedStatuses = PostStatus::class;
-                                                } elseif ($user && $user->hasAnyRole(['admin', 'editor'])) {
+                                                } elseif ($user && (
+                                                    $user->can('publish', $record ?? new Post()) ||
+                                                    $user->can('approve', $record ?? new Post()) ||
+                                                    $user->can('schedule', $record ?? new Post()) ||
+                                                    $user->can('feature', $record ?? new Post()) ||
+                                                    $user->can('manageSeo', $record ?? new Post())
+                                                )) {
                                                     $allowedStatuses = PostStatus::class;
                                                 } elseif ($user && $user->hasRole('author')) {
                                                     $allowedStatuses = [
@@ -536,7 +542,7 @@ class PostResource extends Resource implements HasShieldPermissions
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->visible(function () {
                         $user = Auth::user();
-                        return $user && $user->hasAnyRole(['super_admin', 'admin', 'editor']);
+                        return $user && ($user->isSuperAdmin() || $user->can('feature', new Post()) || $user->can('viewAnalytics', new Post()));
                     }),
                 Tables\Columns\TextColumn::make('author.firstname')
                     ->label('Author')
@@ -591,11 +597,11 @@ class PostResource extends Resource implements HasShieldPermissions
                     ->getOptionLabelFromRecordUsing(fn(Model $record) => "{$record->firstname} {$record->lastname}")
                     ->searchable()
                     ->preload()
-                    ->visible(fn() => auth()->user()->hasAnyRole(['super_admin', 'admin', 'editor'])),
+                    ->visible(fn() => auth()->user()?->isSuperAdmin() || auth()->user()?->can('changeAuthor', new Post()) || auth()->user()?->can('viewAnalytics', new Post())),
                 Tables\Filters\Filter::make('is_featured')
                     ->label('Featured Posts')
                     ->query(fn(Builder $query): Builder => $query->where('is_featured', true))
-                    ->visible(fn() => auth()->user()->hasAnyRole(['super_admin', 'admin', 'editor'])),
+                    ->visible(fn() => auth()->user()?->isSuperAdmin() || auth()->user()?->can('feature', new Post())),
                 Tables\Filters\Filter::make('published')
                     ->label('Published Posts')
                     ->query(fn(Builder $query): Builder => $query->published()),
@@ -727,7 +733,7 @@ class PostResource extends Resource implements HasShieldPermissions
                                 ->send();
                         })
                         ->requiresConfirmation()
-                        ->visible(fn() => auth()->user()->can('publish', Post::class)),
+                        ->visible(fn() => auth()->user()?->can('publish', Post::class) || auth()->user()?->can('bulkPublish', new Post())),
                     Tables\Actions\BulkAction::make('featureSelected')
                         ->label('Feature Selected')
                         ->icon('heroicon-o-star')
