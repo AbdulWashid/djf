@@ -76,4 +76,12 @@ class HomePageMeta extends Page implements HasForms
             ->success()
             ->send();
     }
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can('view_home_page_meta');
+    }
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canAccess();
+    }
 }

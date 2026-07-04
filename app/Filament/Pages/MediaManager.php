@@ -298,4 +298,12 @@ class MediaManager extends Page
 
         return preg_replace('#(?<!:)//+#', '/', $url) ?? $url;
     }
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can('view_media_manager');
+    }
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canAccess();
+    }
 }

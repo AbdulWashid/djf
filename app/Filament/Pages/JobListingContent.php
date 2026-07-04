@@ -143,4 +143,12 @@ class JobListingContent extends Page implements HasForms
 
             ]);
     }
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can('view_job_listing_content');
+    }
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canAccess();
+    }
 }
