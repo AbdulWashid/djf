@@ -49,9 +49,9 @@ Volt::route('/jobs/{location}/{category_slug}', 'pages.jobs-component')->name('j
 
 Volt::route('/job-categories', 'pages.job-categories')->name('job-categories');
 
-Volt::route('/employer', 'pages.employer')->name('employer');
+// Volt::route('/employer', 'pages.employer')->name('employer');
 
-Volt::route('/remainder', 'pages.remainder')->name('remainder');
+// Volt::route('/remainder', 'pages.remainder')->name('remainder');
 
 Volt::route('/faqs', 'pages.faqs')->name('faqs');
 
@@ -63,7 +63,7 @@ Volt::route('/blogs', 'pages.blog-list')->name('blog');
 
 Volt::route('/contact-us', 'pages.contact-us')->name('contact-us');
 
-Volt::route('/coming-soon', 'pages.coming-soon')->name('coming-soon');
+// Volt::route('/coming-soon', 'pages.coming-soon')->name('coming-soon');
 
 Route::post('/admin/cache-clear', function () {
     Artisan::call('optimize:clear');
