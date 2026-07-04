@@ -12,9 +12,9 @@ new #[Layout('components.frontend.main')] class extends Component {
     public function mount(): void
     {
         $this->type = request()->routeIs('employer.*') ? 'employer' : 'candidate';
-        view()->share('pageTitle', $this->type == 'empployer' ? 'Forgot Employer Password | Recover Your Account - Dubai Job Finder' : 'Forgot Password | Recover Candidate Account - Dubai Job Finder');
+        view()->share('pageTitle', $this->type == 'employer' ? 'Forgot Employer Password | Recover Your Account - Dubai Job Finder' : 'Forgot Password | Recover Candidate Account - Dubai Job Finder');
 
-        view()->share('pageDescription', $this->type == 'empployer' ? 'Forgot your employer account password? Request a secure password reset link to regain access to your Dubai Job Finder hiring dashboard.' : 'Forgot your candidate account password? Request a secure password reset link to access your Dubai Job Finder profile and continue your job search.');
+        view()->share('pageDescription', $this->type == 'employer' ? 'Forgot your employer account password? Request a secure password reset link to regain access to your Dubai Job Finder hiring dashboard.' : 'Forgot your candidate account password? Request a secure password reset link to access your Dubai Job Finder profile and continue your job search.');
     }
 
     /**

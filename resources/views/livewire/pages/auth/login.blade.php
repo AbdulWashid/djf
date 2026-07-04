@@ -18,8 +18,8 @@ new #[Layout('components.frontend.main')] class extends Component {
     public function mount(): void
     {
         $this->type = request()->routeIs('employer.login') ? 'employer' : 'candidate';
-        view()->share('pageTitle', $this->type == 'empployer' ? 'Employer Login | Access Your Hiring Account - Dubai Job Finder' : 'Candidate Login | Sign In to Your Profile - Dubai Job Finder');
-        view()->share('pageDescription', $this->type == 'empployer' ? 'Log in to your Dubai Job Finder employer account to post job openings, manage applicants, and find top talent in Dubai. Access your dashboard today.' : 'Log in to your candidate account on Dubai Job Finder. Update your resume, track your job applications, and find the latest job vacancies in Dubai.');
+        view()->share('pageTitle', $this->type == 'employer' ? 'Employer Login | Access Your Hiring Account - Dubai Job Finder' : 'Candidate Login | Sign In to Your Profile - Dubai Job Finder');
+        view()->share('pageDescription', $this->type == 'employer' ? 'Log in to your Dubai Job Finder employer account to post job openings, manage applicants, and find top talent in Dubai. Access your dashboard today.' : 'Log in to your candidate account on Dubai Job Finder. Update your resume, track your job applications, and find the latest job vacancies in Dubai.');
     }
 
     public function login(): void

@@ -12,9 +12,9 @@ new #[Layout('components.frontend.main')] class extends Component {
     public function mount(): void
     {
         $this->type = request()->routeIs('employer.*') ? 'employer' : 'candidate';
-        view()->share('pageTitle', $this->type == 'empployer' ? 'Confirm Password | Secure Employer Account - Dubai Job Finder' : 'Confirm Password | Secure Candidate Account - Dubai Job Finder');
+        view()->share('pageTitle', $this->type == 'employer' ? 'Confirm Password | Secure Employer Account - Dubai Job Finder' : 'Confirm Password | Secure Candidate Account - Dubai Job Finder');
 
-        view()->share('pageDescription', $this->type == 'empployer' ? 'Confirm your password to continue accessing sensitive employer account settings on Dubai Job Finder. Keep your hiring account secure.' : 'Confirm your password to securely access sensitive areas of your Dubai Job Finder candidate account and protect your personal information.');
+        view()->share('pageDescription', $this->type == 'employer' ? 'Confirm your password to continue accessing sensitive employer account settings on Dubai Job Finder. Keep your hiring account secure.' : 'Confirm your password to securely access sensitive areas of your Dubai Job Finder candidate account and protect your personal information.');
     }
 
     /**

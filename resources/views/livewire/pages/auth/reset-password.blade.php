@@ -26,9 +26,9 @@ new #[Layout('components.frontend.main')] class extends Component {
         $this->email = request()->string('email');
 
         $this->type = request()->routeIs('employer.password.reset') ? 'employer' : 'candidate';
-        view()->share('pageTitle', $this->type == 'empployer' ? 'Reset Employer Password | Dubai Job Finder' : 'Reset Candidate Password | Dubai Job Finder');
+        view()->share('pageTitle', $this->type == 'employer' ? 'Reset Employer Password | Dubai Job Finder' : 'Reset Candidate Password | Dubai Job Finder');
 
-        view()->share('pageDescription', $this->type == 'empployer' ? 'Create a new password for your employer account and securely regain access to your Dubai Job Finder hiring dashboard.' : 'Set a new password for your candidate account to securely access your Dubai Job Finder profile, resume, and job applications.');
+        view()->share('pageDescription', $this->type == 'employer' ? 'Create a new password for your employer account and securely regain access to your Dubai Job Finder hiring dashboard.' : 'Set a new password for your candidate account to securely access your Dubai Job Finder profile, resume, and job applications.');
     }
 
     public function resetPassword(): void
