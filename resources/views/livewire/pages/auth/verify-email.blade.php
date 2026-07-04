@@ -12,6 +12,9 @@ new #[Layout('components.frontend.main')] class extends Component {
     public function mount()
     {
         $this->type = request()->routeIs('employer.*') ? 'employer' : 'candidate';
+        view()->share('pageTitle', $this->type == 'empployer' ? 'Verify Employer Email | Activate Your Account - Dubai Job Finder' : 'Verify Email | Activate Candidate Account - Dubai Job Finder');
+
+        view()->share('pageDescription', $this->type == 'empployer' ? 'Verify your employer email address to activate your Dubai Job Finder account and start posting jobs and managing applicants.' : 'Verify your email address to activate your Dubai Job Finder candidate account, apply for jobs, and receive employer updates.');
     }
 
     public function sendVerification(): void

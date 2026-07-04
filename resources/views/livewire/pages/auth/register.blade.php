@@ -38,6 +38,8 @@ new #[Layout('components.frontend.main')] class extends Component {
     public function mount(): void
     {
         $this->type = request()->routeIs('employer.register') ? 'employer' : 'candidate';
+        view()->share('pageTitle', $this->type == 'empployer' ? 'Employer Registration | Create a Hiring Account - Dubai Job Finder' : 'Candidate Registration | Sign Up & Find Jobs - Dubai Job Finder');
+        view()->share('pageDescription', $this->type == 'empployer' ? 'Register as an employer on Dubai Job Finder. Create your company profile, post jobs, and start connecting with qualified professionals in Dubai today.' : 'Create your free candidate account on Dubai Job Finder. Upload your CV, apply to top vacancies, and get noticed by leading employers in Dubai.');
     }
 
     public function register(): void
