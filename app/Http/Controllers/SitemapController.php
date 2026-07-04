@@ -64,6 +64,8 @@ class SitemapController extends Controller
             route('blog'),
             route('faqs'),
             route('contact-us'),
+            route('sitemap'),
+            route('sitemap.html'),
         ];
 
         foreach ($mainPages as $url) {
@@ -191,6 +193,8 @@ class SitemapController extends Controller
         $staticPages = [
             ['url' => route('home'), 'priority' => '1.0', 'changefreq' => 'weekly'],
             ['url' => route('jobs'), 'priority' => '0.8', 'changefreq' => 'daily'],
+            ['url' => route('sitemap.html'), 'priority' => '0.9', 'changefreq' => 'daily'],
+            ['url' => route('sitemap'), 'priority' => '0.9', 'changefreq' => 'daily'],
             ['url' => route('blog'), 'priority' => '0.9', 'changefreq' => 'daily'],
             ['url' => route('faqs'), 'priority' => '0.9', 'changefreq' => 'daily'],
             ['url' => route('contact-us'), 'priority' => '0.8', 'changefreq' => 'monthly'],
