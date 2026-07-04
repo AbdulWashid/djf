@@ -635,7 +635,7 @@
         {{-- <script src="{{ asset('assets/js/plugins/waypoints.js') }}"></script> --}}
         <script src="{{ asset('assets/js/plugins/wow.js') }}"></script>
         {{-- <script src="{{ asset('assets/js/plugins/magnific-popup.js') }}"></script> --}}
-        {{-- <script src="{{ asset('assets/js/plugins/perfect-scrollbar.min.js') }}"></script> --}}
+        <script src="{{ asset('assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
         <script src="{{ asset('assets/js/plugins/select2.min.js') }}"></script>
         {{-- <script src="{{ asset('assets/js/plugins/isotope.js') }}"></script> --}}
         <script src="{{ asset('assets/js/plugins/scrollup.js') }}"></script>

@@ -21,7 +21,7 @@ class CategoryResource extends Resource
     protected static ?string $model = Category::class;
 
     protected static ?string $recordTitleAttribute = 'name';
-    // protected static bool $shouldRegisterNavigation = false;
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $slug = 'banner/categories';
     protected static ?string $navigationGroup = 'Banner';
     protected static ?string $navigationLabel = 'Categories';
