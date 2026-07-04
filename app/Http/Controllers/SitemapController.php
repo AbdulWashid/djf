@@ -66,6 +66,14 @@ class SitemapController extends Controller
             route('contact-us'),
             route('sitemap'),
             route('sitemap.html'),
+            route('employer.register'),
+            route('employer.login'),
+            route('employer.password.request'),
+            route('employer.verification.notice'),
+            route('candidate.register'),
+            route('candidate.login'),
+            route('candidate.password.request'),
+            route('candidate.verification.notice'),
         ];
 
         foreach ($mainPages as $url) {
@@ -198,6 +206,14 @@ class SitemapController extends Controller
             ['url' => route('blog'), 'priority' => '0.9', 'changefreq' => 'daily'],
             ['url' => route('faqs'), 'priority' => '0.9', 'changefreq' => 'daily'],
             ['url' => route('contact-us'), 'priority' => '0.8', 'changefreq' => 'monthly'],
+            ['url' => route('employer.register'), 'priority' => '0.8', 'changefreq' => 'monthly'],
+            ['url' => route('employer.login'), 'priority' => '0.8', 'changefreq' => 'monthly'],
+            ['url' => route('employer.password.request'), 'priority' => '0.8', 'changefreq' => 'monthly'],
+            ['url' => route('employer.verification.notice'), 'priority' => '0.8', 'changefreq' => 'monthly'],
+            ['url' => route('candidate.register'), 'priority' => '0.8', 'changefreq' => 'monthly'],
+            ['url' => route('candidate.login'), 'priority' => '0.8', 'changefreq' => 'monthly'],
+            ['url' => route('candidate.password.request'), 'priority' => '0.8', 'changefreq' => 'monthly'],
+            ['url' => route('candidate.verification.notice'), 'priority' => '0.8', 'changefreq' => 'monthly'],
         ];
 
         foreach ($staticPages as $page) {
