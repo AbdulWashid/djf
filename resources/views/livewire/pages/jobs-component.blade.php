@@ -468,7 +468,8 @@ new #[Layout('components.frontend.main')] class extends Component {
                                             </div>
 
                                             <div class="text-small mt-15">
-                                                {!! Str::excerpt($job->description) !!}
+                                                {{ Str::limit(html_entity_decode(strip_tags($job->description)), 150) }}
+                                                {{-- {!! Str::excerpt($job->description) !!} --}}
                                             </div>
 
                                             <div class="card-2-bottom mt-auto pt-3">
