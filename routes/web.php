@@ -67,7 +67,7 @@ Volt::route('/contact-us', 'pages.contact-us')->name('contact-us');
 
 Route::post('/admin/cache-clear', function () {
     Artisan::call('optimize:clear');
-
+    Artisan::call('cache:clear');
     Notification::make()->title('Application cache cleared successfully.')->success()->send();
 
     return back()->with('status', 'Application cache cleared successfully.');
