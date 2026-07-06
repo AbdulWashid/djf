@@ -15,8 +15,15 @@ new #[Layout('components.frontend.main')] class extends Component {
 
     public function mount($slug)
     {
-        $this->job = Opening::where('slug', $slug)->where('status', 1)->with('employer', 'job_category')->first();
-
+        $this->job = rememberIfEnabled(
+            "job:{$slug}",
+            now()->addMinutes(30),
+            fn() => Opening::select(['id', 'slug', 'title', 'description', 'responsibilities', 'skills', 'benefits', 'salary_range', 'location', 'job_type', 'employer_id', 'job_category_id', 'meta_title', 'meta_description', 'meta_keywords', 'twitter_tags', 'og_tags', 'created_at'])
+                ->where('slug', $slug)
+                ->where('status', 1)
+                ->with('employer', 'job_category')
+                ->first(),
+        );
         if (!$this->job) {
             abort(404);
         }
@@ -112,8 +119,7 @@ new #[Layout('components.frontend.main')] class extends Component {
     }
     protected function generateFaqSchema(): ?array
     {
-        $faqs = Faq::active()->where('section', 'jobs')->get();
-
+        $faqs = rememberIfEnabled('job_faqs', now()->addHours(12), fn() => Faq::active()->where('section', 'jobs')->get());
         if ($faqs->isEmpty()) {
             return null;
         }
@@ -257,7 +263,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                         </div>
 
                         <div class="text-description mt-15">
-                            {!! Str::excerpt($job->employer->description) !!}
+                            {{ Str::limit(html_entity_decode(strip_tags($job->employer->description)), 150) }}
                         </div>
 
                         <div class="text-start mt-20">
@@ -319,7 +325,8 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     <div class="sidebar-icon-item"><i class="fi-rr-clock"></i></div>
                                     <div class="sidebar-text-info">
                                         <span class="text-description">Date posted</span>
-                                        <strong class="small-heading"> {{ $job->created_at }} </strong>
+                                        <strong class="small-heading">
+                                            {{ $job->created_at->toFormattedDateString() }}</strong>
                                     </div>
                                 </li>
                             </ul>

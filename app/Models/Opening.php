@@ -68,14 +68,21 @@ class Opening extends Model
     }
     protected static function booted(): void
     {
-        static::saved(function () {
+        static::saved(function (Opening $opening) {
             Cache::forget('feature_jobs');
             Cache::forget('recent_jobs');
+            Cache::forget('job_locations');
+            Cache::forget("job:{$opening->slug}");
+            Cache::increment('jobs_cache_version');
+
         });
 
-        static::deleted(function () {
+        static::deleted(function (Opening $opening) {
             Cache::forget('feature_jobs');
             Cache::forget('recent_jobs');
+            Cache::forget('job_locations');
+            Cache::forget("job:{$opening->slug}");
+            Cache::increment('jobs_cache_version');
         });
     }
     

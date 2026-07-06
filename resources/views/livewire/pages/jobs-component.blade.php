@@ -23,8 +23,9 @@ new #[Layout('components.frontend.main')] class extends Component {
 
     public function mount($location = null, $category_slug = null): void
     {
-        $this->categories = JobCategory::active()->pluck('name', 'id');
-        $this->locations = Opening::distinct()->pluck('location');
+        $this->categories = rememberIfEnabled('job_categories', now()->addHours(12), fn() => JobCategory::active()->pluck('name', 'id'));
+        $this->locations = rememberIfEnabled('job_locations', now()->addHours(12), fn() => Opening::distinct()->pluck('location'));
+
         $this->job_types = EmploymentType::toOptionsArray();
         $this->q = $this->normalizeQuery(request()->query('q'));
 
@@ -86,8 +87,7 @@ new #[Layout('components.frontend.main')] class extends Component {
         $categorySlug = null;
 
         if ($this->category) {
-            $cat = JobCategory::find($this->category);
-            $categorySlug = $cat?->slug;
+            $categorySlug = JobCategory::where('id', $this->category)->value('slug');
         }
 
         $url = route('jobs');
@@ -175,7 +175,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
     public function search()
     {
-        $query = Opening::query()->active()->with('employer');
+        // $query = Opening::query()->active()->with('employer');
+        $query = Opening::select(['id', 'slug', 'title', 'location', 'description', 'salary_range', 'job_type', 'job_category_id', 'employer_id'])
+            ->active()
+            ->with('employer');
 
         $keyword = $this->normalizeQuery($this->q ?: request()->query('q', ''));
 
@@ -221,15 +224,27 @@ new #[Layout('components.frontend.main')] class extends Component {
 
     public function jobs()
     {
-        return $this->search();
+        $page = request('page', 1);
+
+        // $key = 'jobs:' . md5(json_encode([$this->location, $this->category, $this->job_type, $this->q, $page]));
+
+        $version = Cache::get('jobs_cache_version', 1);
+
+        $key = "jobs:v{$version}:" . md5(json_encode([$this->location, $this->category, $this->job_type, $this->q, $page]));
+
+        return rememberIfEnabled($key, now()->addMinutes(30), function () {
+            return $this->search();
+        });
+        // return $this->search();
     }
     protected function selectedCategoryName(): ?string
     {
         if (!$this->category) {
             return null;
         }
+        return $this->categories[$this->category] ?? null;
 
-        return JobCategory::find($this->category)?->name;
+        // return JobCategory::find($this->category)?->name;
     }
     protected function getHeading(): string
     {
@@ -399,10 +414,12 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 </div> 
                             </div>  --}}
                             <div class="buttons-filter">
-                                <button class="btn btn-default" wire:click="search()" type="button">
+                                {{-- <button class="btn btn-default" wire:click="search()" type="button">
                                     Apply filter
+                                </button> --}}
+                                <button class="btn btn-default" wire:click="clear()" type="button">
+                                    Reset filter
                                 </button>
-                                <button class="btn" wire:click="clear()">Reset filter</button>
                             </div>
                         </div>
                     </div>
@@ -524,7 +541,8 @@ new #[Layout('components.frontend.main')] class extends Component {
             </div>
             <div class="row">
                 @php
-                    $selectedCategory = $category ? \App\Models\JobCategory::find($category)?->name : null;
+                    // $selectedCategory = $category ? \App\Models\JobCategory::find($category)?->name : null;
+                    $selectedCategory = $categories[$category] ?? null;
                 @endphp
 
                 <livewire:pages.components.job-listing-content :category="$selectedCategory" :location="$location" :key="'job-content-' . md5(($location ?? 'all') . '-' . ($selectedCategory ?? 'all'))" />

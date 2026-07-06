@@ -52,6 +52,7 @@ class JobCategory extends Model implements HasMedia
         static::saved(function () {
             Cache::forget('job_categories_active_count');
             Cache::forget('job_categories_home');
+            Cache::forget('job_categories');
             for ($i = 1; $i <= 20; $i++) {
                 Cache::forget("job_categories_all_page_{$i}");
             }
@@ -60,6 +61,7 @@ class JobCategory extends Model implements HasMedia
         static::deleted(function () {
             Cache::forget('job_categories_active_count');
             Cache::forget('job_categories_home');
+            Cache::forget('job_categories');
             for ($i = 1; $i <= 20; $i++) {
                 Cache::forget("job_categories_all_page_{$i}");
             }

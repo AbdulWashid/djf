@@ -35,10 +35,15 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         if ($this->isPreview) {
             // Load post without published restriction for preview
-            $this->post = Post::with(['category', 'author', 'tags', 'media'])
-                ->where('slug', $this->slug)
-                ->firstOrFail();
-
+            $this->post = rememberIfEnabled(
+                "blog_post:{$this->slug}",
+                now()->addMinutes(30),
+                fn() => Post::select(['id', 'slug', 'title', 'content_raw', 'content_overview', 'meta_title', 'meta_description', 'published_at', 'updated_at', 'blog_author_id', 'blog_category_id'])
+                    ->with(['category', 'author', 'tags', 'media'])
+                    ->where('slug', $this->slug)
+                    ->published()
+                    ->firstOrFail(),
+            );
             // Verify preview token
             $expectedToken = hash('sha256', $this->post->id . config('app.key'));
             if (request('token') !== $expectedToken) {
@@ -58,7 +63,8 @@ new #[Layout('components.frontend.main')] class extends Component {
         }
 
         // Load related/navigation posts
-        $this->relatedPosts = $this->post->getRelatedPosts(4);
+        // $this->relatedPosts = $this->post->getRelatedPosts(4);
+        rememberIfEnabled("related_posts_{$this->post->id}", now()->addMinutes(30), fn() => $this->post->getRelatedPosts(4));
 
         // Set SEO metadata
         view()->share('canonical', $this->post->getCanonicalUrl());
@@ -159,36 +165,6 @@ new #[Layout('components.frontend.main')] class extends Component {
         return json_encode($schema);
     }
 
-    // Generate Schema.org structured data
-    protected function generateSchemaData(): array
-    {
-        return [
-            '@context' => 'https://schema.org',
-            '@type' => 'BlogPosting',
-            'headline' => $this->post->title,
-            'description' => $this->post->meta_description ?: $this->post->content_overview,
-            'image' => $this->post->hasLargeImage() ? $this->post->getLargeImageUrl() : null,
-            'datePublished' => $this->post->published_at->toIso8601String(),
-            'dateModified' => $this->post->updated_at->toIso8601String(),
-            'author' => [
-                '@type' => 'Person',
-                'name' => $this->post->author->name ?? 'Anonymous',
-            ],
-            'publisher' => [
-                '@type' => 'Organization',
-                'name' => config('app.name'),
-                'logo' => [
-                    '@type' => 'ImageObject',
-                    'url' => asset('path/to/your/logo.png'),
-                ],
-            ],
-            'mainEntityOfPage' => [
-                '@type' => 'WebPage',
-                '@id' => $this->post->getCanonicalUrl(),
-            ],
-        ];
-    }
-
     // Share post to social media
     public function sharePost($platform)
     {
@@ -207,37 +183,67 @@ new #[Layout('components.frontend.main')] class extends Component {
         }
     }
 
-    // Provide layout variables to the #[Layout] attribute natively
-    public function layoutData(): array
-    {
-        $schemaJson = json_encode($this->generateSchemaData(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    // // Generate Schema.org structured data
+    // protected function generateSchemaData(): array
+    // {
+    //     return [
+    //         '@context' => 'https://schema.org',
+    //         '@type' => 'BlogPosting',
+    //         'headline' => $this->post->title,
+    //         'description' => $this->post->meta_description ?: $this->post->content_overview,
+    //         'image' => $this->post->hasLargeImage() ? $this->post->getLargeImageUrl() : null,
+    //         'datePublished' => $this->post->published_at->toIso8601String(),
+    //         'dateModified' => $this->post->updated_at->toIso8601String(),
+    //         'author' => [
+    //             '@type' => 'Person',
+    //             'name' => $this->post->author->name ?? 'Anonymous',
+    //         ],
+    //         'publisher' => [
+    //             '@type' => 'Organization',
+    //             'name' => config('app.name'),
+    //             'logo' => [
+    //                 '@type' => 'ImageObject',
+    //                 'url' => asset('path/to/your/logo.png'),
+    //             ],
+    //         ],
+    //         'mainEntityOfPage' => [
+    //             '@type' => 'WebPage',
+    //             '@id' => $this->post->getCanonicalUrl(),
+    //         ],
+    //     ];
+    // }
 
-        return [
-            'pageType' => 'blog_post',
-            'postTitle' => $this->post->title ?? '',
-            'postCategory' => $this->post->category->name ?? '',
-            'authorName' => $this->post->author->name ?? '',
-            'publishDate' => $this->post->published_at,
-            'pageDescription' => $this->post->meta_description ?: $this->post->content_overview,
-            'metaKeywords' => $this->post->meta_keywords ?? '',
-            'ogTags' => $this->post->og_tags ?? '',
-            'twitterTags' => $this->post->twitter_tags ?? '',
-            'canonicalUrl' => $this->post ? $this->post->getCanonicalUrl() : '',
-            'ogImage' => $this->post && $this->post->hasLargeImage() ? $this->post->getLargeImageUrl() : null,
-            'schemaData' => $schemaJson,
-        ];
-    }
+    // // Provide layout variables to the #[Layout] attribute natively
+    // public function layoutData(): array
+    // {
+    //     $schemaJson = json_encode($this->generateSchemaData(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
-    // Use with() for Volt dynamic rendering variables
-    public function with(): array
-    {
-        $schemaJson = json_encode($this->generateSchemaData(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    //     return [
+    //         'pageType' => 'blog_post',
+    //         'postTitle' => $this->post->title ?? '',
+    //         'postCategory' => $this->post->category->name ?? '',
+    //         'authorName' => $this->post->author->name ?? '',
+    //         'publishDate' => $this->post->published_at,
+    //         'pageDescription' => $this->post->meta_description ?: $this->post->content_overview,
+    //         'metaKeywords' => $this->post->meta_keywords ?? '',
+    //         'ogTags' => $this->post->og_tags ?? '',
+    //         'twitterTags' => $this->post->twitter_tags ?? '',
+    //         'canonicalUrl' => $this->post ? $this->post->getCanonicalUrl() : '',
+    //         'ogImage' => $this->post && $this->post->hasLargeImage() ? $this->post->getLargeImageUrl() : null,
+    //         'schemaData' => $schemaJson,
+    //     ];
+    // }
 
-        return [
-            'faqSchema' => $this->generateFaqSchema(),
-            'schemaData' => $schemaJson,
-        ];
-    }
+    // // Use with() for Volt dynamic rendering variables
+    // public function with(): array
+    // {
+    //     $schemaJson = json_encode($this->generateSchemaData(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+    //     return [
+    //         'faqSchema' => $this->generateFaqSchema(),
+    //         'schemaData' => $schemaJson,
+    //     ];
+    // }
 }; ?>
 
 <div>

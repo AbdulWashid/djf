@@ -411,16 +411,20 @@ class Post extends Model implements HasMedia
 
     protected static function booted(): void
     {
-        static::saved(function () {
+        static::saved(function (Post $post) {
             Cache::forget('recent_posts_home');
             Cache::forget('recent_posts');
             Cache::forget('popular_tags_en');
+            Cache::forget("blog_post:{$post->slug}");
+            Cache::forget("related_posts_{$post->id}");
         });
 
-        static::deleted(function () {
+        static::deleted(function (Post $post) {
             Cache::forget('recent_posts_home');
             Cache::forget('recent_posts');
             Cache::forget('popular_tags_en');
+            Cache::forget("blog_post:{$post->slug}");
+            Cache::forget("related_posts_{$post->id}");
         });
     }
 }

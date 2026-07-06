@@ -81,4 +81,14 @@ class Faq extends Model
             'status' => 'boolean',
         ];
     }
+    protected static function booted(): void
+    {
+        static::saved(function () {
+            Cache::forget('job_faqs');
+        });
+
+        static::deleted(function () {
+            Cache::forget('job_faqs');
+        });
+    }
 }
