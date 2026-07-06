@@ -129,20 +129,17 @@ class SitemapController extends Controller
         */
 
         Opening::active()
-            ->select('location','id')
             ->whereNotNull('location')
             ->distinct()
-            ->chunk(100, function ($locations) use (&$groups) {
-
-                foreach ($locations as $location) {
-
-                    $groups['Job Locations']->push([
-                        'title' => $location->location,
-                        'loc'   => route('jobs.location', [
-                            'location' => Str::slug($location->location)
-                        ]),
-                    ]);
-                }
+            ->orderBy('location')
+            ->pluck('location')
+            ->each(function ($location) use (&$groups) {
+                $groups['Job Locations']->push([
+                    'title' => $location,
+                    'loc' => route('jobs.location', [
+                        'location' => Str::slug($location),
+                    ]),
+                ]);
             });
 
         /*
