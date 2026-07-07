@@ -33,7 +33,7 @@ class UserResource extends Resource
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationIcon = 'heroicon-s-users';
 
-    protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $recordTitleAttribute = 'username';
 
     public static function form(Form $form): Form
     {
@@ -182,7 +182,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('Full Name')
                     ->getStateUsing(fn(Model $record) => $record->firstname . ' ' . $record->lastname)
-                    ->searchable(),
+                    ->searchable(['firstname','lastname',]),
                 Tables\Columns\TextColumn::make('username')->label('Username')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
