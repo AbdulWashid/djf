@@ -33,7 +33,7 @@ class CacheClear extends Widget implements HasActions, HasForms
                 Artisan::call('config:clear');
                 Artisan::call('view:clear');
                 Artisan::call('route:clear');
-                Artisan::call('filament:cache-components');
+                // Artisan::call('filament:cache-components');
 
                 if (function_exists('opcache_reset')) {
                     opcache_reset();
