@@ -17,7 +17,7 @@ class MediaManager extends Page
     protected static ?string $title = 'Public Storage';
     protected static ?string $slug = 'public-storage';
     protected static ?string $navigationGroup = 'Content';
-    protected static ?int $navigationSort = 98;
+    protected static ?int $navigationSort = 4;
 
     protected static string $view = 'filament.pages.media-manager';
 
@@ -298,12 +298,12 @@ class MediaManager extends Page
 
         return preg_replace('#(?<!:)//+#', '/', $url) ?? $url;
     }
-    public static function canAccess(): bool
-    {
-        return auth()->user()->can('view_media_manager');
-    }
-    public static function shouldRegisterNavigation(): bool
-    {
-        return static::canAccess();
-    }
+    // public static function canAccess(): bool
+    // {
+    //     return auth()->user()->can('view_media_manager');
+    // }
+    // public static function shouldRegisterNavigation(): bool
+    // {
+    //     return static::canAccess();
+    // }
 }

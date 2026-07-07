@@ -149,7 +149,7 @@ class AdminPanelProvider extends PanelProvider
                 //                            ->collapsible(true)
                 //                            ->paginate(perPage: 5, condition: true)
                 //                    ])
-            \TomatoPHP\FilamentMediaManager\FilamentMediaManagerPlugin::make(),
+            // \TomatoPHP\FilamentMediaManager\FilamentMediaManagerPlugin::make(),
             ]);
     }
 }
