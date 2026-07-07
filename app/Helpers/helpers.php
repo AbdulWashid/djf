@@ -10,3 +10,6 @@ if (!function_exists('rememberIfEnabled')) {
         return config('cache.enable') ? Cache::remember($key, $ttl, $callback) : $callback();
     }
 }
+if (function_exists('opcache_reset')) {
+    opcache_reset();
+}
