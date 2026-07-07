@@ -179,7 +179,7 @@ class UserResource extends Resource
                     ->wrap()
                     ->circular()
                     ->extraAttributes(['alt' => __('resource.user.avatar_alt')]),
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('firstname')
                     ->label('Full Name')
                     ->getStateUsing(fn(Model $record) => $record->firstname . ' ' . $record->lastname)
                     ->searchable(['firstname','lastname',]),
