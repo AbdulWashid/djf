@@ -45,11 +45,16 @@ class ManageMail extends SettingsPage
         }
     }
 
+    protected function getFallbackMailFormData(): array
+    {
+        return MailSettings::defaults();
+    }
+
     protected function fillForm(): void
     {
         $this->callHook('beforeFill');
 
-        $data = $this->mutateFormDataBeforeFill($this->resolveMailSettings()->toArray());
+        $data = $this->mutateFormDataBeforeFill($this->getFallbackMailFormData());
 
         $this->form->fill($data);
 
