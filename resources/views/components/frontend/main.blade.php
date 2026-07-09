@@ -383,7 +383,10 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-78EEVRHQBJ"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
         gtag('js', new Date());
 
         gtag('config', 'G-78EEVRHQBJ');
@@ -467,7 +470,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="col-xl-2 col-sm-3 col-6 mt-4">
+                    <div class="col-xl-3 col-sm-4 col-6 mt-4">
                         <p class="h6">Company</p>
 
                         @php
@@ -492,7 +495,7 @@
                             @endif
                         </ul>
                     </div>
-                    <div class="col-xl-2 col-sm-3 col-6 mt-4">
+                    <div class="col-xl-3 col-sm-4 col-6 mt-4">
                         <p class="h6">Location</p>
                         @php
                             $footerLocations = Menu::location('footer-2');
@@ -510,7 +513,7 @@
                             @endif
                         </ul>
                     </div>
-                    <div class="col-xl-2 col-sm-3 col-6 mt-4">
+                    <div class="col-xl-3 col-sm-4 col-6 mt-4">
                         <p class="h6">Category</p>
                         @php
                             $footerCategories = Menu::location('footer-3');
@@ -528,7 +531,7 @@
                             @endif
                         </ul>
                     </div>
-                    <div class="col-xl-2 col-sm-3 col-6 mt-4">
+                    {{-- <div class="col-xl-2 col-sm-3 col-6 mt-4">
                         <p class="h6">Trending Jobs</p>
                         @php
                             $footerTrendingJobs = Menu::location('footer-4');
@@ -563,7 +566,7 @@
                                 @endforeach
                             @endif
                         </ul>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="footer-bottom mt-50">
                     <div class="row">
