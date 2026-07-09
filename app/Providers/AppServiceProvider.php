@@ -63,9 +63,14 @@ class AppServiceProvider extends ServiceProvider
 
         if (app()->bound(MailSettings::class)) {
             try {
-                app(MailSettings::class)->loadMailSettingsToConfig();
+                $mailSettings = MailSettings::safe();
+                $mailSettings->loadMailSettingsToConfig();
             } catch (\Throwable $e) {
-                // ignore if settings table isn't ready
+                try {
+                    (new MailSettings(MailSettings::defaults()))->loadMailSettingsToConfig();
+                } catch (\Throwable $ignored) {
+                    // ignore if settings table isn't ready or stored values are unreadable
+                }
             }
         }
     }

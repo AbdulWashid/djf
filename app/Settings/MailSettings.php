@@ -142,6 +142,15 @@ class MailSettings extends Settings
         ];
     }
 
+    public static function safe(): self
+    {
+        try {
+            return app(static::class);
+        } catch (\Throwable $throwable) {
+            return new static(static::defaults());
+        }
+    }
+
     public function loadMailSettingsToConfig($data = null): void
     {
         // Core mail configuration

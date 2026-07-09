@@ -56,7 +56,7 @@ class RequestPasswordReset extends BaseRequestPasswordReset
                     throw new Exception("Model [{$userClass}] does not have a [notify()] method.");
                 }
 
-                $settings = app(MailSettings::class);
+                $settings = MailSettings::safe();
                 $notification = new ResetPasswordNotification($token);
                 $notification->url = Filament::getResetPasswordUrl($token, $user);
 

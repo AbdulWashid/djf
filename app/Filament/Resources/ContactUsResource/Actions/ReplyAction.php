@@ -54,7 +54,7 @@ class ReplyAction extends Action
                 );
 
                 // Get mail settings
-                $mailSettings = app(MailSettings::class);
+                $mailSettings = MailSettings::safe();
 
                 // Check if mail settings are configured
                 if (!$mailSettings->isMailSettingsConfigured()) {
