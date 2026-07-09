@@ -414,10 +414,10 @@ class ManageMail extends SettingsPage
             ->statePath('data');
     }
 
-    public function save(?MailSettings $settings = null): void
+    public function save(): void
     {
         try {
-            $settings ??= $this->resolveMailSettings();
+            $settings = MailSettings::safe();
 
             $this->callHook('beforeValidate');
 
@@ -476,9 +476,9 @@ class ManageMail extends SettingsPage
         }
     }
 
-    public function sendTestMail(?MailSettings $settings = null)
+    public function sendTestMail()
     {
-        $settings ??= $this->resolveMailSettings();
+        $settings = MailSettings::safe();
 
         $data = $this->form->getState();
 
