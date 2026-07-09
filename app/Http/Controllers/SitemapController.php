@@ -64,7 +64,7 @@ class SitemapController extends Controller
             route('blog'),
             route('faqs'),
             route('contact-us'),
-            route('sitemap'),
+            // route('sitemap'),
             route('sitemap.html'),
             route('job-categories'),
             route('employer.register'),

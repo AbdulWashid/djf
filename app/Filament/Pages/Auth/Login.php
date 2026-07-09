@@ -13,7 +13,7 @@ class Login extends BasePage
         parent::mount();
 
         // $this->form->fill([
-        //     'email' => 'admin@dubaijobfinder.net',
+        //     'email' => 'admin@dubaijobfinder.org',
         //     'password' => 'Abcd1234',
         // ]);
     }
