@@ -19,23 +19,35 @@ new #[Layout('components.frontend.main')] class extends Component {
         view()->share(
             'twitterTags',
             $this->homeMeta?->twitter_tags ?:
-            '<meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:site" content="@Dubaijobfinder" />
-                <meta name="twitter:title" content="Jobs in Dubai | Job Search - Job Vacancies - Dubaijobfinder" />
-                <meta name="twitter:description" content="Search Jobs in Middle East, Dubai. Post your Resume and find your dream job on Dubaijobfinder. We provide driver jobs, accountant jobs and more. Call us!" />
-                <meta name="twitter:url" content="https://dubaijobfinder.net" />
-                <meta name="twitter:image" content="https://dubaijobfinder.net/storage/sites/01K6J2R1QT4H6FZR7FDMM0MVY7.png" />',
+            '
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:site" content="@Dubaijobfinder" />
+            <meta name="twitter:title" content="Jobs in Dubai | Job Search - Job Vacancies - Dubaijobfinder" />
+            <meta name="twitter:description" content="Search Jobs in Middle East, Dubai. Post your Resume and find your dream job on Dubaijobfinder. We provide driver jobs, accountant jobs and more. Call us!" />
+            <meta name="twitter:url" content="' .
+                url()->current() .
+                '" />
+            <meta name="twitter:image" content="' .
+                asset('storage/sites/01K6J2R1QT4H6FZR7FDMM0MVY7.png') .
+                '" />
+            ',
         );
 
         view()->share(
             'ogTags',
             $this->homeMeta?->og_tags ?:
-            '<meta property="og:title" content="Jobs in Dubai | Job Search - Job Vacancies - Dubaijobfinder" />
-                <meta property="og:description" content="Search Jobs in Middle East, Dubai. Post your Resume and find your dream job on Dubaijobfinder. We provide driver jobs, accountant jobs and more. Call us!" />
-                <meta property="og:url" content="https://dubaijobfinder.net" />
-                <meta property="og:type" content="website" />
-                <meta property="og:site_name" content="Dubaijobfinder" />
-                <meta property="og:image" content="https://dubaijobfinder.net/storage/sites/01K6J2R1QT4H6FZR7FDMM0MVY7.png" />',
+            '
+            <meta property="og:title" content="Jobs in Dubai | Job Search - Job Vacancies - Dubaijobfinder" />
+            <meta property="og:description" content="Search Jobs in Middle East, Dubai. Post your Resume and find your dream job on Dubaijobfinder. We provide driver jobs, accountant jobs and more. Call us!" />
+            <meta property="og:url" content="' .
+                url()->current() .
+                '" />
+            <meta property="og:type" content="website" />
+            <meta property="og:site_name" content="Dubaijobfinder" />
+            <meta property="og:image" content="' .
+                asset('storage/sites/01K6J2R1QT4H6FZR7FDMM0MVY7.png') .
+                '" />
+            ',
         );
     }
 }; ?>
