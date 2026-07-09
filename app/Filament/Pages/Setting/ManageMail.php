@@ -36,16 +36,16 @@ class ManageMail extends SettingsPage
         $this->fillForm();
     }
 
-    protected function fillForm(): void
-    {
-        $this->callHook('beforeFill');
+    // protected function fillForm(): void
+    // {
+    //     $this->callHook('beforeFill');
 
-        $data = $this->mutateFormDataBeforeFill(app(static::getSettings())->toArray());
+    //     $data = $this->mutateFormDataBeforeFill(app(static::getSettings())->toArray());
 
-        $this->form->fill($data);
+    //     $this->form->fill($data);
 
-        $this->callHook('afterFill');
-    }
+    //     $this->callHook('afterFill');
+    // }
 
     public function form(Form $form): Form
     {
