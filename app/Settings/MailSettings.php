@@ -6,45 +6,68 @@ use Spatie\LaravelSettings\Settings;
 
 class MailSettings extends Settings
 {
-    public string $from_address;
-    public string $from_name;
-    public string $reply_to_address;
-    public string $reply_to_name;
+    public ?string $from_address = null;
+    public ?string $from_name = null;
+    public ?string $reply_to_address = null;
+    public ?string $reply_to_name = null;
 
     // SMTP configuration
-    public ?string $driver;
-    public ?string $host;
-    public int $port;
-    public string $encryption;
-    public ?string $username;
-    public ?string $password;
-    public ?int $timeout;
-    public ?string $local_domain;
+    public string $driver = 'smtp';
+    public ?string $host = null;
+    public int $port = 587;
+    public string $encryption = 'tls';
+    public ?string $username = null;
+    public ?string $password = null;
+    public ?int $timeout = 30;
+    public ?string $local_domain = null;
 
     // Email template and design settings
-    public string $template_theme;
-    public string $footer_text;
-    public string $logo_path;
-    public string $primary_color;
-    public string $secondary_color;
+    public string $template_theme = 'default';
+    public string $footer_text = '© Dubai Job Finder. All rights reserved.';
+    public string $logo_path = 'sites/email-logo.png';
+    public string $primary_color = '#2D2B8D';
+    public string $secondary_color = '#FFC903';
 
     // Email delivery configuration
-    public bool $queue_emails;
-    public string $queue_name;
-    public string $queue_connection;
-    public array $rate_limiting;
+    public bool $queue_emails = true;
+    public string $queue_name = 'emails';
+    public string $queue_connection = 'database';
+    public array $rate_limiting = [
+        'enabled' => true,
+        'attempts' => 5,
+        'per_minutes' => 1,
+    ];
 
     // Notification settings
-    public bool $notifications_enabled;
-    public array $notification_types;
+    public bool $notifications_enabled = true;
+    public array $notification_types = [
+        'account' => true,
+        'system' => true,
+        'marketing' => false,
+        'blog' => false,
+    ];
 
     // Email testing and debugging
-    public bool $test_mode;
-    public string $log_channel;
-    public string $test_to_address;
+    public bool $test_mode = false;
+    public string $log_channel = 'stack';
+    public string $test_to_address = '';
 
     // Alternative mail providers configuration
-    public array $providers;
+    public array $providers = [
+        'mailgun' => [
+            'domain' => null,
+            'secret' => null,
+            'endpoint' => 'api.mailgun.net',
+        ],
+        'postmark' => [
+            'token' => null,
+        ],
+        'ses' => [
+            'key' => null,
+            'secret' => null,
+            'region' => 'us-east-1',
+        ],
+    ];
 
     public static function group(): string
     {
@@ -60,6 +83,62 @@ class MailSettings extends Settings
             'providers.postmark.token',
             'providers.ses.key',
             'providers.ses.secret',
+        ];
+    }
+
+    public static function defaults(): array
+    {
+        return [
+            'from_address' => null,
+            'from_name' => null,
+            'reply_to_address' => null,
+            'reply_to_name' => null,
+            'driver' => 'smtp',
+            'host' => null,
+            'port' => 587,
+            'encryption' => 'tls',
+            'username' => null,
+            'password' => null,
+            'timeout' => 30,
+            'local_domain' => null,
+            'template_theme' => 'default',
+            'footer_text' => '© ' . date('Y') . ' Dubai Job Finder. All rights reserved.',
+            'logo_path' => 'sites/email-logo.png',
+            'primary_color' => '#2D2B8D',
+            'secondary_color' => '#FFC903',
+            'queue_emails' => true,
+            'queue_name' => 'emails',
+            'queue_connection' => 'database',
+            'rate_limiting' => [
+                'enabled' => true,
+                'attempts' => 5,
+                'per_minutes' => 1,
+            ],
+            'notifications_enabled' => true,
+            'notification_types' => [
+                'account' => true,
+                'system' => true,
+                'marketing' => false,
+                'blog' => false,
+            ],
+            'test_mode' => false,
+            'log_channel' => 'stack',
+            'test_to_address' => '',
+            'providers' => [
+                'mailgun' => [
+                    'domain' => null,
+                    'secret' => null,
+                    'endpoint' => 'api.mailgun.net',
+                ],
+                'postmark' => [
+                    'token' => null,
+                ],
+                'ses' => [
+                    'key' => null,
+                    'secret' => null,
+                    'region' => 'us-east-1',
+                ],
+            ],
         ];
     }
 
