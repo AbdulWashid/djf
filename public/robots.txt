@@ -1,5 +1,5 @@
 # =========================
-# DubaiJobFinder.net Robots.txt
+# dubaijobfinder.org Robots.txt
 # Last updated: June 2026
 # =========================
 
@@ -40,4 +40,4 @@ Disallow: /*?category=
 Allow: /
 
 # Sitemap
-Sitemap: https://dubaijobfinder.net/sitemap.xml
+Sitemap: https://dubaijobfinder.org/sitemap.xml
