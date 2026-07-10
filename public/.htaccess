@@ -5,20 +5,34 @@
 
     RewriteEngine On
 
+    # --------------------------------------------------
+    # Force NON-WWW (https://www -> https://)
+    # --------------------------------------------------
+    RewriteCond %{HTTP_HOST} ^www\.dubaijobfinder\.org$ [NC]
+    RewriteRule ^(.*)$ https://dubaijobfinder.org/$1 [R=301,L]
+
+    # --------------------------------------------------
     # Force HTTPS
+    # --------------------------------------------------
     RewriteCond %{HTTPS} !=on
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+    # --------------------------------------------------
     # Remove trailing slash
+    # --------------------------------------------------
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
+    # --------------------------------------------------
     # Authorization Header
+    # --------------------------------------------------
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+    # --------------------------------------------------
     # Laravel Front Controller
+    # --------------------------------------------------
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ index.php [L]
@@ -26,9 +40,9 @@
 
 <IfModule mod_headers.c>
 
-    # -----------------------------
+    # --------------------------------------------------
     # Security Headers
-    # -----------------------------
+    # --------------------------------------------------
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
 
     Header always set X-Frame-Options "SAMEORIGIN"
@@ -45,9 +59,9 @@
 
     Header always unset X-Powered-By
 
-    # -----------------------------
+    # --------------------------------------------------
     # Content Security Policy
-    # -----------------------------
+    # --------------------------------------------------
     Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com; media-src 'self';"
 
 </IfModule>
