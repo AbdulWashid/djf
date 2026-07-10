@@ -36,25 +36,11 @@ class ManageMail extends SettingsPage
         $this->fillForm();
     }
 
-    protected function resolveMailSettings(): MailSettings
-    {
-        try {
-            return app(static::getSettings());
-        } catch (\Throwable $throwable) {
-            return new MailSettings(MailSettings::defaults());
-        }
-    }
-
-    protected function getFallbackMailFormData(): array
-    {
-        return MailSettings::defaults();
-    }
-
     protected function fillForm(): void
     {
         $this->callHook('beforeFill');
 
-        $data = $this->mutateFormDataBeforeFill($this->getFallbackMailFormData());
+        $data = $this->mutateFormDataBeforeFill(app(static::getSettings())->toArray());
 
         $this->form->fill($data);
 
@@ -414,11 +400,9 @@ class ManageMail extends SettingsPage
             ->statePath('data');
     }
 
-    public function save(): void
+    public function save(MailSettings $settings = null): void
     {
         try {
-            $settings = MailSettings::safe();
-
             $this->callHook('beforeValidate');
 
             $data = $this->form->getState();
@@ -451,14 +435,58 @@ class ManageMail extends SettingsPage
      */
     protected function prepareNullableFields(array &$data): void
     {
-        $data = array_replace_recursive(MailSettings::defaults(), $data);
+        $stringDefaults = [
+            'logo_path' => 'sites/email-logo.png',
+            'reply_to_address' => $data['from_address'] ?? 'noreply@superduperstarterkit.com',
+            'reply_to_name' => $data['from_name'] ?? 'Dubai Job Finder',
+            'footer_text' => '© ' . date('Y') . ' Dubai Job Finder. All rights reserved.',
+            'template_theme' => 'default',
+            'primary_color' => '#2D2B8D',
+            'secondary_color' => '#FFC903',
+            'log_channel' => 'stack',
+        ];
 
-        if (empty($data['reply_to_address'])) {
-            $data['reply_to_address'] = $data['from_address'] ?? null;
+        foreach ($stringDefaults as $key => $default) {
+            if (!isset($data[$key]) || $data[$key] === null || $data[$key] === '') {
+                $data[$key] = $default;
+            }
         }
 
-        if (empty($data['reply_to_name'])) {
-            $data['reply_to_name'] = $data['from_name'] ?? null;
+        if (!isset($data['providers']) || !is_array($data['providers'])) {
+            $data['providers'] = [
+                'mailgun' => ['domain' => null, 'secret' => null, 'endpoint' => 'api.mailgun.net'],
+                'postmark' => ['token' => null],
+                'ses' => ['key' => null, 'secret' => null, 'region' => 'us-east-1'],
+            ];
+        }
+
+        if (!isset($data['rate_limiting']) || !is_array($data['rate_limiting'])) {
+            $data['rate_limiting'] = [
+                'enabled' => true,
+                'attempts' => 5,
+                'per_minutes' => 1,
+            ];
+        }
+
+        if (!isset($data['notification_types']) || !is_array($data['notification_types'])) {
+            $data['notification_types'] = [
+                'account' => true,
+                'system' => true,
+                'marketing' => false,
+                'blog' => false,
+            ];
+        }
+
+        $booleanDefaults = [
+            'queue_emails' => true,
+            'notifications_enabled' => true,
+            'test_mode' => false,
+        ];
+
+        foreach ($booleanDefaults as $key => $default) {
+            if (!isset($data[$key])) {
+                $data[$key] = $default;
+            }
         }
 
         $integerFields = ['port', 'timeout', 'rate_limiting.attempts', 'rate_limiting.per_minutes'];
@@ -476,10 +504,8 @@ class ManageMail extends SettingsPage
         }
     }
 
-    public function sendTestMail()
+    public function sendTestMail(MailSettings $settings = null)
     {
-        $settings = MailSettings::safe();
-
         $data = $this->form->getState();
 
         // Prepare data for configuration

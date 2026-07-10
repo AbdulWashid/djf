@@ -22,7 +22,7 @@ class CreateUser extends CreateRecord
     protected function afterCreate(): void
     {
         $user = $this->record;
-        $settings = MailSettings::safe();
+        $settings = app(MailSettings::class);
 
         if (! method_exists($user, 'notify')) {
             $userClass = $user::class;

@@ -25,7 +25,7 @@ class EmailVerification extends EmailVerificationPrompt
         return Action::make('resendNotification')
             ->link()
             ->label(__('filament-panels::pages/auth/email-verification/email-verification-prompt.actions.resend_notification.label') . '.')
-            ->action(function (?MailSettings $settings = null): void {
+            ->action(function (MailSettings $settings = null): void {
                 try {
                     $this->rateLimit(2);
                 } catch (TooManyRequestsException $exception) {
@@ -55,7 +55,7 @@ class EmailVerification extends EmailVerificationPrompt
                 $notification = new VerifyEmail();
                 $notification->url = Filament::getVerifyEmailUrl($user);
 
-                ($settings ?? MailSettings::safe())->loadMailSettingsToConfig();
+                $settings->loadMailSettingsToConfig();
 
                 $user->notify($notification);
 
