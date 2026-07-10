@@ -35,16 +35,17 @@ new #[Layout('components.frontend.main')] class extends Component {
         $this->nationality = $candidate->nationality;
         $this->cover_letter = $candidate->cover_letter;
 
-        $this->job = Opening::where('slug', $slug)->where('status', 1)->with('employer', 'job_category')->first();
+        $this->job = Opening::where('slug', $slug)
+            ->active()
+            ->with(['employer', 'job_category', 'location'])
+            ->first();
 
         abort_if(!$this->job, 404);
 
         view()->share('pageType', 'job_posting');
 
-        view()->share('pageTitle', $this->job->meta_title ?? 'Jobs in ' . $this->job->location . ' | ' . $this->job->title . ' | Apply Now - Dubaijobfinder');
-
-        view()->share('pageDescription', $this->job->meta_description ?? 'Find the latest ' . $this->job->title . ' jobs in ' . $this->job->location . '. Apply online for urgent vacancies and career opportunities on Dubaijobfinder.');
-
+        view()->share('pageTitle', $this->job->meta_title ?? 'Jobs in ' . $this->job->location?->name . ' | ' . $this->job->title . ' | Apply Now - Dubaijobfinder');
+        view()->share('pageDescription', $this->job->meta_description ?? 'Find the latest ' . $this->job->title . ' jobs in ' . $this->job->location?->name . '. Apply online for urgent vacancies and career opportunities on Dubaijobfinder.');
         view()->share('metaKeywords', $this->job->meta_keywords);
 
         view()->share('ogTags', $this->job->og_tags);
@@ -131,7 +132,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                             [
                                 '@type' => 'PostalAddress',
                                 'streetAddress' => $addressParts[0] ?? null,
-                                'addressLocality' => $addressParts[1] ?? ($this->job->location ?? null),
+                                'addressLocality' => $addressParts[1] ?? ($this->job->location?->name ?? null),
                                 'addressRegion' => $addressParts[2] ?? null,
                                 'addressCountry' => $addressParts[3] ?? null,
                             ],
@@ -216,7 +217,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                         <h6 class="text-uppercase text-muted fw-bold mb-3 small">Job Overview</h6>
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-muted"><i class="fi-rr-map-marker me-2"></i>Location</span>
-                            <span class="fw-semibold">{{ $job->location }}</span>
+                            <span class="fw-semibold"> {{ $job->location?->name }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-muted"><i class="fi-rr-briefcase me-2"></i>Type</span>

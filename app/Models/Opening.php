@@ -31,7 +31,7 @@ class Opening extends Model
         'og_tags',
         'meta_description',
         'job_type',
-        'location',
+        'location_id',
         'salary_range',
         'gender',
         'expected_nationalities',
@@ -86,5 +86,9 @@ class Opening extends Model
         });
     }
     
+    public function location(): BelongsTo
+    {
+        return $this->belongsTo(Location::class);
+    }
 
 }

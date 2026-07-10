@@ -6,6 +6,7 @@ use App\Models\Blog\Post;
 use App\Models\Blog\Category;
 use App\Models\JobCategory;
 use App\Models\Opening;
+use App\Models\Location;
 use App\Settings\GeneralSettings;
 use DB;
 use Illuminate\Http\Response;
@@ -128,20 +129,19 @@ class SitemapController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        Opening::active()
-            ->whereNotNull('location')
-            ->distinct()
-            ->orderBy('location')
-            ->pluck('location')
-            ->each(function ($location) use (&$groups) {
-                $groups['Job Locations']->push([
-                    'title' => $location,
-                    'loc' => route('jobs.location', [
-                        'location' => Str::slug($location),
-                    ]),
-                ]);
-            });
-
+            Location::whereHas('openings', function ($query) {
+                    $query->active();
+                })
+                ->orderBy('name')
+                ->get()
+                ->each(function ($location) use (&$groups) {
+                    $groups['Job Locations']->push([
+                        'title' => $location->name,
+                        'loc' => route('jobs.location', [
+                            'location' => Str::slug($location->name),
+                        ]),
+                    ]);
+                });
         /*
         |--------------------------------------------------------------------------
         | Jobs
@@ -257,40 +257,41 @@ class SitemapController extends Controller
             ]);
         }
 
-        $locations = Opening::active()
-            ->select('location', DB::raw('MAX(updated_at) as updated_at'), DB::raw('COUNT(*) as jobs_count'))
-            ->whereNotNull('location')
-            ->where('location', '!=', '')
-            ->groupBy('location')
+        $locations = Location::withCount([
+                'openings as jobs_count' => fn ($query) => $query->active(),
+            ])
+            ->withMax([
+                'openings as updated_at' => fn ($query) => $query->active(),
+            ], 'updated_at')
             ->get();
 
         foreach ($locations as $location) {
-            if ((int) $location->jobs_count === 0) {
+            if ($location->jobs_count == 0) {
                 continue;
             }
 
-            $locationSlug = Str::slug($location->location);
             $urls->push([
-                'loc' => route('jobs.location', ['location' => $locationSlug]),
-                'lastmod' => $location->updated_at->toISOString(),
+                'loc' => route('jobs.location', [
+                    'location' => Str::slug($location->name),
+                ]),
+                'lastmod' => Carbon::parse($location->updated_at)->toISOString(),
                 'changefreq' => 'weekly',
                 'priority' => '0.8',
             ]);
         }
 
         $locationCategoryStats = Opening::active()
+            ->with('location')
             ->select(
-                'location',
+                'location_id',
                 'job_category_id',
                 DB::raw('MAX(updated_at) as updated_at'),
                 DB::raw('COUNT(*) as jobs_count')
             )
-            ->whereNotNull('location')
-            ->where('location', '!=', '')
+            ->whereNotNull('location_id')
             ->whereNotNull('job_category_id')
-            ->groupBy('location', 'job_category_id')
+            ->groupBy('location_id', 'job_category_id')
             ->get();
-
         foreach ($locationCategoryStats as $item) {
             if ((int) $item->jobs_count === 0) {
                 continue;
@@ -303,7 +304,7 @@ class SitemapController extends Controller
 
             $urls->push([
                 'loc' => route('jobs.location.category', [
-                    'location' => Str::slug($item->location),
+                    'location' => Str::slug($item->location->name),
                     'category_slug' => $category->slug,
                 ]),
                 'lastmod' => max($category->updated_at, $item->updated_at)->toISOString(),

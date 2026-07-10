@@ -2,6 +2,8 @@
 
 use Livewire\Volt\Component;
 use App\Models\Opening;
+use App\Models\Location;
+use Illuminate\Support\Str;
 
 new class extends Component {
     public string $q = '';
@@ -10,7 +12,7 @@ new class extends Component {
 
     public function mount(): void
     {
-        $this->locations = Opening::query()->whereNotNull('location')->distinct()->pluck('location')->filter()->values();
+        $this->locations = Location::orderBy('name')->pluck('name')->values();
     }
 
     public function submit()
@@ -18,7 +20,7 @@ new class extends Component {
         $q = $this->q ?: null;
 
         if ($this->location) {
-            $locationSlug = strtolower(str_replace(' ', '-', $this->location));
+            $locationSlug = Str::slug($location->name);
             $base = route('jobs.location', ['location' => $locationSlug]) . '/';
             $url = $q !== null ? $base . ('?q=' . urlencode($q)) : $base;
             return redirect()->to($url);
@@ -40,8 +42,11 @@ new class extends Component {
                 <div wire:ignore class="mr-2">
                     <select class="form-input mr-10 select-active" id="location-select" name="location">
                         <option value="">Location</option>
-                        @foreach ($locations as $loc)
-                            <option value="{{ $loc }}">{{ $loc }}</option>
+
+                        @foreach ($locations as $location)
+                            <option value="{{ $location }}">
+                                {{ $location }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -78,19 +83,31 @@ new class extends Component {
                 if (homepageSearchForm) {
                     homepageSearchForm.addEventListener('submit', function(e) {
                         e.preventDefault();
-                        const location = $('#location-select').val();
-                        const q = homepageSearchForm.querySelector('input[name="q"]').value.trim()
-                            .toLowerCase();
-                        let targetUrl = @json(route('jobs.location', '__LOCATION__')).replace('__LOCATION__', encodeURIComponent(
-                            String(location).trim().toLowerCase().replace(/\s+/g, '-').replace(
-                                /[^a-z0-9-]/g, '')));
 
-                        if (q) {
-                            targetUrl += (targetUrl.includes('?') ? '&' : '?') + 'q=' + encodeURIComponent(q);
+                        const location = $('#location-select').val();
+                        const q = homepageSearchForm.querySelector('input[name="q"]').value.trim();
+
+                        let targetUrl;
+
+                        if (location) {
+                            const slug = location
+                                .trim()
+                                .toLowerCase()
+                                .replace(/\s+/g, '-')
+                                .replace(/[^a-z0-9-]/g, '');
+
+                            targetUrl = @json(route('jobs.location', '__LOCATION__'))
+                                .replace('__LOCATION__', encodeURIComponent(slug));
+                        } else {
+                            targetUrl = @json(route('jobs'));
                         }
 
-                        window.location.assign(targetUrl);
-                        return false;
+                        if (q) {
+                            targetUrl += (targetUrl.includes('?') ? '&' : '?') +
+                                'q=' + encodeURIComponent(q);
+                        }
+
+                        window.location.href = targetUrl;
                     });
                 }
 

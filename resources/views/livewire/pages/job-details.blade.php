@@ -18,10 +18,10 @@ new #[Layout('components.frontend.main')] class extends Component {
         $this->job = rememberIfEnabled(
             "job:{$slug}",
             now()->addMinutes(30),
-            fn() => Opening::select(['id', 'slug', 'title', 'description', 'responsibilities', 'skills', 'benefits', 'salary_range', 'location', 'job_type', 'employer_id', 'job_category_id', 'meta_title', 'meta_description', 'meta_keywords', 'twitter_tags', 'og_tags', 'created_at'])
+            fn() => Opening::select(['id', 'slug', 'title', 'description', 'responsibilities', 'skills', 'benefits', 'salary_range', 'location_id', 'job_type', 'employer_id', 'job_category_id', 'meta_title', 'meta_description', 'meta_keywords', 'twitter_tags', 'og_tags', 'created_at'])
                 ->where('slug', $slug)
-                ->where('status', 1)
-                ->with('employer', 'job_category')
+                ->active()
+                ->with(['employer', 'job_category', 'location'])
                 ->first(),
         );
         if (!$this->job) {
@@ -36,9 +36,9 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         view()->share('pageType', 'job_posting');
 
-        view()->share('pageTitle', $this->job->meta_title ?? 'Jobs in ' . $this->job->location . ' | ' . $this->job->title . ' | Apply Now - Dubaijobfinder');
+        view()->share('pageTitle', $this->job->meta_title ?? 'Jobs in ' . $this->job->location?->name . ' | ' . $this->job->title . ' | Apply Now - Dubaijobfinder');
 
-        view()->share('pageDescription', $this->job->meta_description ?? 'Find the latest ' . $this->job->title . ' jobs in ' . $this->job->location . '. Apply online for urgent vacancies and career opportunities on Dubaijobfinder.');
+        view()->share('pageDescription', $this->job->meta_description ?? 'Find the latest ' . $this->job->title . ' jobs in ' . $this->job->location?->name . '. Apply online for urgent vacancies and career opportunities on Dubaijobfinder.');
 
         view()->share('metaKeywords', $this->job->meta_keywords);
 
@@ -101,7 +101,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                             [
                                 '@type' => 'PostalAddress',
                                 'streetAddress' => $addressParts[0] ?? null,
-                                'addressLocality' => $addressParts[1] ?? ($this->job->location ?? null),
+                                'addressLocality' => $addressParts[1] ?? ($this->job->location?->name ?? null),
                                 'addressRegion' => $addressParts[2] ?? null,
                                 'postalCode' => $this->job->employer->postal_code ?? null,
                                 'addressCountry' => $addressParts[3] ?? 'AE',
@@ -133,14 +133,14 @@ new #[Layout('components.frontend.main')] class extends Component {
                         '@type' => 'Question',
                         'name' => strtr($faq->question, [
                             '{category-name}' => $this->job->title,
-                            '{place-name}' => $this->job->location,
+                            '{place-name}' => $this->job->location?->name,
                         ]),
                         'acceptedAnswer' => [
                             '@type' => 'Answer',
                             'text' => strip_tags(
                                 strtr($faq->answer, [
                                     '{category-name}' => $this->job->title,
-                                    '{place-name}' => $this->job->location,
+                                    '{place-name}' => $this->job->location?->name,
                                 ]),
                             ),
                         ],
@@ -300,7 +300,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     <div class="sidebar-icon-item"><i class="fi-rr-marker"></i></div>
                                     <div class="sidebar-text-info">
                                         <span class="text-description">Location</span>
-                                        <strong class="small-heading">{{ Str::title($job->location) }}</strong>
+                                        <strong class="small-heading">{{ Str::title($job->location?->name) }}</strong>
                                     </div>
                                 </li>
                                 <li>
@@ -351,7 +351,7 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                 <div class="col-md-12">
                     <h4 class="heading-border"><span>Frequently asked questions</span></h4>
-                    <livewire:pages.components.faqs-list section="jobs" :location="$job->location" :category="$job->title" />
+                    <livewire:pages.components.faqs-list section="jobs" :location="$job->location?->name" :category="$job->title" />
                     <div class="mb-4"></div>
                     <livewire:pages.components.recent-jobs />
                 </div>

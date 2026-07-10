@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\StaticPageResource\Pages;
-use App\Models\Opening;
 use App\Models\StaticPage;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Hidden;

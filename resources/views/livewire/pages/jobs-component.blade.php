@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use App\Enums\EmploymentType;
 use App\Models\JobCategory;
 use App\Models\Opening;
+use App\Models\Location;
 
 new #[Layout('components.frontend.main')] class extends Component {
     use WithPagination;
@@ -24,8 +25,7 @@ new #[Layout('components.frontend.main')] class extends Component {
     public function mount($location = null, $category_slug = null): void
     {
         $this->categories = rememberIfEnabled('job_categories', now()->addHours(12), fn() => JobCategory::active()->pluck('name', 'id'));
-        $this->locations = rememberIfEnabled('job_locations', now()->addHours(12), fn() => Opening::distinct()->pluck('location'));
-
+        $this->locations = rememberIfEnabled('job_locations', now()->addHours(12), fn() => Location::orderBy('name')->get(['id', 'name']));
         $this->job_types = EmploymentType::toOptionsArray();
         $this->q = $this->normalizeQuery(request()->query('q'));
 
@@ -38,7 +38,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                 $foundLocation = $this->locations->first(function ($loc) use ($location) {
                     return Str::slug($loc) === Str::slug($location);
                 });
-                $this->location = Str::slug($foundLocation) ? $foundLocation : null;
+                $this->location = $foundLocation?->id;
             }
         }
         if ($category_slug) {
@@ -83,7 +83,10 @@ new #[Layout('components.frontend.main')] class extends Component {
 
     private function updateUrl()
     {
-        $locationSlug = $this->location ? Str::slug($this->location) : null;
+        $locationSlug = Location::find($this->location)?->name;
+
+        $locationSlug = $locationSlug ? Str::slug($locationSlug) : null;
+
         $categorySlug = null;
 
         if ($this->category) {
@@ -122,8 +125,10 @@ new #[Layout('components.frontend.main')] class extends Component {
     {
         $breadcrumbItems = [['label' => 'Jobs', 'url' => route('jobs')]];
 
-        if (!empty($this->location)) {
-            $breadcrumbItems[] = ['label' => Str::title($this->location)];
+        if ($location = Location::find($this->location)) {
+            $breadcrumbItems[] = [
+                'label' => $location->name,
+            ];
         }
 
         if (!empty($this->category)) {
@@ -176,9 +181,9 @@ new #[Layout('components.frontend.main')] class extends Component {
     public function search()
     {
         // $query = Opening::query()->active()->with('employer');
-        $query = Opening::select(['id', 'slug', 'title', 'location', 'description', 'salary_range', 'job_type', 'job_category_id', 'employer_id'])
+        $query = Opening::select(['id', 'slug', 'title', 'location_id', 'description', 'salary_range', 'job_type', 'job_category_id', 'employer_id'])
             ->active()
-            ->with('employer');
+            ->with(['employer:id,name,logo', 'location:id,name']);
 
         $keyword = $this->normalizeQuery($this->q ?: request()->query('q', ''));
 
@@ -196,12 +201,14 @@ new #[Layout('components.frontend.main')] class extends Component {
                 $q->where('title', 'like', "%{$keyword}%")
                     ->orWhere('slug', 'like', "%{$keyword}%")
                     ->orWhere('job_type', 'like', "%{$keyword}%")
-                    ->orWhere('location', 'like', "%{$keyword}%");
+                    ->orWhereHas('location', function ($query) use ($keyword) {
+                        $query->where('name', 'like', "%{$keyword}%");
+                    });
             });
         }
 
         if ($this->location) {
-            $query->where('location', ucwords(str_replace('-', ' ', $this->location)));
+            $query->where('location_id', $this->location);
         }
 
         if ($this->category) {
@@ -249,7 +256,7 @@ new #[Layout('components.frontend.main')] class extends Component {
     protected function getHeading(): string
     {
         $category = $this->selectedCategoryName();
-        $location = $this->location ? Str::title($this->location) : null;
+        $location = Location::find($this->location)?->name;
 
         if ($category && $location) {
             return "{$category} in {$location}";
@@ -341,9 +348,8 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         class="location-select form-control form-icons">
                                         <option value="">Select Location</option>
                                         @foreach ($locations as $loc)
-                                            <option value="{{ $loc }}"
-                                                {{ Str::slug($location) == Str::slug($loc) ? 'selected' : '' }}>
-                                                {{ Str::ucwords($loc) }}
+                                            <option value="{{ $loc->id }}">
+                                                {{ $loc->name }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -475,7 +481,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                                 <span class="flex-shrink-1 text-truncate"
                                                     style="min-width:0; max-width:50%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
                                                     <i class="fi-rr-marker"></i>
-                                                    {{ $job->location }}
+                                                    {{ $job->location?->name }}
                                                 </span>
                                                 <span class="flex-shrink-1 text-truncate ms-3"
                                                     style="min-width:0; max-width:50%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
@@ -545,7 +551,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                     $selectedCategory = $categories[$category] ?? null;
                 @endphp
 
-                <livewire:pages.components.job-listing-content :category="$selectedCategory" :location="$location" :key="'job-content-' . md5(($location ?? 'all') . '-' . ($selectedCategory ?? 'all'))" />
+                <livewire:pages.components.job-listing-content :category="$selectedCategory" :location="\App\Models\Location::find($location)?->name" :key="'job-content-' . md5(($location ?? 'all') . '-' . ($selectedCategory ?? 'all'))" />
             </div>
         </div>
     </section>

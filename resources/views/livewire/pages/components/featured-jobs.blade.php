@@ -9,7 +9,10 @@ new class extends Component {
     public function mount(): void
     {
         $this->jobs = rememberIfEnabled('feature_jobs', now()->addMinutes(30), function () {
-            return Opening::select('id', 'employer_id', 'title', 'slug', 'location', 'job_type', 'created_at', 'salary_range', 'description')
+            return Opening::select('id', 'employer_id', 'location_id', 'title', 'slug', 'job_type', 'created_at', 'salary_range', 'description')
+                ->featured()
+                ->active()
+                ->with(['employer:id,logo,name', 'location:id,name'])
                 ->where('featured', 1)
                 ->with([
                     'employer' => function ($query) {
@@ -53,7 +56,7 @@ new class extends Component {
                                                 &nbsp;
                                                 <span class="card-job-top--location text-sm">
                                                     <i class="fi-rr-marker"></i>
-                                                    {{ $job->location }}
+                                                    {{ $job->location?->name }}
                                                 </span>
                                                 <span class="card-job-top--type-job text-sm">
                                                     <i class="fi-rr-briefcase"></i>

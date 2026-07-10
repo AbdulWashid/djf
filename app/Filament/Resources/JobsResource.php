@@ -78,7 +78,18 @@ class JobsResource extends Resource
             Section::make('Additional Information')
                 ->schema([
                     Select::make('job_type')->label('Employment Type')->options(EmploymentType::class)->required(),
-                    TextInput::make('location')->required(),
+                    // TextInput::make('location')->required(),
+                    Select::make('location_id')
+                        ->label('Location')
+                        ->relationship('location', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->required()
+                        ->createOptionForm([
+                            TextInput::make('name')
+                                ->required()
+                                ->unique(ignoreRecord: true),
+                        ]),
                     TextInput::make('salary_range')->suffix('AED/Year')->required(),
                     Select::make('expected_nationalities')
                         ->multiple()
@@ -109,7 +120,20 @@ class JobsResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([TextColumn::make('title')->searchable()->sortable(), TextColumn::make('employer.name')->searchable()->sortable(), TextColumn::make('job_type'), TextColumn::make('location'), TextColumn::make('salary_range'), TextColumn::make('gender'), ToggleColumn::make('featured')->label('Featured')->onColor('success'), ToggleColumn::make('status')->label('Status')->onColor('success')->offColor('danger')])
+            ->columns([
+                    TextColumn::make('title')->searchable()->sortable(), 
+                    TextColumn::make('employer.name')->searchable()->sortable(), 
+                    TextColumn::make('job_type'), 
+                    // TextColumn::make('location'), 
+                    TextColumn::make('location.name')
+                        ->label('Location')
+                        ->searchable()
+                        ->sortable(),
+                    TextColumn::make('salary_range'), 
+                    TextColumn::make('gender'), 
+                    ToggleColumn::make('featured')->label('Featured')->onColor('success'), 
+                    ToggleColumn::make('status')->label('Status')->onColor('success')->offColor('danger')]
+                )
             ->filters([
                 //
             ])

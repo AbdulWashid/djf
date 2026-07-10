@@ -16,7 +16,11 @@ new #[Layout('components.frontend.main')] class extends Component {
 
     public function mount($slug = 'data-entry-specialist')
     {
-        $this->job = Opening::where('slug', $slug)->where('status', 1)->with('employer', 'job_category')->first();
+        $this->job = Opening::active()
+            ->where('slug', $slug)
+            ->with(['employer', 'job_category', 'location'])
+            ->first();
+        abort_if(!$this->job, 404);
 
         if (session()->has('application_id')) {
             $applicationId = session('application_id');
@@ -28,10 +32,8 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         view()->share('pageType', 'job_posting');
 
-        view()->share('pageTitle', $this->job->meta_title ?? 'Jobs in ' . $this->job->location . ' | ' . $this->job->title . ' | Apply Now - Dubaijobfinder');
-
-        view()->share('pageDescription', $this->job->meta_description ?? 'Find the latest ' . $this->job->title . ' jobs in ' . $this->job->location . '. Apply online for urgent vacancies and career opportunities on Dubaijobfinder.');
-
+        view()->share('pageTitle', $this->job->meta_title ?? 'Jobs in ' . $this->job->location?->name . ' | ' . $this->job->title . ' | Apply Now - Dubaijobfinder');
+        view()->share('pageDescription', $this->job->meta_description ?? 'Find the latest ' . $this->job->title . ' jobs in ' . $this->job->location?->name . '. Apply online for urgent vacancies and career opportunities on Dubaijobfinder.');
         view()->share('metaKeywords', $this->job->meta_keywords);
 
         view()->share('ogTags', $this->job->og_tags);
@@ -69,7 +71,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                             [
                                 '@type' => 'PostalAddress',
                                 'streetAddress' => $addressParts[0] ?? null,
-                                'addressLocality' => $addressParts[1] ?? ($this->job->location ?? null),
+                                'addressLocality' => $addressParts[1] ?? ($this->job->location?->name ?? null),
                                 'addressRegion' => $addressParts[2] ?? null,
                                 'addressCountry' => $addressParts[3] ?? null,
                             ],

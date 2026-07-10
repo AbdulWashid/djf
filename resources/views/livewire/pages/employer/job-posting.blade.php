@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Models\Opening;
 use App\Models\JobCategory;
 use App\Models\Nationality;
+use App\Models\Location;
 
 new #[Layout('components.frontend.main')] class extends Component {
     use WithPagination;
@@ -21,7 +22,8 @@ new #[Layout('components.frontend.main')] class extends Component {
     public $benefits = '';
 
     public $job_type = '';
-    public $location = '';
+    public $location_id = '';
+    public $locations;
     public $salary_range = '';
 
     public $gender = '';
@@ -32,6 +34,10 @@ new #[Layout('components.frontend.main')] class extends Component {
     public $editing = false;
     public $jobId = null;
 
+    public function mount()
+    {
+        $this->locations = Location::orderBy('name')->get();
+    }
     protected function rules()
     {
         return [
@@ -44,7 +50,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             'benefits' => 'nullable',
 
             'job_type' => 'required',
-            'location' => 'required|max:255',
+            'location_id' => 'required|exists:locations,id',
             'salary_range' => 'required|max:255',
 
             'gender' => 'required',
@@ -111,7 +117,7 @@ new #[Layout('components.frontend.main')] class extends Component {
         $this->benefits = $job->benefits;
 
         $this->job_type = $job->job_type;
-        $this->location = $job->location;
+        $this->location_id = $job->location_id;
         $this->salary_range = $job->salary_range;
 
         $this->gender = $job->gender;
@@ -123,7 +129,7 @@ new #[Layout('components.frontend.main')] class extends Component {
     }
     public function cancelEdit()
     {
-        $this->reset(['jobId', 'editing', 'title', 'job_category_id', 'description', 'responsibilities', 'skills', 'benefits', 'job_type', 'location', 'salary_range', 'gender', 'required_experience', 'expected_nationalities']);
+        $this->reset(['jobId', 'editing', 'title', 'job_category_id', 'description', 'responsibilities', 'skills', 'benefits', 'job_type', 'location_id', 'salary_range', 'gender', 'required_experience', 'expected_nationalities']);
 
         $this->resetPage();
     }
@@ -139,7 +145,7 @@ new #[Layout('components.frontend.main')] class extends Component {
         return [
             'categories' => JobCategory::where('status', true)->get(),
 
-            'jobs' => Opening::query()
+            'jobs' => Opening::with(['job_category', 'location'])
                 ->where('employer_id', auth('employer')->id())
                 ->latest()
                 ->paginate(10),
@@ -255,17 +261,19 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 </div>
 
                                 {{-- Location --}}
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">
-                                        Location <span class="text-danger">*</span>
-                                    </label>
+                                <select wire:model="location_id" class="form-control">
+                                    <option value="">Select Location</option>
 
-                                    <input type="text" wire:model="location" class="form-control">
+                                    @foreach ($locations as $location)
+                                        <option value="{{ $location->id }}">
+                                            {{ $location->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
 
-                                    @error('location')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
+                                @error('location_id')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
 
                                 {{-- Salary --}}
                                 <div class="col-md-6 mb-3">

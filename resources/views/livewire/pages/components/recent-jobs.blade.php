@@ -8,7 +8,15 @@ new class extends Component {
 
     public function mount()
     {
-        $this->jobs = rememberIfEnabled('recent_jobs', now()->addMinutes(30), fn() => Opening::where('status', 1)->with('employer')->orderBy('created_at', 'desc')->take(5)->get());
+        $this->jobs = rememberIfEnabled(
+            'recent_jobs',
+            now()->addMinutes(30),
+            fn() => Opening::active()
+                ->with(['employer:id,name,logo', 'location:id,name'])
+                ->latest()
+                ->take(5)
+                ->get(),
+        );
     }
 }; ?>
 
@@ -36,7 +44,7 @@ new class extends Component {
                                         <div class="col-lg-7">
                                             <span class="card-job-top--company">{{ $job->employer->name }}</span> &nbsp;
                                             <span class="card-job-top--location text-sm"><i class="fi-rr-marker"></i>
-                                                {{ $job->location }}</span>
+                                                {{ $job->location?->name }}</span>
                                             <span class="card-job-top--type-job text-sm"><i class="fi-rr-briefcase"></i>
                                                 {{ $job->job_type->getLabel() }}</span>
                                             <span class="card-job-top--post-time text-sm"><i class="fi-rr-clock"></i>
@@ -50,7 +58,7 @@ new class extends Component {
                                 </div>
                             </div>
                             <div class="card-job-description mt-20">
-                                {!! Str::excerpt($job->description) !!}
+                                {!! Str::excerpt(strip_tags($job->description), 120) !!}
                             </div>
                             {{-- <div class="card-job-bottom mt-25">
                                 <div class="row">

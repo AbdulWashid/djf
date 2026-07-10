@@ -12,7 +12,7 @@ new #[Layout('components.frontend.main')] class extends Component {
     public function with(): array
     {
         return [
-            'applications' => JobApplications::with('opening')
+            'applications' => JobApplications::with(['opening.location', 'opening.employer'])
                 ->where('candidate_id', Auth::guard('candidate')->id())
                 ->latest()
                 ->paginate(10),
@@ -95,7 +95,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                                         &nbsp;&nbsp;
                                                     @endif
                                                     <i class="bi bi-geo-alt me-1"></i>
-                                                    {{ $application->opening?->location }}
+                                                    {{ $application->opening?->location?->name }}
                                                 </div>
                                             </td>
                                             <td>
