@@ -5,10 +5,12 @@ use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use App\Models\Opening;
 use App\Models\JobCategory;
 use App\Models\Nationality;
 use App\Models\Location;
+use App\Enums\EmploymentType;
 
 new #[Layout('components.frontend.main')] class extends Component {
     use WithPagination;
@@ -41,23 +43,47 @@ new #[Layout('components.frontend.main')] class extends Component {
     protected function rules()
     {
         return [
-            'title' => 'required|max:255',
-            'job_category_id' => 'required|exists:job_categories,id',
+            'title' => ['required', 'string', 'max:255'],
+            'job_category_id' => ['required', 'integer', 'exists:job_categories,id'],
 
-            'description' => 'required',
-            'responsibilities' => 'nullable',
-            'skills' => 'nullable',
-            'benefits' => 'nullable',
+            'description' => ['required', 'string', $this->richTextNotEmptyRule()],
+            'responsibilities' => ['nullable', 'string'],
+            'skills' => ['nullable', 'string'],
+            'benefits' => ['nullable', 'string'],
 
-            'job_type' => 'required',
-            'location_id' => 'required|exists:locations,id',
-            'salary_range' => 'required|max:255',
+            'job_type' => ['required', Rule::in(array_column(EmploymentType::cases(), 'value'))],
+            'location_id' => ['required', 'integer', 'exists:locations,id'],
+            'salary_range' => ['required', 'string', 'max:255'],
 
-            'gender' => 'required',
-            'required_experience' => 'required',
+            'gender' => ['required', Rule::in(['male', 'female', 'both', 'other'])],
+            'required_experience' => ['required', 'string', 'max:255'],
 
-            'expected_nationalities' => 'required|array|min:1',
+            'expected_nationalities' => ['required', 'array', 'min:1'],
+            'expected_nationalities.*' => ['integer', 'exists:nationalities,id'],
         ];
+    }
+
+    protected function messages()
+    {
+        return [
+            'job_category_id.exists' => 'Please select a valid job category.',
+            'location_id.exists' => 'Please select a valid location.',
+            'expected_nationalities.min' => 'Select at least one expected nationality.',
+            'expected_nationalities.*.exists' => 'One or more selected nationalities are invalid.',
+        ];
+    }
+
+    /**
+     * Guard against rich-text fields that only contain empty HTML markup
+     * (e.g. "<p><br></p>" left behind by a WYSIWYG editor).
+     */
+    protected function richTextNotEmptyRule()
+    {
+        return function ($attribute, $value, $fail) {
+            if (trim(strip_tags((string) $value)) === '') {
+                $fail('The ' . str_replace('_', ' ', $attribute) . ' field is required.');
+            }
+        };
     }
     public function save()
     {
@@ -73,7 +99,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             'benefits' => $this->benefits,
 
             'job_type' => $this->job_type,
-            'location' => $this->location,
+            'location_id' => $this->location_id,
             'salary_range' => $this->salary_range,
 
             'expected_nationalities' => $this->expected_nationalities,
@@ -89,7 +115,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             session()->flash('success', 'Job updated successfully.');
         } else {
             $data['employer_id'] = auth('employer')->id();
-            $data['slug'] = Str::slug($this->title) . '-' . time();
+            $data['slug'] = $this->generateUniqueSlug($this->title);
             $data['featured'] = false;
             $data['status'] = false;
 
@@ -143,13 +169,28 @@ new #[Layout('components.frontend.main')] class extends Component {
     public function with()
     {
         return [
-            'categories' => JobCategory::where('status', true)->get(),
+            'categories' => JobCategory::where('status', true)->orderBy('name')->get(),
+            'nationalities' => Nationality::where('status', true)->orderBy('name')->get(),
 
             'jobs' => Opening::with(['job_category', 'location'])
                 ->where('employer_id', auth('employer')->id())
                 ->latest()
                 ->paginate(10),
         ];
+    }
+
+    protected function generateUniqueSlug(string $title): string
+    {
+        $slug = \Illuminate\Support\Str::slug($title);
+        $original = $slug;
+        $count = 1;
+
+        while (\App\Models\Opening::where('slug', $slug)->exists()) {
+            $count++;
+            $slug = $original . '-' . $count;
+        }
+
+        return $slug;
     }
 }; ?>
 <div>
@@ -211,7 +252,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Job Title <span class="text-danger">*</span>
                                     </label>
 
-                                    <input type="text" wire:model="title" class="form-control">
+                                    <input type="text" wire:model="title" class="form-control" maxlength="255">
 
                                     @error('title')
                                         <small class="text-danger">{{ $message }}</small>
@@ -224,15 +265,44 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Category <span class="text-danger">*</span>
                                     </label>
 
-                                    <select wire:model="job_category_id" class="form-control">
-                                        <option value="">Select Category</option>
+                                    <div wire:ignore x-data="{
+                                        value: @entangle('job_category_id'),
+                                        init() {
+                                            (async () => {
+                                                await window.jobFormDependencies;
+                                    
+                                                let select = $(this.$refs.select);
+                                    
+                                                select.select2({
+                                                    width: '100%',
+                                                    placeholder: 'Select Category',
+                                                    allowClear: true,
+                                                });
+                                    
+                                                select.val(this.value || '').trigger('change.select2');
+                                    
+                                                select.on('change', () => {
+                                                    this.value = select.val();
+                                                });
+                                    
+                                                this.$watch('value', (newValue) => {
+                                                    if (select.val() != newValue) {
+                                                        select.val(newValue || '').trigger('change.select2');
+                                                    }
+                                                });
+                                            })();
+                                        },
+                                    }">
+                                        <select x-ref="select" class="form-control">
+                                            <option value="">Select Category</option>
 
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}">
-                                                {{ $category->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                            @foreach ($categories as $category)
+                                                <option value="{{ $category->id }}">
+                                                    {{ $category->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
 
                                     @error('job_category_id')
                                         <small class="text-danger">{{ $message }}</small>
@@ -261,19 +331,54 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 </div>
 
                                 {{-- Location --}}
-                                <select wire:model="location_id" class="form-control">
-                                    <option value="">Select Location</option>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        Location <span class="text-danger">*</span>
+                                    </label>
 
-                                    @foreach ($locations as $location)
-                                        <option value="{{ $location->id }}">
-                                            {{ $location->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                    <div wire:ignore x-data="{
+                                        value: @entangle('location_id'),
+                                        init() {
+                                            (async () => {
+                                                await window.jobFormDependencies;
+                                    
+                                                let select = $(this.$refs.select);
+                                    
+                                                select.select2({
+                                                    width: '100%',
+                                                    placeholder: 'Select Location',
+                                                    allowClear: true,
+                                                });
+                                    
+                                                select.val(this.value || '').trigger('change.select2');
+                                    
+                                                select.on('change', () => {
+                                                    this.value = select.val();
+                                                });
+                                    
+                                                this.$watch('value', (newValue) => {
+                                                    if (select.val() != newValue) {
+                                                        select.val(newValue || '').trigger('change.select2');
+                                                    }
+                                                });
+                                            })();
+                                        },
+                                    }">
+                                        <select x-ref="select" class="form-control">
+                                            <option value="">Select Location</option>
 
-                                @error('location_id')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
+                                            @foreach ($locations as $location)
+                                                <option value="{{ $location->id }}">
+                                                    {{ $location->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    @error('location_id')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
 
                                 {{-- Salary --}}
                                 <div class="col-md-6 mb-3">
@@ -281,7 +386,8 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Salary Range <span class="text-danger">*</span>
                                     </label>
 
-                                    <input type="text" wire:model="salary_range" class="form-control">
+                                    <input type="text" wire:model="salary_range" class="form-control" maxlength="255"
+                                        placeholder="e.g. AED 5,000 - 7,000">
 
                                     @error('salary_range')
                                         <small class="text-danger">{{ $message }}</small>
@@ -294,7 +400,8 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Required Experience <span class="text-danger">*</span>
                                     </label>
 
-                                    <input type="text" wire:model="required_experience" class="form-control">
+                                    <input type="text" wire:model="required_experience" class="form-control"
+                                        maxlength="255" placeholder="e.g. 2+ years">
 
                                     @error('required_experience')
                                         <small class="text-danger">{{ $message }}</small>
@@ -326,21 +433,49 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Expected Nationalities <span class="text-danger">*</span>
                                     </label>
 
-                                    <select wire:model="expected_nationalities" class="form-control" multiple>
-
-                                        @foreach (\App\Models\Nationality::orderBy('name')->get() as $nationality)
-                                            <option value="{{ $nationality->id }}">
-                                                {{ $nationality->name }}
-                                            </option>
-                                        @endforeach
-
-                                    </select>
-
-                                    <small class="text-muted">
-                                        Hold Ctrl (Windows) / Cmd (Mac) to select multiple.
-                                    </small>
+                                    <div wire:ignore x-data="{
+                                        value: @entangle('expected_nationalities'),
+                                        init() {
+                                            (async () => {
+                                                await window.jobFormDependencies;
+                                    
+                                                let select = $(this.$refs.select);
+                                    
+                                                select.select2({
+                                                    width: '100%',
+                                                    placeholder: 'Select Nationalities',
+                                                });
+                                    
+                                                select.val(this.value || []).trigger('change.select2');
+                                    
+                                                select.on('change', () => {
+                                                    this.value = select.val() || [];
+                                                });
+                                    
+                                                this.$watch('value', (newValue) => {
+                                                    let current = select.val() || [];
+                                                    let incoming = newValue || [];
+                                    
+                                                    if (JSON.stringify(current) !== JSON.stringify(incoming)) {
+                                                        select.val(incoming).trigger('change.select2');
+                                                    }
+                                                });
+                                            })();
+                                        },
+                                    }">
+                                        <select x-ref="select" class="form-control" multiple>
+                                            @foreach ($nationalities as $nationality)
+                                                <option value="{{ $nationality->id }}">
+                                                    {{ $nationality->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
 
                                     @error('expected_nationalities')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                    @error('expected_nationalities.*')
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
@@ -351,7 +486,43 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Job Description <span class="text-danger">*</span>
                                     </label>
 
-                                    <textarea rows="6" wire:model="description" class="form-control"></textarea>
+                                    <div wire:ignore x-data="{
+                                        value: @entangle('description'),
+                                        editor: null,
+                                        init() {
+                                            (async () => {
+                                                await window.jobFormDependencies;
+                                    
+                                                tinymce.init({
+                                                    selector: '#description-editor',
+                                                    height: 280,
+                                                    menubar: false,
+                                                    plugins: 'lists link',
+                                                    toolbar: 'undo redo | formatselect | bold italic underline | bullist numlist | link',
+                                                    branding: false,
+                                                    setup: (editor) => {
+                                                        this.editor = editor;
+                                    
+                                                        editor.on('init', () => {
+                                                            editor.setContent(this.value || '');
+                                                        });
+                                    
+                                                        editor.on('change keyup undo redo', () => {
+                                                            this.value = editor.getContent();
+                                                        });
+                                                    },
+                                                });
+                                    
+                                                this.$watch('value', (newValue) => {
+                                                    if (this.editor && this.editor.getContent() !== (newValue || '')) {
+                                                        this.editor.setContent(newValue || '');
+                                                    }
+                                                });
+                                            })();
+                                        },
+                                    }">
+                                        <textarea id="description-editor"></textarea>
+                                    </div>
 
                                     @error('description')
                                         <small class="text-danger">{{ $message }}</small>
@@ -364,7 +535,43 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Responsibilities
                                     </label>
 
-                                    <textarea rows="5" wire:model="responsibilities" class="form-control"></textarea>
+                                    <div wire:ignore x-data="{
+                                        value: @entangle('responsibilities'),
+                                        editor: null,
+                                        init() {
+                                            (async () => {
+                                                await window.jobFormDependencies;
+                                    
+                                                tinymce.init({
+                                                    selector: '#responsibilities-editor',
+                                                    height: 240,
+                                                    menubar: false,
+                                                    plugins: 'lists link',
+                                                    toolbar: 'bold italic | bullist numlist | link',
+                                                    branding: false,
+                                                    setup: (editor) => {
+                                                        this.editor = editor;
+                                    
+                                                        editor.on('init', () => {
+                                                            editor.setContent(this.value || '');
+                                                        });
+                                    
+                                                        editor.on('change keyup undo redo', () => {
+                                                            this.value = editor.getContent();
+                                                        });
+                                                    },
+                                                });
+                                    
+                                                this.$watch('value', (newValue) => {
+                                                    if (this.editor && this.editor.getContent() !== (newValue || '')) {
+                                                        this.editor.setContent(newValue || '');
+                                                    }
+                                                });
+                                            })();
+                                        },
+                                    }">
+                                        <textarea id="responsibilities-editor"></textarea>
+                                    </div>
 
                                     @error('responsibilities')
                                         <small class="text-danger">{{ $message }}</small>
@@ -377,7 +584,43 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Skills
                                     </label>
 
-                                    <textarea rows="5" wire:model="skills" class="form-control"></textarea>
+                                    <div wire:ignore x-data="{
+                                        value: @entangle('skills'),
+                                        editor: null,
+                                        init() {
+                                            (async () => {
+                                                await window.jobFormDependencies;
+                                    
+                                                tinymce.init({
+                                                    selector: '#skills-editor',
+                                                    height: 240,
+                                                    menubar: false,
+                                                    plugins: 'lists link',
+                                                    toolbar: 'bold italic | bullist numlist | link',
+                                                    branding: false,
+                                                    setup: (editor) => {
+                                                        this.editor = editor;
+                                    
+                                                        editor.on('init', () => {
+                                                            editor.setContent(this.value || '');
+                                                        });
+                                    
+                                                        editor.on('change keyup undo redo', () => {
+                                                            this.value = editor.getContent();
+                                                        });
+                                                    },
+                                                });
+                                    
+                                                this.$watch('value', (newValue) => {
+                                                    if (this.editor && this.editor.getContent() !== (newValue || '')) {
+                                                        this.editor.setContent(newValue || '');
+                                                    }
+                                                });
+                                            })();
+                                        },
+                                    }">
+                                        <textarea id="skills-editor"></textarea>
+                                    </div>
 
                                     @error('skills')
                                         <small class="text-danger">{{ $message }}</small>
@@ -390,7 +633,43 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Benefits
                                     </label>
 
-                                    <textarea rows="5" wire:model="benefits" class="form-control"></textarea>
+                                    <div wire:ignore x-data="{
+                                        value: @entangle('benefits'),
+                                        editor: null,
+                                        init() {
+                                            (async () => {
+                                                await window.jobFormDependencies;
+                                    
+                                                tinymce.init({
+                                                    selector: '#benefits-editor',
+                                                    height: 240,
+                                                    menubar: false,
+                                                    plugins: 'lists link',
+                                                    toolbar: 'bold italic | bullist numlist | link',
+                                                    branding: false,
+                                                    setup: (editor) => {
+                                                        this.editor = editor;
+                                    
+                                                        editor.on('init', () => {
+                                                            editor.setContent(this.value || '');
+                                                        });
+                                    
+                                                        editor.on('change keyup undo redo', () => {
+                                                            this.value = editor.getContent();
+                                                        });
+                                                    },
+                                                });
+                                    
+                                                this.$watch('value', (newValue) => {
+                                                    if (this.editor && this.editor.getContent() !== (newValue || '')) {
+                                                        this.editor.setContent(newValue || '');
+                                                    }
+                                                });
+                                            })();
+                                        },
+                                    }">
+                                        <textarea id="benefits-editor"></textarea>
+                                    </div>
 
                                     @error('benefits')
                                         <small class="text-danger">{{ $message }}</small>
@@ -449,7 +728,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                                 {{ $job->job_category?->name }}
                                             </td>
                                             <td>
-                                                {{ $job->job_type }}
+                                                {{ $job->job_type->getLabel() }}
                                             </td>
                                             <td>
                                                 @if ($job->status)
@@ -493,6 +772,42 @@ new #[Layout('components.frontend.main')] class extends Component {
             </div>
         </div>
     </section>
+    @once
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+        <script>
+            function jobFormLoadScriptOnce(src) {
+                return new Promise((resolve, reject) => {
+                    if (document.querySelector(`script[src="${src}"]`)) {
+                        resolve();
+                        return;
+                    }
+
+                    const script = document.createElement('script');
+                    script.src = src;
+                    script.onload = () => resolve();
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+            }
+
+            window.jobFormDependencies = window.jobFormDependencies || (async function() {
+                await Promise.all([
+                    window.jQuery ?
+                    Promise.resolve() :
+                    jobFormLoadScriptOnce('https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js'),
+                    window.tinymce ?
+                    Promise.resolve() :
+                    jobFormLoadScriptOnce('https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js'),
+                ]);
+
+                if (!(window.jQuery && window.jQuery.fn && window.jQuery.fn.select2)) {
+                    await jobFormLoadScriptOnce(
+                        'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js');
+                }
+            })();
+        </script>
+    @endonce
+
     @script
         <script>
             $wire.on('scroll-to-top', () => {

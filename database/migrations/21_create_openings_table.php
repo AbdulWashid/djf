@@ -22,7 +22,6 @@ return new class extends Migration
             $table->text('meta_keywords')->nullable();
             $table->string('meta_description');
             $table->string('job_type');
-            $table->string('location');
             $table->string('salary_range');
             $table->string('gender');
             $table->longText('expected_nationalities')->nullable();
