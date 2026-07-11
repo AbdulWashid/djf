@@ -46,7 +46,7 @@ class StaticPageResource extends Resource
 
     protected static ?string $slug = 'static-pages';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
 
     public static function form(Form $form): Form
     {
