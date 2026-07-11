@@ -149,18 +149,58 @@ class OptimizePerformance
 
         // Minify inline JavaScript
         $content = preg_replace_callback(
-            '/<script[^>]*>(.*?)<\/script>/is',
+            '/<script([^>]*)>(.*?)<\/script>/is',
             function ($matches) {
-                $js = $matches[1];
+                $attributes = $matches[1];
+                $js = $matches[2];
+
+                // Only minify actual JavaScript. Scripts with a non-JS type
+                // (application/ld+json, importmap, text/template, etc.) must be
+                // left untouched — otherwise the "//" comment stripper below
+                // will corrupt things like JSON-LD values containing URLs
+                // (e.g. "https://schema.org" becomes "https:").
+                if ($this->hasNonJavaScriptType($attributes)) {
+                    return '<script' . $attributes . '>' . $js . '</script>';
+                }
+
                 // Basic JS minification (remove comments and extra whitespace)
                 $js = preg_replace('/\/\*.*?\*\//s', '', $js);
-                $js = preg_replace('/\/\/.*$/m', '', $js);
+                // Negative lookbehind for ":" avoids matching the "//" in
+                // protocol-relative / absolute URLs (e.g. "https://...").
+                $js = preg_replace('#(?<!:)//.*$#m', '', $js);
                 $js = preg_replace('/\s+/', ' ', $js);
-                return '<script' . substr($matches[0], 7, strpos($matches[0], '>') - 7) . '>' . trim($js) . '</script>';
+                return '<script' . $attributes . '>' . trim($js) . '</script>';
             },
             $content
         );
 
         return $content;
+    }
+
+    /**
+     * Determine whether a <script> tag's attribute string declares a type
+     * that is not executable JavaScript (e.g. application/ld+json,
+     * application/json, importmap, text/template). Scripts like these must
+     * never be run through the JS comment-stripping minifier.
+     */
+    private function hasNonJavaScriptType(string $attributes): bool
+    {
+        if (!preg_match('/\btype\s*=\s*(["\'])(.*?)\1/i', $attributes, $match)) {
+            // No type attribute at all defaults to JavaScript.
+            return false;
+        }
+
+        $type = strtolower(trim($match[2]));
+
+        $javascriptTypes = [
+            '',
+            'text/javascript',
+            'application/javascript',
+            'application/ecmascript',
+            'application/x-javascript',
+            'module',
+        ];
+
+        return !in_array($type, $javascriptTypes, true);
     }
 }

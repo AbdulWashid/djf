@@ -126,45 +126,16 @@ new #[Layout('components.frontend.main')] class extends Component {
         $breadcrumbItems = [['label' => 'Jobs', 'url' => route('jobs')]];
 
         if ($location = Location::find($this->location)) {
-            $breadcrumbItems[] = [
-                'label' => $location->name,
-            ];
+            $breadcrumbItems[] = ['label' => $location->name];
         }
 
         if (!empty($this->category)) {
             $breadcrumbItems[] = ['label' => $this->selectedCategoryName() ?? 'Category'];
         }
 
-        return [
-            [
-                '@context' => 'https://schema.org',
-                '@type' => 'Organization',
-                'name' => config('app.name'),
-                'url' => url('/'),
-            ],
-            [
-                '@context' => 'https://schema.org',
-                '@type' => 'BreadcrumbList',
-                'itemListElement' => collect($breadcrumbItems)
-                    ->values()
-                    ->map(function (array $item, int $index) {
-                        $entry = [
-                            '@type' => 'ListItem',
-                            'position' => $index + 1,
-                            'name' => $item['label'],
-                        ];
-
-                        if (!empty($item['url'])) {
-                            $entry['item'] = $item['url'];
-                        }
-
-                        return $entry;
-                    })
-                    ->all(),
-            ],
-        ];
+        // Only pass breadcrumb items back up — let main.blade.php build the actual schema
+        return $breadcrumbItems;
     }
-
     public function clear()
     {
         // reset component search filters
