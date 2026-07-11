@@ -265,34 +265,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Category <span class="text-danger">*</span>
                                     </label>
 
-                                    <div wire:ignore x-data="{
-                                        value: @entangle('job_category_id'),
-                                        init() {
-                                            (async () => {
-                                                await window.jobFormDependencies;
-                                    
-                                                let select = $(this.$refs.select);
-                                    
-                                                select.select2({
-                                                    width: '100%',
-                                                    placeholder: 'Select Category',
-                                                    allowClear: true,
-                                                });
-                                    
-                                                select.val(this.value || '').trigger('change.select2');
-                                    
-                                                select.on('change', () => {
-                                                    this.value = select.val();
-                                                });
-                                    
-                                                this.$watch('value', (newValue) => {
-                                                    if (select.val() != newValue) {
-                                                        select.val(newValue || '').trigger('change.select2');
-                                                    }
-                                                });
-                                            })();
-                                        },
-                                    }">
+                                    <div wire:ignore x-data="jobFormSelect2(@entangle('job_category_id'), { placeholder: 'Select Category' })">
                                         <select x-ref="select" class="form-control">
                                             <option value="">Select Category</option>
 
@@ -336,34 +309,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Location <span class="text-danger">*</span>
                                     </label>
 
-                                    <div wire:ignore x-data="{
-                                        value: @entangle('location_id'),
-                                        init() {
-                                            (async () => {
-                                                await window.jobFormDependencies;
-                                    
-                                                let select = $(this.$refs.select);
-                                    
-                                                select.select2({
-                                                    width: '100%',
-                                                    placeholder: 'Select Location',
-                                                    allowClear: true,
-                                                });
-                                    
-                                                select.val(this.value || '').trigger('change.select2');
-                                    
-                                                select.on('change', () => {
-                                                    this.value = select.val();
-                                                });
-                                    
-                                                this.$watch('value', (newValue) => {
-                                                    if (select.val() != newValue) {
-                                                        select.val(newValue || '').trigger('change.select2');
-                                                    }
-                                                });
-                                            })();
-                                        },
-                                    }">
+                                    <div wire:ignore x-data="jobFormSelect2(@entangle('location_id'), { placeholder: 'Select Location' })">
                                         <select x-ref="select" class="form-control">
                                             <option value="">Select Location</option>
 
@@ -433,36 +379,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Expected Nationalities <span class="text-danger">*</span>
                                     </label>
 
-                                    <div wire:ignore x-data="{
-                                        value: @entangle('expected_nationalities'),
-                                        init() {
-                                            (async () => {
-                                                await window.jobFormDependencies;
-                                    
-                                                let select = $(this.$refs.select);
-                                    
-                                                select.select2({
-                                                    width: '100%',
-                                                    placeholder: 'Select Nationalities',
-                                                });
-                                    
-                                                select.val(this.value || []).trigger('change.select2');
-                                    
-                                                select.on('change', () => {
-                                                    this.value = select.val() || [];
-                                                });
-                                    
-                                                this.$watch('value', (newValue) => {
-                                                    let current = select.val() || [];
-                                                    let incoming = newValue || [];
-                                    
-                                                    if (JSON.stringify(current) !== JSON.stringify(incoming)) {
-                                                        select.val(incoming).trigger('change.select2');
-                                                    }
-                                                });
-                                            })();
-                                        },
-                                    }">
+                                    <div wire:ignore x-data="jobFormSelect2(@entangle('expected_nationalities'), { placeholder: 'Select Nationalities', multiple: true })">
                                         <select x-ref="select" class="form-control" multiple>
                                             @foreach ($nationalities as $nationality)
                                                 <option value="{{ $nationality->id }}">
@@ -486,41 +403,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Job Description <span class="text-danger">*</span>
                                     </label>
 
-                                    <div wire:ignore x-data="{
-                                        value: @entangle('description'),
-                                        editor: null,
-                                        init() {
-                                            (async () => {
-                                                await window.jobFormDependencies;
-                                    
-                                                tinymce.init({
-                                                    selector: '#description-editor',
-                                                    height: 280,
-                                                    menubar: false,
-                                                    plugins: 'lists link',
-                                                    toolbar: 'undo redo | formatselect | bold italic underline | bullist numlist | link',
-                                                    branding: false,
-                                                    setup: (editor) => {
-                                                        this.editor = editor;
-                                    
-                                                        editor.on('init', () => {
-                                                            editor.setContent(this.value || '');
-                                                        });
-                                    
-                                                        editor.on('change keyup undo redo', () => {
-                                                            this.value = editor.getContent();
-                                                        });
-                                                    },
-                                                });
-                                    
-                                                this.$watch('value', (newValue) => {
-                                                    if (this.editor && this.editor.getContent() !== (newValue || '')) {
-                                                        this.editor.setContent(newValue || '');
-                                                    }
-                                                });
-                                            })();
-                                        },
-                                    }">
+                                    <div wire:ignore x-data="jobFormEditor(@entangle('description'), '#description-editor', { height: 280, toolbar: 'undo redo | formatselect | bold italic underline | bullist numlist | link' })">
                                         <textarea id="description-editor"></textarea>
                                     </div>
 
@@ -535,41 +418,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Responsibilities
                                     </label>
 
-                                    <div wire:ignore x-data="{
-                                        value: @entangle('responsibilities'),
-                                        editor: null,
-                                        init() {
-                                            (async () => {
-                                                await window.jobFormDependencies;
-                                    
-                                                tinymce.init({
-                                                    selector: '#responsibilities-editor',
-                                                    height: 240,
-                                                    menubar: false,
-                                                    plugins: 'lists link',
-                                                    toolbar: 'bold italic | bullist numlist | link',
-                                                    branding: false,
-                                                    setup: (editor) => {
-                                                        this.editor = editor;
-                                    
-                                                        editor.on('init', () => {
-                                                            editor.setContent(this.value || '');
-                                                        });
-                                    
-                                                        editor.on('change keyup undo redo', () => {
-                                                            this.value = editor.getContent();
-                                                        });
-                                                    },
-                                                });
-                                    
-                                                this.$watch('value', (newValue) => {
-                                                    if (this.editor && this.editor.getContent() !== (newValue || '')) {
-                                                        this.editor.setContent(newValue || '');
-                                                    }
-                                                });
-                                            })();
-                                        },
-                                    }">
+                                    <div wire:ignore x-data="jobFormEditor(@entangle('responsibilities'), '#responsibilities-editor', { height: 240 })">
                                         <textarea id="responsibilities-editor"></textarea>
                                     </div>
 
@@ -584,41 +433,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Skills
                                     </label>
 
-                                    <div wire:ignore x-data="{
-                                        value: @entangle('skills'),
-                                        editor: null,
-                                        init() {
-                                            (async () => {
-                                                await window.jobFormDependencies;
-                                    
-                                                tinymce.init({
-                                                    selector: '#skills-editor',
-                                                    height: 240,
-                                                    menubar: false,
-                                                    plugins: 'lists link',
-                                                    toolbar: 'bold italic | bullist numlist | link',
-                                                    branding: false,
-                                                    setup: (editor) => {
-                                                        this.editor = editor;
-                                    
-                                                        editor.on('init', () => {
-                                                            editor.setContent(this.value || '');
-                                                        });
-                                    
-                                                        editor.on('change keyup undo redo', () => {
-                                                            this.value = editor.getContent();
-                                                        });
-                                                    },
-                                                });
-                                    
-                                                this.$watch('value', (newValue) => {
-                                                    if (this.editor && this.editor.getContent() !== (newValue || '')) {
-                                                        this.editor.setContent(newValue || '');
-                                                    }
-                                                });
-                                            })();
-                                        },
-                                    }">
+                                    <div wire:ignore x-data="jobFormEditor(@entangle('skills'), '#skills-editor', { height: 240 })">
                                         <textarea id="skills-editor"></textarea>
                                     </div>
 
@@ -633,41 +448,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Benefits
                                     </label>
 
-                                    <div wire:ignore x-data="{
-                                        value: @entangle('benefits'),
-                                        editor: null,
-                                        init() {
-                                            (async () => {
-                                                await window.jobFormDependencies;
-                                    
-                                                tinymce.init({
-                                                    selector: '#benefits-editor',
-                                                    height: 240,
-                                                    menubar: false,
-                                                    plugins: 'lists link',
-                                                    toolbar: 'bold italic | bullist numlist | link',
-                                                    branding: false,
-                                                    setup: (editor) => {
-                                                        this.editor = editor;
-                                    
-                                                        editor.on('init', () => {
-                                                            editor.setContent(this.value || '');
-                                                        });
-                                    
-                                                        editor.on('change keyup undo redo', () => {
-                                                            this.value = editor.getContent();
-                                                        });
-                                                    },
-                                                });
-                                    
-                                                this.$watch('value', (newValue) => {
-                                                    if (this.editor && this.editor.getContent() !== (newValue || '')) {
-                                                        this.editor.setContent(newValue || '');
-                                                    }
-                                                });
-                                            })();
-                                        },
-                                    }">
+                                    <div wire:ignore x-data="jobFormEditor(@entangle('benefits'), '#benefits-editor', { height: 240 })">
                                         <textarea id="benefits-editor"></textarea>
                                     </div>
 
@@ -774,6 +555,8 @@ new #[Layout('components.frontend.main')] class extends Component {
     </section>
     @once
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css">
         <script>
             function jobFormLoadScriptOnce(src) {
                 return new Promise((resolve, reject) => {
@@ -805,6 +588,88 @@ new #[Layout('components.frontend.main')] class extends Component {
                         'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js');
                 }
             })();
+
+            function jobFormSelect2(initialValue, options) {
+                options = options || {};
+
+                return {
+                    value: initialValue,
+                    init() {
+                        (async () => {
+                            await window.jobFormDependencies;
+
+                            const select = jQuery(this.$refs.select);
+                            const empty = options.multiple ? [] : '';
+
+                            select.select2({
+                                width: '100%',
+                                theme: 'bootstrap-5',
+                                placeholder: options.placeholder || '',
+                                allowClear: options.multiple ? false : true,
+                            });
+
+                            select.val(this.value ?? empty).trigger('change.select2');
+
+                            select.on('change', () => {
+                                this.value = select.val() ?? empty;
+                            });
+
+                            this.$watch('value', (newValue) => {
+                                const current = select.val() ?? empty;
+                                const incoming = newValue ?? empty;
+                                const changed = options.multiple ?
+                                    JSON.stringify(current) !== JSON.stringify(incoming) :
+                                    current != incoming;
+
+                                if (changed) {
+                                    select.val(incoming).trigger('change.select2');
+                                }
+                            });
+                        })
+                        ();
+                    },
+                };
+            }
+
+            function jobFormEditor(initialValue, selector, options) {
+                options = options || {};
+
+                return {
+                    value: initialValue,
+                    editor: null,
+                    init() {
+                        (async () => {
+                            await window.jobFormDependencies;
+
+                            tinymce.init({
+                                selector: selector,
+                                height: options.height || 240,
+                                menubar: false,
+                                plugins: 'lists link',
+                                toolbar: options.toolbar || 'bold italic | bullist numlist | link',
+                                branding: false,
+                                setup: (editor) => {
+                                    this.editor = editor;
+
+                                    editor.on('init', () => {
+                                        editor.setContent(this.value || '');
+                                    });
+
+                                    editor.on('change keyup undo redo', () => {
+                                        this.value = editor.getContent();
+                                    });
+                                },
+                            });
+
+                            this.$watch('value', (newValue) => {
+                                if (this.editor && this.editor.getContent() !== (newValue || '')) {
+                                    this.editor.setContent(newValue || '');
+                                }
+                            });
+                        })();
+                    },
+                };
+            }
         </script>
     @endonce
 
