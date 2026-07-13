@@ -24,8 +24,10 @@ class extends Component {
         <div class="container">
             <div class="row align-items-end mb-50">
                 <div class="col-lg-7">
-                    <span class="text-blue wow animate__animated animate__fadeInUp">Questions</span>
-                    <h1 class="mt-20 wow animate__animated animate__fadeInUp">Frequently Ask Questions</h1>
+                    <h1 class="text-blue wow animate__animated animate__fadeInUp h1">Questions</h1>
+                    <h2 class="mt-20 wow animate__animated animate__fadeInUp h2"
+                        style="font-size: 3em;font-weight: bold;">Frequently Ask
+                        Questions</h2>
                 </div>
                 <div class="col-lg-2"></div>
 

@@ -440,7 +440,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         </button>
                                     </div>
                                 @else
-                                    <h3 class="">All Posts</h3>
+                                    <h2 class="">All Posts</h2>
                                 @endif
                             </div>
 
