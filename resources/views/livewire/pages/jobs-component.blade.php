@@ -153,7 +153,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                 'description' => strip_tags($job->description),
                 'datePosted' => optional($job->created_at)->toDateString(),
                 'employmentType' => $job->job_type,
-                'url' => route('job.show', $job->slug),
+                'url' => route('jobs', $job->slug),
 
                 'hiringOrganization' => [
                     '@type' => 'Organization',
