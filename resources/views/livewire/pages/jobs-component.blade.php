@@ -121,20 +121,58 @@ new #[Layout('components.frontend.main')] class extends Component {
         ]);
     }
 
+    // protected function buildSchemas(): array
+    // {
+    //     $breadcrumbItems = [['@type' => 'JobPosting', 'label' => 'Jobs', 'url' => route('jobs')]];
+
+    //     if ($location = Location::find($this->location)) {
+    //         $breadcrumbItems[] = ['label' => $location->name];
+    //     }
+
+    //     if (!empty($this->category)) {
+    //         $breadcrumbItems[] = ['label' => $this->selectedCategoryName() ?? 'Category'];
+    //     }
+
+    //     // Only pass breadcrumb items back up — let main.blade.php build the actual schema
+    //     return $breadcrumbItems;
+    // }
     protected function buildSchemas(): array
     {
-        $breadcrumbItems = [['@type' => 'JobPosting', 'label' => 'Jobs', 'url' => route('jobs')]];
+        $schemas = [];
 
-        if ($location = Location::find($this->location)) {
-            $breadcrumbItems[] = ['label' => $location->name];
+        $jobs = Opening::active()
+            ->with(['employer', 'location'])
+            ->limit(10)
+            ->get();
+
+        foreach ($jobs as $job) {
+            $schemas[] = [
+                '@context' => 'https://schema.org',
+                '@type' => 'JobPosting',
+                'title' => $job->title,
+                'description' => strip_tags($job->description),
+                'datePosted' => optional($job->created_at)->toDateString(),
+                'employmentType' => $job->job_type,
+                'url' => route('job.show', $job->slug),
+
+                'hiringOrganization' => [
+                    '@type' => 'Organization',
+                    'name' => $job->employer?->name,
+                    'logo' => $job->employer?->logo ? asset('storage/' . $job->employer->logo) : null,
+                ],
+
+                'jobLocation' => [
+                    '@type' => 'Place',
+                    'address' => [
+                        '@type' => 'PostalAddress',
+                        'addressLocality' => $job->location?->name,
+                        'addressCountry' => 'AE',
+                    ],
+                ],
+            ];
         }
 
-        if (!empty($this->category)) {
-            $breadcrumbItems[] = ['label' => $this->selectedCategoryName() ?? 'Category'];
-        }
-
-        // Only pass breadcrumb items back up — let main.blade.php build the actual schema
-        return $breadcrumbItems;
+        return $schemas;
     }
     public function clear()
     {
