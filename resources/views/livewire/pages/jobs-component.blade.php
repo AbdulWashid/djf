@@ -123,7 +123,7 @@ new #[Layout('components.frontend.main')] class extends Component {
 
     protected function buildSchemas(): array
     {
-        $breadcrumbItems = [['label' => 'Jobs', 'url' => route('jobs')]];
+        $breadcrumbItems = [['@type':'JobPosting', 'label' => 'Jobs', 'url' => route('jobs')]];
 
         if ($location = Location::find($this->location)) {
             $breadcrumbItems[] = ['label' => $location->name];
