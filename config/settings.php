@@ -2,6 +2,8 @@
 
 return [
 
+    'email_verification_required' => env('EMAIL_VERIFICATION_REQUIRED', true),
+    
     /*
      * Each settings class used in your application must be registered, you can
      * put them (manually) here.

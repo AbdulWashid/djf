@@ -86,10 +86,22 @@ new #[Layout('components.frontend.main')] class extends Component {
                     'is_active' => false,
                 ]);
 
-                event(new Registered($user));
+                if (config('settings.email_verification_required')) {
+                    event(new Registered($user));
+                } else {
+                    $user
+                        ->forceFill([
+                            'email_verified_at' => now(),
+                        ])
+                        ->save();
+                }
+
                 DB::commit();
 
-                session()->flash('registration-success', 'Your employer account has been created successfully. A verification email has been sent to your email address. Please verify your email before logging in. Your account will be reviewed and activated by our team.');
+                $message = config('settings.email_verification_required') ? 'Your employer account has been created successfully. A verification email has been sent to your email address. Please verify your email before logging in. Your account will be reviewed and activated by our team.' : 'Your employer account has been created successfully. Your account will be reviewed and activated by our team.';
+
+                session()->flash('registration-success', $message);
+
                 $this->redirect(route('employer.login'), navigate: false);
                 return;
             }
@@ -125,10 +137,22 @@ new #[Layout('components.frontend.main')] class extends Component {
                 'password' => Hash::make($this->password),
             ]);
 
-            event(new Registered($user));
+            if (config('settings.email_verification_required')) {
+                event(new Registered($user));
+            } else {
+                $user
+                    ->forceFill([
+                        'email_verified_at' => now(),
+                    ])
+                    ->save();
+            }
+
             DB::commit();
 
-            session()->flash('registration-success', 'Your account has been created successfully. A verification email has been sent to your email address. Please verify your email before logging in. Your account will be reviewed and activated by our team.');
+            $message = config('settings.email_verification_required') ? 'Your account has been created successfully. A verification email has been sent to your email address. Please verify your email before logging in. Your account will be reviewed and activated by our team.' : 'Your account has been created successfully. Your account will be reviewed and activated by our team.';
+
+            session()->flash('registration-success', $message);
+
             $this->redirect(route('candidate.login'), navigate: false);
             return;
         } catch (\Illuminate\Validation\ValidationException $e) {
