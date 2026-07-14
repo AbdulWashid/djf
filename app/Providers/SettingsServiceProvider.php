@@ -19,6 +19,13 @@ class SettingsServiceProvider extends ServiceProvider
 
     public function boot()
     {
+
+        $mailSettings = app(\App\Settings\MailSettings::class);
+
+        config([
+            'settings.email_verification_required' => $mailSettings->email_verification_required,
+        ]);
+        
         View::composer('*', function ($view) {
             $view->with([
                 'generalSettings' => app(GeneralSettings::class),
