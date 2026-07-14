@@ -25,7 +25,6 @@ class ManageMail extends SettingsPage
 
     protected static ?int $navigationSort = 99;
     protected static ?string $navigationIcon = 'fluentui-mail-settings-20';
-
     /**
      * @var array<string, mixed> | null
      */
@@ -286,7 +285,15 @@ class ManageMail extends SettingsPage
                                             ->visible(fn (callable $get) => $get('rate_limiting.enabled')),
                                     ])
                                     ->columns(3),
-
+                                Forms\Components\Section::make('Registration Settings')
+                                            ->description('Control account verification requirements for new registrations')
+                                            ->icon('fluentui-shield-checkmark-20-o')
+                                            ->schema([
+                                                Forms\Components\Toggle::make('email_verification_required')
+                                                    ->label('Require Email Verification')
+                                                    ->helperText('When enabled, new employer and candidate accounts must verify their email address before they can log in')
+                                                    ->default(true),
+                                            ]),
                                 Forms\Components\Section::make('Notification Settings')
                                     ->description('Configure which types of notifications to send')
                                     ->schema([
@@ -481,6 +488,7 @@ class ManageMail extends SettingsPage
             'queue_emails' => true,
             'notifications_enabled' => true,
             'test_mode' => false,
+            'email_verification_required' => true,
         ];
 
         foreach ($booleanDefaults as $key => $default) {

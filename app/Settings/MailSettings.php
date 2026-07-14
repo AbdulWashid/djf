@@ -45,6 +45,7 @@ class MailSettings extends Settings
 
     // Alternative mail providers configuration
     public array $providers;
+    public bool $email_verification_required;
 
     public static function group(): string
     {
