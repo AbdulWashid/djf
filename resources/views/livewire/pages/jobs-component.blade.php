@@ -111,21 +111,6 @@ new #[Layout('components.frontend.main')] class extends Component {
         ]);
     }
 
-    // protected function buildSchemas(): array
-    // {
-    //     $breadcrumbItems = [['@type' => 'JobPosting', 'label' => 'Jobs', 'url' => route('jobs')]];
-
-    //     if ($location = Location::find($this->location)) {
-    //         $breadcrumbItems[] = ['label' => $location->name];
-    //     }
-
-    //     if (!empty($this->category)) {
-    //         $breadcrumbItems[] = ['label' => $this->selectedCategoryName() ?? 'Category'];
-    //     }
-
-    //     // Only pass breadcrumb items back up — let main.blade.php build the actual schema
-    //     return $breadcrumbItems;
-    // }
     protected function buildSchemas(): array
     {
         $schemas = [];
@@ -279,27 +264,26 @@ new #[Layout('components.frontend.main')] class extends Component {
 
     protected function getSeoTitle(): string
     {
-        return $this->getHeading() . ' | Dubaijobfinder';
+        return $this->getHeading() . ' | Dubai Job Finder';
     }
 
     protected function getSeoDescription(): string
     {
         $category = $this->selectedCategoryName();
-        $location = $this->location ? Str::title($this->location) : null;
-
+        $location = $this->location ? Str::title(Location::find($this->location)?->name) : null;
         if ($category && $location) {
-            return "Browse the latest {$category} in {$location}. Apply online for full-time, part-time, and urgent job vacancies on Dubaijobfinder.";
+            return "Looking for {$category} vacancies in {$location} ? Explore updated job openings and top employers on Dubai Job Finder. Apply now!";
         }
 
         if ($location) {
-            return "Discover the latest jobs in {$location}. Find full-time, part-time, and urgent vacancies across multiple industries on Dubaijobfinder.";
+            return "Discover the latest jobs in {$location}. Find full-time, part-time, and urgent vacancies across multiple industries on  Dubai Job Finder.";
         }
 
         if ($category) {
-            return "Explore the latest {$category}. Apply online for verified vacancies and career opportunities on Dubaijobfinder.";
+            return "Explore the latest {$category}. Apply online for verified vacancies and career opportunities on  Dubai Job Finder.";
         }
 
-        return 'Browse the latest job vacancies across the UAE. Search by category and location and apply online with Dubaijobfinder.';
+        return 'Browse the latest job vacancies across the UAE. Search by category and location and apply online with  Dubai Job Finder.';
     }
 }; ?>
 
