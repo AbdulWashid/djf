@@ -30,23 +30,20 @@ new #[Layout('components.frontend.main')] class extends Component {
         $this->q = $this->normalizeQuery(request()->query('q'));
 
         if ($location) {
+            // Single-segment URL could be a category slug OR a location slug
             $cat = JobCategory::where('slug', Str::slug($location))->first();
+
             if ($cat) {
                 $this->category = $cat->id;
                 $this->location = null;
             } else {
-                $foundLocation = $this->locations->first(function ($loc) use ($location) {
-                    return Str::slug($loc) === Str::slug($location);
-                });
+                $foundLocation = $this->locations->first(fn($loc) => Str::slug($loc->name) === Str::slug($location));
                 $this->location = $foundLocation?->id;
             }
         }
-        if ($category_slug) {
-            $foundLocation = $this->locations->first(function ($loc) use ($location) {
-                return Str::slug($loc) === Str::slug($location);
-            });
-            $this->location = $foundLocation;
 
+        if ($category_slug) {
+            // location is already resolved above from $location — no need to re-derive it here
             $cat = JobCategory::where('slug', Str::slug($category_slug))->first();
             if ($cat) {
                 $this->category = $cat->id;
@@ -54,15 +51,8 @@ new #[Layout('components.frontend.main')] class extends Component {
         }
 
         view()->share('pageType', 'job_listing');
-
-        // view()->share('pageTitle', str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? $this->selectedCategoryName() ?? '' : ''], $this->pageTitle));
-
-        // view()->share('pageDescription', str_replace(['{location}', '{Category}'], [Str::title($this->location ?? 'Dubai'), $this->category ? $this->selectedCategoryName() ?? '' : ''], $this->pageDescription));
-
         view()->share('pageTitle', $this->getSeoTitle());
-
         view()->share('pageDescription', $this->getSeoDescription());
-
         view()->share('schemaData', $this->buildSchemas());
     }
 
