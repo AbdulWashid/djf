@@ -246,7 +246,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                         <!-- Email -->
                         <div class="mb-4">
                             <label class="block text-sm font-medium mb-2">
-                                Email Address
+                                Email Address <span class="text-danger">*</span>
                             </label>
 
                             <input type="email" wire:model.defer="email"
@@ -271,7 +271,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                         <!-- Password -->
                         <div x-data="{ show: false }" class="mb-4">
                             <label class="block text-sm font-medium mb-2">
-                                Password
+                                Password <span class="text-danger">*</span>
                             </label>
 
                             <div class="relative">

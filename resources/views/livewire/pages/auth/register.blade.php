@@ -307,7 +307,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                             <!-- Name -->
                             <div class="mb-4">
                                 <label class="block mb-2 text-sm font-medium">
-                                    Company Name
+                                    Company Name <span class="text-danger">*</span>
                                 </label>
 
                                 <input type="text" wire:model.live="name"
@@ -323,7 +323,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                         @elseif ($type === 'candidate')
                             <div class="mb-4">
                                 <label class="block mb-2 text-sm font-medium">
-                                    First Name
+                                    First Name <span class="text-danger">*</span>
                                 </label>
 
                                 <input type="text" wire:model.live="first_name"
@@ -338,7 +338,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                             </div>
                             <div class="mb-4">
                                 <label class="block mb-2 text-sm font-medium">
-                                    Last Name
+                                    Last Name <span class="text-danger">*</span>
                                 </label>
 
                                 <input type="text" wire:model.live="last_name"
@@ -355,7 +355,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                         <!-- Email -->
                         <div class="mb-4">
                             <label class="block mb-2 text-sm font-medium">
-                                Email Address
+                                Email Address <span class="text-danger">*</span>
                             </label>
 
                             <input type="email" wire:model.live="email"
@@ -460,7 +460,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 </div>
 
                                 <div>
-                                    <label>Company Logo</label>
+                                    <label>Company Logo <span class="text-danger">*</span></label>
                                     <label
                                         class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
 
@@ -520,7 +520,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                             </div>
 
                             <div class="mb-4">
-                                <label>Resume</label>
+                                <label>Resume <span class="text-danger">*</span></label>
                                 <label
                                     class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
 
@@ -573,7 +573,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                         <!-- Password -->
                         <div x-data="{ show: false }" class="mb-4">
                             <label class="block mb-2 text-sm font-medium">
-                                Password
+                                Password <span class="text-danger">*</span>
                             </label>
 
                             <div class="relative">
@@ -616,7 +616,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                         <!-- Confirm Password -->
                         <div x-data="{ showConfirm: false }" class="mb-6">
                             <label class="block mb-2 text-sm font-medium">
-                                Confirm Password
+                                Confirm Password <span class="text-danger">*</span>
                             </label>
 
                             <div class="relative">
