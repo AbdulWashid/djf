@@ -66,7 +66,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             'nationality' => $this->nationality,
             'cover_letter' => $this->cover_letter,
             'resume_path' => $resumePath,
-            'email_verified_at' => $emailChanged ? null : $this->employer->email_verified_at,
+            'email_verified_at' => $emailChanged ? null : $this->candidate->email_verified_at,
         ]);
 
         if ($emailChanged) {
@@ -98,154 +98,159 @@ new #[Layout('components.frontend.main')] class extends Component {
         </div>
     </div>
 
-    <section class="mt-20 mb-50">
-        <div class="container">
-            @if ($errors->any())
-                <div class="alert alert-danger mb-4">
-                    <ul class="mb-0">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        @if ($errors->any())
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 flex items-start gap-3">
+                <i class="fi-rr-exclamation mt-0.5 text-lg"></i>
+                <div>
+                    <h5 class="font-bold mb-1">Please correct the following errors:</h5>
+                    <ul class="list-disc list-inside text-sm space-y-0.5">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
                 </div>
-            @endif
-            <div class="row">
+            </div>
+        @endif
 
-                {{-- Sidebar --}}
-                <div class="col-lg-3">
-                    <livewire:pages.candidate.components.sidebar />
-                </div>
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {{-- Sidebar --}}
+            <div class="lg:col-span-1">
+                <livewire:pages.candidate.components.sidebar />
+            </div>
 
-                {{-- Content --}}
-                <div class="col-lg-9">
-
-                    <div class="bg-white border border-gray-200 rounded-lg shadow-md p-5">
-
-                        <div class="mb-5">
-                            <h2 class="text-2xl font-bold text-primary-800">
-                                Candidate Profile
-                            </h2>
-
-                            <p class="text-gray-600">
-                                Manage your personal information and resume.
-                            </p>
-                        </div>
-
-                        @if (session('success'))
-                            <div class="alert alert-success mb-4">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-
-                        <form wire:submit="save">
-
-                            <div class="row">
-
-                                <div class="col-md-6 mb-4">
-                                    <label>First Name <span class="text-danger">*</span></label>
-
-                                    <input type="text" wire:model.live="first_name" class="form-control">
-
-                                    @error('first_name')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                <div class="col-md-6 mb-4">
-                                    <label>Last Name <span class="text-danger">*</span></label>
-
-                                    <input type="text" wire:model.live="last_name" class="form-control">
-
-                                    @error('last_name')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                <div class="col-md-6 mb-4">
-                                    <label>Email Address <span class="text-danger">*</span></label>
-
-                                    <input type="email" wire:model.live="email" class="form-control">
-
-                                    @error('email')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                <div class="col-md-6 mb-4">
-                                    <label>Phone Number <span class="text-danger">*</span></label>
-
-                                    <input type="text" wire:model.live="phone" class="form-control">
-
-                                    @error('phone')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                <div class="col-md-6 mb-4">
-                                    <label>Nationality</label>
-
-                                    <input type="text" wire:model.live="nationality" class="form-control">
-
-                                    @error('nationality')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                <div class="col-md-12 mb-4">
-                                    <label>Cover Letter</label>
-
-                                    <textarea wire:model.live="cover_letter" rows="6" class="form-control"></textarea>
-
-                                    @error('cover_letter')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                <div class="col-md-12 mb-4">
-                                    <label>Resume (PDF, DOC, DOCX)</label>
-
-                                    <input type="file" wire:model="resume" class="form-control">
-
-                                    @error('resume')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-
-                                    <div wire:loading wire:target="resume" class="mt-2">
-                                        <small class="text-primary">Uploading resume...</small>
-                                    </div>
-
-                                    @if ($candidate->resume_path)
-                                        <div class="mt-2">
-                                            <a href="{{ Storage::url($candidate->resume_path) }}" target="_blank"
-                                                class="text-primary">
-                                                View Current Resume
-                                            </a>
-                                        </div>
-                                    @endif
-                                </div>
-
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn btn-default hover-up" wire:loading.attr="disabled"
-                                        wire:target="save,resume">
-
-                                        <span wire:loading.remove wire:target="save">
-                                            Save Changes
-                                        </span>
-
-                                        <span wire:loading wire:target="save">
-                                            Saving...
-                                        </span>
-                                    </button>
-                                </div>
-
-                            </div>
-
-                        </form>
-
+            {{-- Content --}}
+            <div class="lg:col-span-3">
+                <div class="bg-white border border-gray-100 rounded-xl shadow-sm p-6 sm:p-8">
+                    <div class="mb-8 border-b border-gray-100 pb-5">
+                        <h2 class="text-2xl font-bold text-gray-800">
+                            Candidate Profile
+                        </h2>
+                        <p class="text-gray-500 text-sm mt-1">
+                            Manage your personal information, contact details, and resume.
+                        </p>
                     </div>
 
-                </div>
+                    @if (session('success'))
+                        <div
+                            class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-700 flex items-center gap-3">
+                            <i class="fi-rr-checkbox text-lg"></i>
+                            <span class="text-sm font-medium">{{ session('success') }}</span>
+                        </div>
+                    @endif
 
+                    <form wire:submit="save" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {{-- First Name --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">First Name <span
+                                        class="text-red-500">*</span></label>
+                                <input type="text" wire:model.live="first_name"
+                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition">
+                                @error('first_name')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- Last Name --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Last Name <span
+                                        class="text-red-500">*</span></label>
+                                <input type="text" wire:model.live="last_name"
+                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition">
+                                @error('last_name')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- Email Address --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address <span
+                                        class="text-red-500">*</span></label>
+                                <input type="email" wire:model.live="email"
+                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition">
+                                @error('email')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- Phone Number --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Phone Number <span
+                                        class="text-red-500">*</span></label>
+                                <input type="text" wire:model.live="phone"
+                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition">
+                                @error('phone')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- Nationality --}}
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Nationality</label>
+                                <input type="text" wire:model.live="nationality"
+                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition">
+                                @error('nationality')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- Cover Letter --}}
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Cover Letter</label>
+                                <textarea wire:model.live="cover_letter" rows="6"
+                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition"></textarea>
+                                @error('cover_letter')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- Resume Upload --}}
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Resume (PDF, DOC,
+                                    DOCX)</label>
+                                <div class="flex items-center gap-4">
+                                    <input type="file" wire:model="resume"
+                                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 file:cursor-pointer hover:file:bg-primary-100 transition border border-gray-200 rounded-lg p-1 bg-gray-50">
+                                </div>
+                                @error('resume')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+
+                                <div wire:loading wire:target="resume" class="mt-2 flex items-center gap-2">
+                                    <span
+                                        class="w-4 h-4 border-2 border-primary-600 border-t-transparent rounded-full animate-spin"></span>
+                                    <small class="text-primary-600 font-medium">Uploading resume...</small>
+                                </div>
+
+                                @if ($candidate->resume_path)
+                                    <div class="mt-3 flex items-center gap-2 text-sm">
+                                        <i class="fi-rr-document text-primary-600"></i>
+                                        <a href="{{ Storage::url($candidate->resume_path) }}" target="_blank"
+                                            class="text-primary-600 hover:text-primary-800 font-semibold hover:underline">
+                                            View Current Resume
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-gray-100">
+                            <button type="submit"
+                                class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-semibold rounded-lg shadow-sm text-white bg-primary-800 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                                wire:loading.attr="disabled" wire:target="save,resume">
+                                <span wire:loading.remove wire:target="save">
+                                    Save Changes
+                                </span>
+                                <span wire:loading wire:target="save" class="flex items-center gap-2">
+                                    <span
+                                        class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                    Saving...
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </section>

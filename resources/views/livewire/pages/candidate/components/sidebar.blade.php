@@ -23,57 +23,46 @@ new class extends Component {
     }
 }; ?>
 
-<div class="bg-white border border-gray-200 rounded-lg shadow-md p-4">
-    <div class="text-center">
-
+<div class="bg-white border border-gray-100 rounded-xl shadow-sm p-6">
+    <div class="flex flex-col items-center text-center">
         @if ($candidate->logo)
-            <img loading="lazy" src="{{ Storage::url($candidate->logo) }}" class="mx-auto rounded-full mb-3"
-                style="width:120px;height:120px;object-fit:cover;">
+            <img loading="lazy" src="{{ Storage::url($candidate->logo) }}"
+                class="rounded-full shadow-inner border border-gray-100" style="width:96px;height:96px;object-fit:cover;">
         @else
-            <img loading="lazy" src="https://placehold.co/120x120?text={{ substr($candidate->name, 0, 1) }}"
-                class="mx-auto rounded-full mb-3">
+            <div
+                class="w-24 h-24 rounded-full bg-primary-50 text-primary-700 flex items-center justify-center font-bold text-2xl border border-primary-100 shadow-sm mb-3">
+                {{ substr($candidate->name, 0, 1) }}
+            </div>
         @endif
 
-        <h4 class="text-primary-800 font-bold">
-            {{ $candidate->first_name . $candidate->last_name }}
+        <h4 class="text-gray-800 font-bold text-lg leading-snug">
+            {{ $candidate->name }}
         </h4>
 
-        <p class="text-gray-500">
+        <p class="text-gray-500 text-sm mt-1">
             {{ $candidate->email }}
         </p>
-
     </div>
 
-    <hr class="my-4">
+    <div class="h-px bg-gray-100 my-6"></div>
 
-    <ul>
+    <nav class="space-y-1">
+        <a href="{{ route('candidate.profile') }}"
+            class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition duration-200 @if (route('candidate.profile') == request()->url()) bg-primary-50 text-primary-700 @else text-gray-600 hover:bg-gray-50 hover:text-gray-900 @endif">
+            <i class="fi-rr-user mr-3 text-base"></i>
+            My Profile
+        </a>
 
-        {{-- <li class="mb-3">
-            <a href="{{ route('candidate.profile') }}"
-                @if (route('candidate.profile') == request()->url()) class="text-primary-800 font-medium" @endif>
-                My Profile
-            </a>
-        </li>
+        <a href="{{ route('candidate.applied') }}"
+            class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition duration-200 @if (route('candidate.applied') == request()->url()) bg-primary-50 text-primary-700 @else text-gray-600 hover:bg-gray-50 hover:text-gray-900 @endif">
+            <i class="fi-rr-briefcase mr-3 text-base"></i>
+            Applied Jobs
+        </a>
 
-        <li class="mb-3">
-            <a href="{{ route('candidate.job-posting') }}"
-                @if (route('candidate.job-posting') == request()->url()) class="text-primary-800 font-medium" @endif>
-                Job Posting
-            </a>
-        </li> --}}
-
-        <li class="mb-3">
-            <a href="{{ route('candidate.applied') }}"
-                @if (route('candidate.applied') == request()->url()) class="text-primary-800 font-medium" @endif>
-                Applied Job
-            </a>
-        </li>
-        <li class="mb-3">
-            <button wire:click="logout" class="text-red-600 font-medium">
-                Logout
-            </button>
-        </li>
-
-    </ul>
-
+        <button wire:click="logout"
+            class="w-full flex items-center px-4 py-2.5 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition duration-200 mt-2">
+            <i class="fi-rr-sign-out mr-3 text-base"></i>
+            Logout
+        </button>
+    </nav>
 </div>

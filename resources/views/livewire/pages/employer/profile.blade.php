@@ -111,203 +111,203 @@ new #[Layout('components.frontend.main')] class extends Component {
         </div>
     </div>
 
-    <section class="mt-20 mb-50">
-        <div class="container">
-            
-            {{-- Validation Notice alert --}}
-            @if ($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show mb-4 d-flex align-items-center" role="alert">
-                    <i class="fi-rr-exclamation me-2 text-xl"></i>
-                    <div>
-                        <strong>Validation Error:</strong> Please review and fix the marked fields in the form below.
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {{-- Validation Notice alert --}}
+        @if ($errors->any())
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 flex items-start gap-3">
+                <i class="fi-rr-exclamation mt-0.5 text-lg"></i>
+                <div>
+                    <strong class="font-bold">Validation Error:</strong> Please review and fix the marked fields in the
+                    form below.
+                </div>
+            </div>
+        @endif
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {{-- Sidebar --}}
+            <div class="lg:col-span-1">
+                <livewire:pages.employer.components.sidebar />
+            </div>
+
+            {{-- Content --}}
+            <div class="lg:col-span-3">
+                <div class="bg-white border border-gray-100 rounded-xl shadow-sm p-6 sm:p-8">
+                    <div class="mb-8 border-b border-gray-100 pb-5">
+                        <h2 class="text-2xl font-bold text-gray-800">
+                            Company Profile
+                        </h2>
+                        <p class="text-gray-500 text-sm mt-1">
+                            Manage your company information, address, and upload logo.
+                        </p>
                     </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
 
-            <div class="row">
-                {{-- Sidebar --}}
-                <div class="col-lg-3">
-                    <livewire:pages.employer.components.sidebar />
-                </div>
+                    @if (session('success'))
+                        <div
+                            class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-700 flex items-center gap-3">
+                            <i class="fi-rr-checkbox text-lg"></i>
+                            <span class="text-sm font-medium">{{ session('success') }}</span>
+                        </div>
+                    @endif
 
-                {{-- Content --}}
-                <div class="col-lg-9">
-                    <div class="bg-white border border-gray-200 rounded-lg shadow-md p-6">
+                    <form wire:submit="save" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {{-- Company Name --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Company Name <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" wire:model="name"
+                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition"
+                                    placeholder="e.g. Acme Corporation">
+                                @error('name')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
 
-                        <div class="mb-4 border-bottom pb-3">
-                            <h2 class="text-2xl font-bold text-primary-800 mb-1">
-                                Company Profile
-                            </h2>
-                            <p class="text-gray-600 mb-0">
-                                Manage your company information, address, and upload logo.
-                            </p>
+                            {{-- Email Address --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Email Address <span class="text-red-500">*</span>
+                                </label>
+                                <input type="email" wire:model="email"
+                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition"
+                                    placeholder="e.g. hr@acme.com">
+                                @error('email')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- Website --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Website</label>
+                                <input type="text" wire:model="website"
+                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition"
+                                    placeholder="e.g. https://www.acme.com">
+                                @error('website')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- Phone Number --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
+                                <input type="text" wire:model="phone"
+                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition"
+                                    placeholder="e.g. +971 50 123 4567">
+                                @error('phone')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- Description --}}
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                                <div wire:ignore x-data="profileFormEditor(@entangle('description'), '#description-editor', { height: 280, toolbar: 'undo redo | formatselect | bold italic underline | bullist numlist | link' })">
+                                    <textarea id="description-editor" class="w-full min-h-[200px] border border-gray-300 rounded-lg p-3"></textarea>
+                                </div>
+                                @error('description')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- Address --}}
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Address</label>
+                                <input type="text" wire:model="address"
+                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition"
+                                    placeholder="e.g. Office 101, Business Tower">
+                                @error('address')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- City --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">City</label>
+                                <input type="text" wire:model="city"
+                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition"
+                                    placeholder="e.g. Dubai">
+                                @error('city')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- State --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">State</label>
+                                <input type="text" wire:model="state"
+                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition"
+                                    placeholder="e.g. Dubai">
+                                @error('state')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- Country --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Country</label>
+                                <input type="text" wire:model="country"
+                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition"
+                                    placeholder="e.g. United Arab Emirates">
+                                @error('country')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- Postal Code --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Postal Code</label>
+                                <input type="text" wire:model="postal_code"
+                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition"
+                                    placeholder="e.g. 00000">
+                                @error('postal_code')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- Logo Upload --}}
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Company Logo</label>
+                                <input type="file" wire:model="logo"
+                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 file:cursor-pointer hover:file:bg-primary-100 transition border border-gray-200 rounded-lg p-1 bg-gray-50">
+                                @error('logo')
+                                    <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
+                                @enderror
+
+                                <div wire:loading wire:target="logo" class="mt-2 flex items-center gap-2">
+                                    <span
+                                        class="w-4 h-4 border-2 border-primary-600 border-t-transparent rounded-full animate-spin"></span>
+                                    <small class="text-primary-600 font-medium">Uploading logo...</small>
+                                </div>
+
+                                @if ($employer->logo)
+                                    <div class="mt-4 p-4 bg-gray-50 border border-gray-100 rounded-lg inline-block">
+                                        <div class="text-xs text-gray-500 font-bold mb-2 uppercase tracking-wider">
+                                            Current Logo</div>
+                                        <img loading="lazy" src="{{ Storage::url($employer->logo) }}"
+                                            alt="Company Logo" class="rounded-lg shadow-sm border border-gray-200"
+                                            style="max-height:80px; object-fit: contain;">
+                                    </div>
+                                @endif
+                            </div>
                         </div>
 
-                        @if (session('success'))
-                            <div class="alert alert-success alert-dismissible fade show mb-4 d-flex align-items-center" role="alert">
-                                <i class="fi-rr-checkbox me-2 text-xl"></i>
-                                <div>{{ session('success') }}</div>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        @endif
-
-                        <form wire:submit="save">
-                            <div class="row g-3">
-
-                                {{-- Company Name --}}
-                                <div class="col-md-6 mb-2">
-                                    <label class="form-label font-semibold text-gray-700">
-                                        Company Name <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="text" wire:model="name" class="form-control focus:ring-2 focus:ring-primary-200 focus:border-primary-800" placeholder="e.g. Acme Corporation">
-                                    @error('name')
-                                        <small class="text-danger d-block mt-1 font-semibold"><i class="fi-rr-exclamation me-1 text-[10px]"></i>{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                {{-- Email Address --}}
-                                <div class="col-md-6 mb-2">
-                                    <label class="form-label font-semibold text-gray-700">
-                                        Email Address <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="email" wire:model="email" class="form-control focus:ring-2 focus:ring-primary-200 focus:border-primary-800" placeholder="e.g. hr@acme.com">
-                                    @error('email')
-                                        <small class="text-danger d-block mt-1 font-semibold"><i class="fi-rr-exclamation me-1 text-[10px]"></i>{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                {{-- Website --}}
-                                <div class="col-md-6 mb-2">
-                                    <label class="form-label font-semibold text-gray-700">
-                                        Website
-                                    </label>
-                                    <input type="text" wire:model="website" class="form-control focus:ring-2 focus:ring-primary-200 focus:border-primary-800" placeholder="e.g. https://www.acme.com">
-                                    @error('website')
-                                        <small class="text-danger d-block mt-1 font-semibold"><i class="fi-rr-exclamation me-1 text-[10px]"></i>{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                {{-- Phone Number --}}
-                                <div class="col-md-6 mb-2">
-                                    <label class="form-label font-semibold text-gray-700">
-                                        Phone Number
-                                    </label>
-                                    <input type="text" wire:model="phone" class="form-control focus:ring-2 focus:ring-primary-200 focus:border-primary-800" placeholder="e.g. +971 50 123 4567">
-                                    @error('phone')
-                                        <small class="text-danger d-block mt-1 font-semibold"><i class="fi-rr-exclamation me-1 text-[10px]"></i>{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                {{-- Description / TinyMCE --}}
-                                <div class="col-md-12 mb-3">
-                                    <label class="form-label font-semibold text-gray-700">
-                                        Description
-                                    </label>
-                                    <div wire:ignore x-data="profileFormEditor(@entangle('description'), '#description-editor', { height: 280, toolbar: 'undo redo | formatselect | bold italic underline | bullist numlist | link' })">
-                                        <textarea id="description-editor"></textarea>
-                                    </div>
-                                    @error('description')
-                                        <small class="text-danger d-block mt-1 font-semibold"><i class="fi-rr-exclamation me-1 text-[10px]"></i>{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                {{-- Address --}}
-                                <div class="col-md-12 mb-2">
-                                    <label class="form-label font-semibold text-gray-700">
-                                        Address
-                                    </label>
-                                    <input type="text" wire:model="address" class="form-control focus:ring-2 focus:ring-primary-200 focus:border-primary-800" placeholder="e.g. Office 101, Business Tower">
-                                    @error('address')
-                                        <small class="text-danger d-block mt-1 font-semibold"><i class="fi-rr-exclamation me-1 text-[10px]"></i>{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                {{-- City --}}
-                                <div class="col-md-4 mb-2">
-                                    <label class="form-label font-semibold text-gray-700">
-                                        City
-                                    </label>
-                                    <input type="text" wire:model="city" class="form-control focus:ring-2 focus:ring-primary-200 focus:border-primary-800" placeholder="e.g. Dubai">
-                                    @error('city')
-                                        <small class="text-danger d-block mt-1 font-semibold"><i class="fi-rr-exclamation me-1 text-[10px]"></i>{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                {{-- State --}}
-                                <div class="col-md-4 mb-2">
-                                    <label class="form-label font-semibold text-gray-700">
-                                        State
-                                    </label>
-                                    <input type="text" wire:model="state" class="form-control focus:ring-2 focus:ring-primary-200 focus:border-primary-800" placeholder="e.g. Dubai">
-                                    @error('state')
-                                        <small class="text-danger d-block mt-1 font-semibold"><i class="fi-rr-exclamation me-1 text-[10px]"></i>{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                {{-- Country --}}
-                                <div class="col-md-4 mb-2">
-                                    <label class="form-label font-semibold text-gray-700">
-                                        Country
-                                    </label>
-                                    <input type="text" wire:model="country" class="form-control focus:ring-2 focus:ring-primary-200 focus:border-primary-800" placeholder="e.g. United Arab Emirates">
-                                    @error('country')
-                                        <small class="text-danger d-block mt-1 font-semibold"><i class="fi-rr-exclamation me-1 text-[10px]"></i>{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                {{-- Postal Code --}}
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label font-semibold text-gray-700">
-                                        Postal Code
-                                    </label>
-                                    <input type="text" wire:model="postal_code" class="form-control focus:ring-2 focus:ring-primary-200 focus:border-primary-800" placeholder="e.g. 00000">
-                                    @error('postal_code')
-                                        <small class="text-danger d-block mt-1 font-semibold"><i class="fi-rr-exclamation me-1 text-[10px]"></i>{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                {{-- Logo Upload Section --}}
-                                <div class="col-md-12 mb-3">
-                                    <label class="form-label font-semibold text-gray-700">
-                                        Company Logo
-                                    </label>
-                                    <input type="file" wire:model="logo" class="form-control focus:ring-2 focus:ring-primary-200 focus:border-primary-800">
-                                    @error('logo')
-                                        <small class="text-danger d-block mt-1 font-semibold"><i class="fi-rr-exclamation me-1 text-[10px]"></i>{{ $message }}</small>
-                                    @enderror
-
-                                    <div wire:loading wire:target="logo" class="mt-2 text-primary font-semibold">
-                                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                                        Uploading logo...
-                                    </div>
-
-                                    @if ($employer->logo)
-                                        <div class="mt-3 p-2 bg-gray-50 border rounded d-inline-block">
-                                            <div class="text-xs text-gray-500 font-semibold mb-1">Current Logo</div>
-                                            <img loading="lazy" src="{{ Storage::url($employer->logo) }}"
-                                                alt="Company Logo" class="img-thumbnail" style="max-height:100px; object-fit: contain;">
-                                        </div>
-                                    @endif
-                                </div>
-
-                                {{-- Submit --}}
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn btn-default hover-up d-inline-flex align-items-center gap-2 font-semibold shadow-sm" wire:loading.attr="disabled"
-                                        wire:target="save,logo">
-                                        <span wire:loading.remove wire:target="save">
-                                            <i class="fi-rr-checkbox text-sm"></i>
-                                            Save Changes
-                                        </span>
-                                        <span wire:loading wire:target="save">
-                                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                            Saving Changes...
-                                        </span>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="pt-4 border-t border-gray-100">
+                            <button type="submit"
+                                class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-semibold rounded-lg shadow-sm text-white bg-primary-800 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                                wire:loading.attr="disabled" wire:target="save,logo">
+                                <span wire:loading.remove wire:target="save" class="flex items-center gap-2">
+                                    <i class="fi-rr-checkbox text-base"></i>
+                                    Save Changes
+                                </span>
+                                <span wire:loading wire:target="save" class="flex items-center gap-2">
+                                    <span
+                                        class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                    Saving...
+                                </span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -334,7 +334,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                 await Promise.all([
                     window.tinymce ?
                     Promise.resolve() :
-                    profileFormLoadScriptOnce('{{ asset("assets/js/tinymce/tinymce.min.js") }}'),
+                    profileFormLoadScriptOnce('{{ asset('assets/js/tinymce/tinymce.min.js') }}'),
                 ]);
             })();
 
@@ -373,7 +373,8 @@ new #[Layout('components.frontend.main')] class extends Component {
                                     this.editor.setContent(newValue || '');
                                 }
                             });
-                        })();
+                        })
+                        ();
                     },
                 };
             }
