@@ -597,6 +597,8 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                             tinymce.init({
                                 selector: selector,
+                                base_url: '/assets/js/tinymce',
+                                suffix: '.min',
                                 height: options.height || 240,
                                 menubar: false,
                                 plugins: 'lists link',
