@@ -42,6 +42,20 @@ new #[Layout('components.frontend.main')] class extends Component {
         view()->share('pageDescription', $this->type == 'employer' ? 'Register as an employer on Dubai Job Finder. Create your company profile, post jobs, and start connecting with qualified professionals in Dubai today.' : 'Create your free candidate account on Dubai Job Finder. Upload your CV, apply to top vacancies, and get noticed by leading employers in Dubai.');
     }
 
+    public function updatedLogo()
+    {
+        $this->validateOnly('logo', [
+            'logo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp,avif', 'max:2048'],
+        ]);
+    }
+
+    public function updatedResume()
+    {
+        $this->validateOnly('resume', [
+            'resume' => ['required', 'mimes:pdf,doc,docx', 'max:5120'],
+        ]);
+    }
+
     public function register(): void
     {
         try {
@@ -59,7 +73,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                     'state' => ['nullable', 'string', 'max:100'],
                     'country' => ['nullable', 'string', 'max:100'],
                     'postal_code' => ['nullable', 'string', 'max:20'],
-                    'logo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+                    'logo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp,avif', 'max:2048'],
                     'password' => ['required', 'confirmed', Rules\Password::defaults()],
                 ];
 
@@ -490,7 +504,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         Uploading...
                                     </div>
 
-                                    @if ($logo instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
+                                    @if ($logo instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile && $logo->isPreviewable())
                                         <img loading="lazy" src="{{ $logo->temporaryUrl() }}"
                                             class="h-20 w-20 rounded object-cover mt-2">
                                     @endif
