@@ -61,7 +61,7 @@ new class extends Component {
 
         <a href="{{ route('employer.job-application') }}"
             class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition duration-200 @if (route('employer.job-application') == request()->url()) bg-primary-50 text-primary-700 @else text-gray-600 hover:bg-gray-50 hover:text-gray-900 @endif">
-            <i class="fi-rr-user mr-3 text-base"></i>
+            <i class="fi-rr-file mr-3 text-base"></i>
             Applications
         </a>
 
