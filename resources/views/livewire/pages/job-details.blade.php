@@ -257,7 +257,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 </figure>
                                 <div class="sidebar-info">
                                     <span class="sidebar-company">{{ $job->employer->name }}</span>
-                                    <span class="sidebar-website-text">{{ $job->employer->website }}</span>
+                                    <a href="{{ $job->employer->website }}" target="_blank" rel="noopener noreferrer" class="sidebar-website-text" title="{{ $job->employer->website }}" style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">{{ $job->employer->website }}</a>
                                 </div>
                             </div>
                         </div>
