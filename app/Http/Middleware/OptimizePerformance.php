@@ -51,9 +51,6 @@ class OptimizePerformance
     private function addPerformanceHeaders(Response $response): void
     {
         $headers = [
-            // DNS prefetch for external resources
-            'Link' => '</css>; rel=preload; as=style, </js>; rel=preload; as=script',
-
             // Cache control for static assets
             'Cache-Control' => 'public, max-age=31536000, immutable',
             // 'Cache-Control' => 'no-cache, private',
