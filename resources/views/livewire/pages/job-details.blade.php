@@ -170,7 +170,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                 <div class="col-lg-8 col-md-12 col-sm-12 col-12">
                     <div id="applySuccessAlert" class="alert alert-success mb-4 d-none"></div>
 
-                    <div class="content-single single-body">
+                    <div class="single-body">
                         <div class="h5 font-bold">Job Description</div>
                         <div> {!! $job->description !!}</div>
                         @if ($job->responsibilities)
