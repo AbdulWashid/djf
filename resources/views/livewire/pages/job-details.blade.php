@@ -237,7 +237,8 @@ new #[Layout('components.frontend.main')] class extends Component {
                             </div>
                             <div class="col-md-7 text-lg-end social-share">
                                 <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->full()) }}"
-                                    class="btn btn-border btn-sm mr-10"><img loading="lazy" alt="{{ $job->title }}"
+                                    target="_blank" class="btn btn-border btn-sm mr-10"><img loading="lazy"
+                                        alt="{{ $job->title }}"
                                         src="{{ asset('assets/imgs/theme/icons/share-fb.svg') }}" /> Share</a>
                                 <a href="https://twitter.com/intent/tweet?text=Check out this job {{ trim($job->title) }}&url={{ urlencode(url()->full()) }}"
                                     target="_blank" rel="noopener noreferrer" class="btn btn-border btn-sm mr-10"><img
@@ -257,7 +258,11 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 </figure>
                                 <div class="sidebar-info">
                                     <span class="sidebar-company">{{ $job->employer->name }}</span>
-                                    <a href="{{ $job->employer->website }}" target="_blank" rel="noopener noreferrer" class="sidebar-website-text" title="{{ $job->employer->website }}" style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">{{ $job->employer->website }}</a>
+                                    <a href="{{ $job->employer->website }}" target="_blank" rel="noopener noreferrer"
+                                        class="sidebar-website-text" title="{{ $job->employer->website }}"
+                                        style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; text-decoration: none;"
+                                        onmouseover="this.style.textDecoration='underline'"
+                                        onmouseout="this.style.textDecoration='none'">{{ $job->employer->website }}</a>
                                 </div>
                             </div>
                         </div>
