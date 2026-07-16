@@ -215,7 +215,7 @@ new #[Layout('components.frontend.main')] class extends Component {
 
     public function jobs()
     {
-        $page = request('page', 1);
+        $page = $this->getPage();
 
         // $key = 'jobs:' . md5(json_encode([$this->location, $this->category, $this->job_type, $this->q, $page]));
 
