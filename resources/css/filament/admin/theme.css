@@ -22,8 +22,8 @@
 body {
   @apply antialiased;
 }
-.fi-main-ctn {
-    min-height: 100vh;
+.fi-main {
+  min-height: calc(100vh - 117px);
 }
 /* TYPOGRAPHY */
 .fi-header-heading {
