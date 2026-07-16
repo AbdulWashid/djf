@@ -774,22 +774,25 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                 initCategorySelect();
 
+                // Re-bind after every Livewire commit, in case the select gets replaced
+                Livewire.hook('commit', ({
+                    respond
+                }) => {
+                    respond(() => {
+                        initCategorySelect();
+                    });
+                });
+
                 Livewire.on('seo-updated', (data) => {
                     const payload = data[0] || {};
-
-                    if (payload.title) {
-                        document.title = payload.title;
-                    }
-
+                    if (payload.title) document.title = payload.title;
                     if (payload.description) {
                         let metaDescription = document.querySelector('meta[name="description"]');
-
                         if (!metaDescription) {
                             metaDescription = document.createElement('meta');
                             metaDescription.setAttribute('name', 'description');
                             document.head.appendChild(metaDescription);
                         }
-
                         metaDescription.setAttribute('content', payload.description);
                     }
                 });
