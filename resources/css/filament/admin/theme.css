@@ -22,7 +22,9 @@
 body {
   @apply antialiased;
 }
-
+.fi-main-ctn {
+    min-height: 100vh;
+}
 /* TYPOGRAPHY */
 .fi-header-heading {
   @apply !text-2xl font-bold text-primary-800 dark:text-primary-300;
