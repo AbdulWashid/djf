@@ -25,7 +25,7 @@ class Candidate extends Authenticatable implements MustVerifyEmail, HasName
         'phone',
         'cover_letter',
         'resume_path',
-        'nationality',
+        'nationality_id',
         'status',
     ];
 
@@ -86,5 +86,9 @@ class Candidate extends Authenticatable implements MustVerifyEmail, HasName
     public function getNameAttribute(): string
     {
         return trim($this->first_name . ' ' . $this->last_name);
+    }
+    public function nationality()
+    {
+        return $this->belongsTo(Nationality::class);
     }
 }

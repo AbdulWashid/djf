@@ -33,23 +33,35 @@ class CandidateResource extends Resource
 
                 Forms\Components\TextInput::make('email')
                     ->email()
-                    ->required(),
+                    ->required()
+                    ->unique(ignoreRecord: true),
+
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->revealable()
+                    ->required(fn (string $context) => $context === 'create')
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->dehydrateStateUsing(fn ($state) => bcrypt($state))
+                    ->helperText('Leave blank to keep the current password.'),
 
                 Forms\Components\TextInput::make('phone'),
 
-                Forms\Components\TextInput::make('nationality'),
+                Forms\Components\Select::make('nationality_id')
+                    ->label('Nationality')
+                    ->relationship('nationality', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
 
                 Forms\Components\Textarea::make('cover_letter')
                     ->columnSpanFull(),
-
-                // Forms\Components\TextInput::make('resume_path')
-                //     ->disabled(),
 
                 Forms\Components\FileUpload::make('resume_path')
                     ->label('Resume')
                     ->directory('resumes')
                     ->downloadable()
-                    ->openable(),
+                    ->openable()
+                    ->required(),
 
                 Forms\Components\Toggle::make('status')
                     ->label('Active'),
@@ -76,8 +88,10 @@ class CandidateResource extends Resource
                 Tables\Columns\TextColumn::make('phone')
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('nationality')
-                    ->badge(),
+                Tables\Columns\TextColumn::make('nationality.name')
+                    ->label('Nationality')
+                    ->badge()
+                    ->sortable(),
 
                 Tables\Columns\IconColumn::make('email_verified_at')
                     ->label('Verified')

@@ -24,4 +24,8 @@ class Nationality extends Model
     {
         return $query->where('status', true);
     }
+    public function candidates()
+    {
+        return $this->hasMany(Candidate::class);
+    }
 }

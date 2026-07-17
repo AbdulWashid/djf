@@ -17,6 +17,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->string('phone')->nullable();
+            $table->foreignId('nationality_id')->nullable()->constrained('nationalities')->nullOnDelete();
             $table->text('cover_letter')->nullable();
             $table->string('resume_path');
             $table->string('nationality')->nullable();
