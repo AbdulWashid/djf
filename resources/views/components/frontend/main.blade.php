@@ -318,6 +318,7 @@
     <!-- Theme CSS via Vite -->
     @vite(['resources/css/app.css'])
 
+    <link rel="stylesheet" href="{{ asset('assets/css/plugins/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/plugins/animate.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/main.css?v=1.1') }}">
     <style>

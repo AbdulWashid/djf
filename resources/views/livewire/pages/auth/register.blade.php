@@ -41,9 +41,12 @@ new #[Layout('components.frontend.main')] class extends Component {
     public function mount(): void
     {
         $this->type = request()->routeIs('employer.register') ? 'employer' : 'candidate';
-        $this->nationalities = Nationality::where('status', true)
-            ->orderBy('name')
-            ->get(['id', 'name']);
+
+        $this->nationalities = rememberIfEnabled('active_nationalities', now()->addHours(12), function () {
+            return Nationality::where('status', true)
+                ->orderBy('name')
+                ->get(['id', 'name']);
+        });
 
         view()->share('pageTitle', $this->type == 'employer' ? 'Employer Registration | Create a Hiring Account - Dubai Job Finder' : 'Candidate Registration | Sign Up & Find Jobs - Dubai Job Finder');
         view()->share('pageDescription', $this->type == 'employer' ? 'Register as an employer on Dubai Job Finder. Create your company profile, post jobs, and start connecting with qualified professionals in Dubai today.' : 'Create your free candidate account on Dubai Job Finder. Upload your CV, apply to top vacancies, and get noticed by leading employers in Dubai.');
@@ -460,20 +463,21 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                 <div>
                                     <label>Country</label>
-                                    <select wire:model.live="country_id"
-                                        class="w-full rounded-md border px-4 py-3 @error('country_id') border-red-500 @else border-gray-300 @enderror">
-                                        <option value="">Select a country</option>
-                                        @foreach ($nationalities as $nationality)
-                                            <option value="{{ $nationality->id }}">{{ $nationality->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <div wire:ignore>
+                                        <select wire:model.live="country_id" id="register-country-select"
+                                            class="w-full rounded-md border px-4 py-3 @error('country_id') border-red-500 @else border-gray-300 @enderror">
+                                            <option value="">Select a country</option>
+                                            @foreach ($nationalities as $nationality)
+                                                <option value="{{ $nationality->id }}">{{ $nationality->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     @error('country_id')
                                         <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
                                     @enderror
                                 </div>
-
                                 <div>
                                     <label>Postal Code</label>
                                     <input type="text" wire:model.live="postal_code"
@@ -536,20 +540,21 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                             <div class="mb-4">
                                 <label>Nationality</label>
-                                <select wire:model.live="nationality_id"
-                                    class="w-full rounded-md border px-4 py-3 @error('nationality_id') border-red-500 @else border-gray-300 @enderror">
-                                    <option value="">Select nationality</option>
-                                    @foreach ($nationalities as $nationality)
-                                        <option value="{{ $nationality->id }}">{{ $nationality->name }}</option>
-                                    @endforeach
-                                </select>
+                                <div wire:ignore>
+                                    <select wire:model.live="nationality_id" id="register-nationality-select"
+                                        class="w-full rounded-md border px-4 py-3 @error('nationality_id') border-red-500 @else border-gray-300 @enderror">
+                                        <option value="">Select nationality</option>
+                                        @foreach ($nationalities as $nationality)
+                                            <option value="{{ $nationality->id }}">{{ $nationality->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                                 @error('nationality_id')
                                     <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
                                 @enderror
                             </div>
-
                             <div class="mb-4">
                                 <label>Resume <span class="text-danger">*</span></label>
                                 <label
@@ -714,4 +719,38 @@ new #[Layout('components.frontend.main')] class extends Component {
             </div>
         </div>
     </div>
+    @push('js')
+        <style>
+            .select2-container {
+                border: 1px solid #d1d5db !important;
+                border-radius: 0.375rem;
+                padding: 0.75rem 1rem;
+            }
+        </style>
+        <script>
+            function registerFormSelect2() {
+                if ($('#register-country-select').length) {
+                    $('#register-country-select').select2({
+                        placeholder: 'Select a country',
+                        allowClear: true,
+                        width: '100%',
+                    }).on('change', function() {
+                        @this.set('country_id', $(this).val() || null);
+                    });
+                }
+
+                if ($('#register-nationality-select').length) {
+                    $('#register-nationality-select').select2({
+                        placeholder: 'Select nationality',
+                        allowClear: true,
+                        width: '100%',
+                    }).on('change', function() {
+                        @this.set('nationality_id', $(this).val() || null);
+                    });
+                }
+            }
+
+            document.addEventListener('livewire:initialized', registerFormSelect2);
+        </script>
+    @endpush
 </div>

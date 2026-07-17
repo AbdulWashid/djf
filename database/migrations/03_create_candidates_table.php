@@ -20,7 +20,6 @@ return new class extends Migration
             $table->foreignId('nationality_id')->nullable()->constrained('nationalities')->nullOnDelete();
             $table->text('cover_letter')->nullable();
             $table->string('resume_path');
-            $table->string('nationality')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();

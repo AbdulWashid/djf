@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\WithFileUploads;
 use Illuminate\Validation\Rule;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Facades\Storage;
 
 new #[Layout('components.frontend.main')] class extends Component {
     use WithFileUploads;
@@ -20,8 +21,9 @@ new #[Layout('components.frontend.main')] class extends Component {
     public $address = '';
     public $city = '';
     public $state = '';
-    public $country = '';
+    public ?int $country_id = null;
     public $postal_code = '';
+    public $nationalities = [];
 
     public function mount()
     {
@@ -36,8 +38,14 @@ new #[Layout('components.frontend.main')] class extends Component {
         $this->address = $employer->address;
         $this->city = $employer->city;
         $this->state = $employer->state;
-        $this->country = $employer->country;
+        $this->country_id = $employer->country_id;
         $this->postal_code = $employer->postal_code;
+
+        $this->nationalities = rememberIfEnabled('active_nationalities', now()->addHours(12), function () {
+            return \App\Models\Nationality::where('status', true)
+                ->orderBy('name')
+                ->get(['id', 'name']);
+        });
     }
 
     public function save()
@@ -53,7 +61,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             'address' => ['nullable', 'string'],
             'city' => ['nullable', 'string'],
             'state' => ['nullable', 'string'],
-            'country' => ['nullable', 'string'],
+            'country_id' => ['nullable', 'exists:nationalities,id'],
             'postal_code' => ['nullable', 'string'],
             'logo' => ['nullable', 'image', 'max:2048'],
         ]);
@@ -77,7 +85,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             'address' => $this->address,
             'city' => $this->city,
             'state' => $this->state,
-            'country' => $this->country,
+            'country_id' => $this->country_id,
             'postal_code' => $this->postal_code,
             'logo' => $path,
             'email_verified_at' => $emailChanged ? null : $this->employer->email_verified_at,
@@ -246,10 +254,16 @@ new #[Layout('components.frontend.main')] class extends Component {
                             {{-- Country --}}
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Country</label>
-                                <input type="text" wire:model="country"
-                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition"
-                                    placeholder="e.g. United Arab Emirates">
-                                @error('country')
+                                <div wire:ignore>
+                                    <select wire:model.live="country_id" id="profile-country-select"
+                                        class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition">
+                                        <option value="">Select country</option>
+                                        @foreach ($nationalities as $nat)
+                                            <option value="{{ $nat->id }}" @selected($nat->id == $country_id)>{{ $nat->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                @error('country_id')
                                     <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -383,3 +397,21 @@ new #[Layout('components.frontend.main')] class extends Component {
         </script>
     @endonce
 </div>
+    @push('js')
+        <script>
+            function employerProfileSelect2() {
+                if ($('#profile-country-select').length) {
+                    $('#profile-country-select').select2({
+                        placeholder: 'Select country',
+                        allowClear: true,
+                        width: '100%',
+                    }).on('change', function() {
+                        @this.set('country_id', $(this).val() || null);
+                    });
+                }
+            }
+
+            document.addEventListener('livewire:initialized', employerProfileSelect2);
+        </script>
+    @endpush
+

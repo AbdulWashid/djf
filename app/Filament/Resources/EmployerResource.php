@@ -9,7 +9,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Forms;
 use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
@@ -92,7 +91,7 @@ class EmployerResource extends Resource
                             ->preload(),
 
                         Forms\Components\TextInput::make('postal_code')->maxLength(20),
-                    FileUpload::make('logo')
+                        FileUpload::make('logo')
                             ->image()
                             ->directory('employers')
                             ->acceptedFileTypes([
@@ -118,10 +117,6 @@ class EmployerResource extends Resource
                     ->searchable()
                     ->sortable(),
                 ImageColumn::make('logo'),
-                SpatieMediaLibraryImageColumn::make('featured_image')
-                    ->collection('images')
-                    ->circular()
-                    ->label('Featured Image'),
 
                 TextColumn::make('website'),
                 TextColumn::make('email')

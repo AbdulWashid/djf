@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\WithFileUploads;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Nationality;
 
 new #[Layout('components.frontend.main')] class extends Component {
     use WithFileUploads;
@@ -18,8 +19,9 @@ new #[Layout('components.frontend.main')] class extends Component {
     public $last_name = '';
     public $email = '';
     public $phone = '';
-    public $nationality = '';
+    public ?int $nationality_id = null;
     public $cover_letter = '';
+    public $nationalities = [];
 
     public function mount()
     {
@@ -31,8 +33,14 @@ new #[Layout('components.frontend.main')] class extends Component {
         $this->last_name = $candidate->last_name;
         $this->email = $candidate->email;
         $this->phone = $candidate->phone;
-        $this->nationality = $candidate->nationality;
+        $this->nationality_id = $candidate->nationality_id;
         $this->cover_letter = $candidate->cover_letter;
+
+        $this->nationalities = rememberIfEnabled('active_nationalities', now()->addHours(12), function () {
+            return Nationality::where('status', true)
+                ->orderBy('name')
+                ->get(['id', 'name']);
+        });
     }
     public function save()
     {
@@ -43,7 +51,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', Rule::unique('candidates', 'email')->ignore($this->candidate->id)],
             'phone' => ['required', 'string', 'min:10', 'max:15'],
-            'nationality' => ['nullable', 'string', 'max:255'],
+            'nationality_id' => ['nullable', 'exists:nationalities,id'],
             'cover_letter' => ['nullable', 'string'],
             'resume' => ['nullable', 'mimes:pdf,doc,docx', 'max:5120'],
         ]);
@@ -63,7 +71,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             'last_name' => $this->last_name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'nationality' => $this->nationality,
+            'nationality_id' => $this->nationality_id,
             'cover_letter' => $this->cover_letter,
             'resume_path' => $resumePath,
             'email_verified_at' => $emailChanged ? null : $this->candidate->email_verified_at,
@@ -188,9 +196,16 @@ new #[Layout('components.frontend.main')] class extends Component {
                             {{-- Nationality --}}
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Nationality</label>
-                                <input type="text" wire:model.live="nationality"
-                                    class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition">
-                                @error('nationality')
+                                <div wire:ignore>
+                                    <select wire:model.live="nationality_id" id="profile-nationality-select"
+                                        class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition">
+                                        <option value="">Select nationality</option>
+                                        @foreach ($nationalities as $nat)
+                                            <option value="{{ $nat->id }}" @selected($nat->id == $nationality_id)>{{ $nat->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                @error('nationality_id')
                                     <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -255,3 +270,21 @@ new #[Layout('components.frontend.main')] class extends Component {
         </div>
     </section>
 </div>
+    @push('js')
+        <script>
+            function candidateProfileSelect2() {
+                if ($('#profile-nationality-select').length) {
+                    $('#profile-nationality-select').select2({
+                        placeholder: 'Select nationality',
+                        allowClear: true,
+                        width: '100%',
+                    }).on('change', function() {
+                        @this.set('nationality_id', $(this).val() || null);
+                    });
+                }
+            }
+
+            document.addEventListener('livewire:initialized', candidateProfileSelect2);
+        </script>
+    @endpush
+
