@@ -29,6 +29,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 
 class JobsResource extends Resource
 {
@@ -135,7 +137,46 @@ class JobsResource extends Resource
                     ToggleColumn::make('status')->label('Status')->onColor('success')->offColor('danger')]
                 )
             ->filters([
-                //
+                // SelectFilter::make('gender')
+                //     ->options([
+                //         'Male' => 'Male',
+                //         'Female' => 'Female',
+                //         'Both (Male/Female)' => 'Both (Male/Female)',
+                //         'Other' => 'Other'
+                //     ]),
+                // TernaryFilter::make('featured'),
+                // TernaryFilter::make('status'),
+
+                SelectFilter::make('job_type')
+                    ->label('Employment Type')
+                    ->options(EmploymentType::class)
+                    ->searchable(),
+
+                SelectFilter::make('location_id')
+                    ->label('Location')
+                    ->relationship('location', 'name')
+                    ->searchable()
+                    ->preload(),
+
+                SelectFilter::make('gender')
+                    ->options([
+                        'Male' => 'Male',
+                        'Female' => 'Female',
+                        'Both (Male/Female)' => 'Both (Male/Female)',
+                        'Other' => 'Other',
+                    ]),
+
+                TernaryFilter::make('featured')
+                    ->label('Featured')
+                    ->placeholder('All Jobs')
+                    ->trueLabel('Featured Only')
+                    ->falseLabel('Non Featured'),
+
+                TernaryFilter::make('status')
+                    ->label('Status')
+                    ->placeholder('All Jobs')
+                    ->trueLabel('Active')
+                    ->falseLabel('Inactive'),
             ])
             ->actions([EditAction::make(), DeleteAction::make()->requiresConfirmation()])
             ->bulkActions([BulkActionGroup::make([DeleteBulkAction::make()->requiresConfirmation()])]);
