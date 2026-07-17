@@ -32,7 +32,7 @@ class Employer extends Authenticatable implements MustVerifyEmail, HasMedia
         'address',
         'city',
         'state',
-        'country',
+        'country_id',
         'postal_code',
         'is_active',
         'slug',
@@ -66,7 +66,10 @@ class Employer extends Authenticatable implements MustVerifyEmail, HasMedia
     {
         $this->notify(new EmployerVerifyEmail());
     }
-
+    public function country()
+    {
+        return $this->belongsTo(Nationality::class, 'country_id');
+    }
     public function sendPasswordResetNotification($token): void
     {
         $url = route('employer.password.reset', [

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('city')->nullable();
             $table->string('state')->nullable();
-            $table->string('country')->nullable();
+            $table->foreignId('country_id')->nullable()->constrained('nationalities')->nullOnDelete();
             $table->string('postal_code')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamp('created_at')->nullable();
