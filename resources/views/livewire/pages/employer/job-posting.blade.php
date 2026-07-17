@@ -55,7 +55,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             'location_id' => ['required', 'integer', 'exists:locations,id'],
             'salary_range' => ['required', 'string', 'max:255'],
 
-            'gender' => ['required', Rule::in(['male', 'female', 'both', 'other'])],
+            'gender' => ['required', Rule::in(['Male', 'Female', 'Both (Male/Female)', 'Other'])],
             'required_experience' => ['required', 'string', 'max:255'],
 
             'expected_nationalities' => ['required', 'array', 'min:1'],
