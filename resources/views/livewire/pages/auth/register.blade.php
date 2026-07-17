@@ -11,6 +11,7 @@ use Livewire\Volt\Component;
 use Livewire\WithFileUploads;
 use App\Models\Employer;
 use App\Models\Candidate;
+use App\Models\Nationality;
 
 new #[Layout('components.frontend.main')] class extends Component {
     use WithFileUploads;
@@ -27,17 +28,23 @@ new #[Layout('components.frontend.main')] class extends Component {
     public string $address = ''; // employer
     public string $city = ''; // employer
     public string $state = ''; // employer
-    public string $country = ''; // employer
+    public ?int $country_id = null; // employer
     public string $postal_code = ''; // employer
     public $logo; // employer
-    public string $nationality = ''; // candidate
+    public ?int $nationality_id = null; // candidate
     public $resume; // candidate
     public string $cover_letter = ''; // candidate
     public string $type = '';
 
+    public $nationalities = [];
+
     public function mount(): void
     {
         $this->type = request()->routeIs('employer.register') ? 'employer' : 'candidate';
+        $this->nationalities = Nationality::where('status', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
         view()->share('pageTitle', $this->type == 'employer' ? 'Employer Registration | Create a Hiring Account - Dubai Job Finder' : 'Candidate Registration | Sign Up & Find Jobs - Dubai Job Finder');
         view()->share('pageDescription', $this->type == 'employer' ? 'Register as an employer on Dubai Job Finder. Create your company profile, post jobs, and start connecting with qualified professionals in Dubai today.' : 'Create your free candidate account on Dubai Job Finder. Upload your CV, apply to top vacancies, and get noticed by leading employers in Dubai.');
     }
@@ -71,7 +78,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                     'address' => ['nullable', 'string', 'max:255'],
                     'city' => ['nullable', 'string', 'max:100'],
                     'state' => ['nullable', 'string', 'max:100'],
-                    'country' => ['nullable', 'string', 'max:100'],
+                    'country_id' => ['nullable', 'exists:nationalities,id'],
                     'postal_code' => ['nullable', 'string', 'max:20'],
                     'logo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp,avif', 'max:2048'],
                     'password' => ['required', 'confirmed', Rules\Password::defaults()],
@@ -93,7 +100,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                     'address' => $this->address,
                     'city' => $this->city,
                     'state' => $this->state,
-                    'country' => $this->country,
+                    'country_id' => $this->country_id,
                     'postal_code' => $this->postal_code,
                     'password' => Hash::make($this->password),
                     'logo' => $logoPath,
@@ -126,7 +133,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                 'last_name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'email', 'unique:candidates,email'],
                 'phone' => ['nullable', 'regex:/^[0-9+\-\s()]+$/', 'min:10', 'max:15'],
-                'nationality' => ['nullable', 'string', 'max:100'],
+                'nationality_id' => ['nullable', 'exists:nationalities,id'],
                 'resume' => ['required', 'mimes:pdf,doc,docx', 'max:5120'],
                 'cover_letter' => ['nullable', 'string', 'max:250'],
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
@@ -144,7 +151,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                 'last_name' => $this->last_name,
                 'email' => $this->email,
                 'phone' => $this->phone,
-                'nationality' => $this->nationality,
+                'nationality_id' => $this->nationality_id,
                 'cover_letter' => $this->cover_letter,
                 'resume_path' => $resumePath,
                 'status' => false,
@@ -453,9 +460,14 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                                 <div>
                                     <label>Country</label>
-                                    <input type="text" wire:model.live="country"
-                                        class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
-                                    @error('country')
+                                    <select wire:model.live="country_id"
+                                        class="w-full rounded-md border px-4 py-3 @error('country_id') border-red-500 @else border-gray-300 @enderror">
+                                        <option value="">Select a country</option>
+                                        @foreach ($nationalities as $nationality)
+                                            <option value="{{ $nationality->id }}">{{ $nationality->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('country_id')
                                         <span class="text-danger text-sm">
                                             {{ $message }}
                                         </span>
@@ -524,9 +536,14 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                             <div class="mb-4">
                                 <label>Nationality</label>
-                                <input type="text" wire:model.live="nationality"
-                                    class="w-full rounded-md border px-4 py-3 @error('email') border-red-500 @else border-gray-300 @enderror">
-                                @error('nationality')
+                                <select wire:model.live="nationality_id"
+                                    class="w-full rounded-md border px-4 py-3 @error('nationality_id') border-red-500 @else border-gray-300 @enderror">
+                                    <option value="">Select nationality</option>
+                                    @foreach ($nationalities as $nationality)
+                                        <option value="{{ $nationality->id }}">{{ $nationality->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('nationality_id')
                                     <span class="text-danger text-sm">
                                         {{ $message }}
                                     </span>
