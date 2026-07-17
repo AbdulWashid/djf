@@ -35,6 +35,7 @@ class Employer extends Authenticatable implements MustVerifyEmail, HasMedia
         'country',
         'postal_code',
         'is_active',
+        'slug',
     ];
 
     protected $hidden = [

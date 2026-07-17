@@ -23,6 +23,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Hash;
 
 class EmployerResource extends Resource
 {
@@ -53,13 +54,14 @@ class EmployerResource extends Resource
                                     ->schema([
 
                                         Forms\Components\TextInput::make('name')
+                                            ->required()
                                             ->label('Name of the Employer')
                                             ->maxLength(255)
                                             ->columnSpan(2),
                                         Forms\Components\RichEditor::make('description')
                                             ->label('Description')
                                             ->helperText('Enter company details and description')
-                                            ->maxLength(500)
+                                            ->maxLength(5000)
                                             ->columnSpanFull(),
 
                                         // SpatieMediaLibraryFileUpload::make('image')
@@ -69,26 +71,43 @@ class EmployerResource extends Resource
                                         //    ->responsiveImages() // Optional: generates responsive images
                                         //    ->multiple(false), // Optional: allows multiple file uploads
                                         //     Add other options like ->downloadable(), ->previewable(), ->deletable()
+                                        Forms\Components\TextInput::make('password')
+                                            ->label('Password')
+                                            ->password()
+                                            ->revealable()
+                                            ->required(fn (string $operation) => $operation === 'create')
+                                            ->minLength(8)
+                                            ->maxLength(255)
+                                            ->confirmed()
+                                            ->dehydrateStateUsing(fn ($state) => filled($state) ? Hash::make($state) : null)
+                                            ->dehydrated(fn ($state) => filled($state))
+                                            ->columnSpan(1),
 
+                                        Forms\Components\TextInput::make('password_confirmation')
+                                            ->label('Confirm Password')
+                                            ->password()
+                                            ->revealable()
+                                            ->required(fn (string $operation) => $operation === 'create')
+                                            ->dehydrated(false),
                                         Forms\Components\Toggle::make('is_active')
                                             ->label('Status')
                                             ->inline()
                                             ->helperText('Employer visibility')
-                                            ->default(true),
+                                            ->default(true)->required(),
                                     ])
                                     ->compact()
                                     ->columns(2),
                                 Forms\Components\Section::make('Company Details')
                                     ->description('Enter details about the company')
                                     ->schema([
-                                        Forms\Components\TextInput::make('website'),
-                                        Forms\Components\TextInput::make('email'),
-                                        Forms\Components\TextInput::make('phone'),
-                                        Forms\Components\TextInput::make('address'),
-                                        Forms\Components\TextInput::make('city'),
-                                        Forms\Components\TextInput::make('state'),
-                                        Forms\Components\TextInput::make('country'),
-                                        Forms\Components\TextInput::make('postal_code'),
+                                        Forms\Components\TextInput::make('website')->url()->prefix('https://')->maxLength(255),
+                                        Forms\Components\TextInput::make('email')->email()->required()->unique(ignoreRecord: true)->maxLength(255),
+                                        Forms\Components\TextInput::make('phone')->tel()->maxLength(20),
+                                        Forms\Components\TextInput::make('address')->maxLength(255),
+                                        Forms\Components\TextInput::make('city')->maxLength(100),
+                                        Forms\Components\TextInput::make('state')->maxLength(100),
+                                        Forms\Components\TextInput::make('country')->maxLength(100),
+                                        Forms\Components\TextInput::make('postal_code')->maxLength(20),
                                     ])
                                     ->compact()
                                     ->columns(2),
@@ -101,16 +120,29 @@ class EmployerResource extends Resource
                                     ->label('Company Logo')
                                     ->description('Upload company logo here')
                                     ->schema([
+                                        // FileUpload::make('logo')
+                                        //    ->image()
+                                        //     ->imagePreviewHeight('250')
+                                        //     ->panelLayout('compact')
+                                        //     ->imageResizeMode('cover')
+                                        //     ->imageResizeTargetWidth('1200')
+                                        //     ->imageResizeTargetHeight('800')
+                                        //     ->acceptedFileTypes(['image/*'])
+                                        //     ->helperText('Upload a company logo. Recommended size: 1200x800px')
+                                        //     ->columnSpanFull(),
+
                                         FileUpload::make('logo')
-                                           ->image()
-                                            ->imagePreviewHeight('250')
-                                            ->panelLayout('compact')
-                                            ->imageResizeMode('cover')
-                                            ->imageResizeTargetWidth('1200')
-                                            ->imageResizeTargetHeight('800')
-                                            ->acceptedFileTypes(['image/*'])
-                                            ->helperText('Upload a company logo. Recommended size: 1200x800px')
-                                            ->columnSpanFull(),
+                                            ->image()
+                                            ->directory('employers')
+                                            ->acceptedFileTypes([
+                                                'image/jpeg',
+                                                'image/png',
+                                                'image/webp',
+                                                'image/svg+xml',
+                                            ])
+                                            ->maxSize(2048)
+                                            ->imageEditor()
+                                            ->helperText('JPG, PNG, WEBP, SVG. Max 2 MB.'),
                                     ])
                                     ->compact(),
                             ]),
