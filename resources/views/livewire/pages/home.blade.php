@@ -82,27 +82,208 @@ new #[Layout('components.frontend.main')] class extends Component {
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">
+                        @push('css')
+                            <style>
+                                .modern-banner-card {
+                                    border-radius: 24px !important;
+                                    box-shadow: 0 25px 50px -12px rgba(68, 70, 144, 0.25) !important;
+                                    border: 4px solid #ffffff !important;
+                                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                                }
+
+                                .modern-banner-card:hover {
+                                    transform: translateY(-5px) scale(1.01) !important;
+                                    box-shadow: 0 35px 60px -15px rgba(68, 70, 144, 0.35) !important;
+                                }
+
+                                /* Glassmorphic Cards */
+                                .glass-card-modern {
+                                    background: rgba(255, 255, 255, 0.85) !important;
+                                    backdrop-filter: blur(12px) !important;
+                                    -webkit-backdrop-filter: blur(12px) !important;
+                                    border: 1.5px solid rgba(255, 255, 255, 0.7) !important;
+                                    border-radius: 16px !important;
+                                    box-shadow: 0 15px 35px rgba(31, 41, 55, 0.08) !important;
+                                    display: flex !important;
+                                    align-items: center !important;
+                                    padding: 12px 16px !important;
+                                    font-family: 'Montserrat', sans-serif !important;
+                                    gap: 12px !important;
+                                    transition: all 0.3s ease !important;
+                                    width: max-content !important;
+                                    min-width: 190px !important;
+                                }
+
+                                .glass-card-modern:hover {
+                                    transform: translateY(-3px) !important;
+                                    box-shadow: 0 20px 40px rgba(31, 41, 55, 0.12) !important;
+                                    border-color: rgba(255, 255, 255, 0.9) !important;
+                                }
+
+                                .glass-card-icon {
+                                    display: flex !important;
+                                    align-items: center !important;
+                                    justify-content: center !important;
+                                    width: 40px !important;
+                                    height: 40px !important;
+                                    border-radius: 12px !important;
+                                    flex-shrink: 0 !important;
+                                }
+
+                                .icon-wrap-orange {
+                                    background: rgba(255, 114, 67, 0.15) !important;
+                                    color: #FF7243 !important;
+                                }
+
+                                .icon-wrap-blue {
+                                    background: rgba(81, 146, 255, 0.15) !important;
+                                    color: #5192ff !important;
+                                }
+
+                                .icon-wrap-purple {
+                                    background: rgba(68, 70, 144, 0.15) !important;
+                                    color: #444690 !important;
+                                }
+
+                                .icon-wrap-green {
+                                    background: rgba(16, 185, 129, 0.15) !important;
+                                    color: #10b981 !important;
+                                }
+
+                                .glass-card-info {
+                                    display: flex !important;
+                                    flex-direction: column !important;
+                                    text-align: left !important;
+                                }
+
+                                .glass-card-title {
+                                    font-weight: 700 !important;
+                                    font-size: 14px !important;
+                                    color: #1f2938 !important;
+                                    line-height: 1.2 !important;
+                                }
+
+                                .glass-card-subtitle {
+                                    font-size: 11px !important;
+                                    color: #6b7280 !important;
+                                    margin-top: 2px !important;
+                                    line-height: 1.2 !important;
+                                }
+
+                                .glass-card-apply-btn {
+                                    background-color: #444690 !important;
+                                    color: #ffffff !important;
+                                    font-size: 10px !important;
+                                    font-weight: 600 !important;
+                                    padding: 5px 10px !important;
+                                    border-radius: 6px !important;
+                                    text-decoration: none !important;
+                                    margin-left: auto !important;
+                                    transition: background-color 0.2s !important;
+                                }
+
+                                .glass-card-apply-btn:hover {
+                                    background-color: #343777 !important;
+                                    color: #ffffff !important;
+                                }
+
+
+
+                                .banner-hero .banner-inner .banner-imgs .rating-card-floating {
+                                    position: absolute;
+                                    bottom: 15%;
+                                    left: -130px;
+                                    z-index: 10;
+                                }
+                            </style>
+                        @endpush
+
                         <div class="banner-imgs">
                             <img loading="lazy" alt="Dubai Job Finder"
-                                src="{{ asset('assets/imgs/banner/banner.png') }}" class="img-responsive shape-1" />
-                            <span class="union-icon"><img loading="lazy" alt="Dubai Job Finder"
-                                    src="{{ asset('assets/imgs/banner/union.svg') }}"
-                                    class="img-responsive shape-3" /></span>
-                            <span class="congratulation-icon"><img loading="lazy" alt="Dubai Job Finder"
-                                    src="{{ asset('assets/imgs/banner/congratulation.svg') }}"
-                                    class="img-responsive shape-2" /></span>
-                            <span class="docs-icon"><img loading="lazy" alt="Dubai Job Finder"
-                                    src="{{ asset('assets/imgs/banner/docs.svg') }}"
-                                    class="img-responsive shape-2" /></span>
-                            <span class="course-icon"><img loading="lazy" alt="Dubai Job Finder"
-                                    src="{{ asset('assets/imgs/banner/course.svg') }}"
-                                    class="img-responsive shape-3" /></span>
-                            <span class="web-dev-icon"><img loading="lazy" alt="Dubai Job Finder"
-                                    src="{{ asset('assets/imgs/banner/web-dev.svg') }}"
-                                    class="img-responsive shape-3" /></span>
-                            <span class="tick-icon"><img loading="lazy" alt="Dubai Job Finder"
-                                    src="{{ asset('assets/imgs/banner/tick.svg') }}"
-                                    class="img-responsive shape-3" /></span>
+                                src="{{ asset('assets/imgs/banner/banner_modern.jpg') }}"
+                                class="img-responsive shape-1 modern-banner-card" />
+                            <span class="congratulation-icon shape-2">
+                                <div class="glass-card-modern">
+                                    <div class="glass-card-icon icon-wrap-orange">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <rect x="2" y="7" width="20" height="14" rx="2"
+                                                ry="2"></rect>
+                                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="glass-card-info">
+                                        <span class="glass-card-title">Job Found!</span>
+                                        <span class="glass-card-subtitle">Perfect Match Found!</span>
+                                    </div>
+                                    <div style="color: #10b981; margin-left: 4px; display: flex; align-items: center;">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </span>
+                            <span class="course-icon shape-3">
+                                <div class="glass-card-modern">
+                                    <div class="glass-card-icon icon-wrap-blue">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                                            <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="glass-card-info">
+                                        <span class="glass-card-title">10000+</span>
+                                        <span class="glass-card-subtitle">Best Opportunities</span>
+                                    </div>
+                                </div>
+                            </span>
+                            <span class="web-dev-icon shape-3">
+                                <div class="glass-card-modern" style="min-width: 220px !important;">
+                                    <div class="glass-card-icon icon-wrap-purple">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <polyline points="16 18 22 12 16 6"></polyline>
+                                            <polyline points="8 6 2 12 8 18"></polyline>
+                                        </svg>
+                                    </div>
+                                    <div class="glass-card-info">
+                                        <span class="glass-card-title">Software Engineer</span>
+                                        <span class="glass-card-subtitle">Dubai, UAE • Full-time</span>
+                                    </div>
+                                    <a href="#feature-jobs" class="glass-card-apply-btn">Apply Now</a>
+                                </div>
+                            </span>
+                            <span class="rating-card-floating shape-2">
+                                <div class="glass-card-modern" style="min-width: 170px !important;">
+                                    <div style="display: flex; margin-right: 4px;">
+                                        <img src="{{ asset('assets/imgs/avatar/ava_1.png') }}"
+                                            style="width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #fff; margin-right: -8px; z-index: 5;" />
+                                        <img src="{{ asset('assets/imgs/avatar/ava_3.png') }}"
+                                            style="width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #fff; margin-right: -8px; z-index: 4;" />
+                                        <img src="{{ asset('assets/imgs/avatar/ava_5.png') }}"
+                                            style="width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #fff; margin-right: -8px; z-index: 3;" />
+                                        <img src="{{ asset('assets/imgs/avatar/ava_6.png') }}"
+                                            style="width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #fff; margin-right: -8px; z-index: 2;" />
+                                        <div
+                                            style="width: 24px; height: 24px; border-radius: 50%; background: #444690; color: #fff; font-size: 8px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 1.5px solid #fff; z-index: 1;">
+                                            99+</div>
+                                    </div>
+                                    <div class="glass-card-info" style="margin-left: 8px;">
+                                        <span class="glass-card-title"
+                                            style="display: flex; align-items: center; gap: 4px;">
+                                            <span style="color: #FFD333;">★</span> 4.9
+                                        </span>
+                                        <span class="glass-card-subtitle">(3.7k reviews)</span>
+                                    </div>
+                                </div>
+                            </span>
                         </div>
                     </div>
                 </div>

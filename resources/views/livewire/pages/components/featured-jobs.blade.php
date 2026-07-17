@@ -28,7 +28,7 @@ new class extends Component {
 
 <div>
     @if ($jobs->isNotEmpty())
-        <section class="section-box mt-80">
+        <section class="section-box mt-80" id="feature-jobs">
             <div class="container">
                 <h2 class="section-title text-center mb-15 wow animate__animated animate__fadeInUp">Featured Jobs</h2>
                 <div
