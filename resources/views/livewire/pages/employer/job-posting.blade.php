@@ -360,10 +360,10 @@ new #[Layout('components.frontend.main')] class extends Component {
                                 <select wire:model="gender"
                                     class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-600 focus:border-primary-600 shadow-sm transition">
                                     <option value="">Select Gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="both">Both</option>
-                                    <option value="other">Other</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Both (Male/Female)">Both (Male/Female)</option>
+                                    <option value="Other">Other</option>
                                 </select>
                                 @error('gender')
                                     <span class="text-xs text-red-600 mt-1 block font-medium">{{ $message }}</span>
