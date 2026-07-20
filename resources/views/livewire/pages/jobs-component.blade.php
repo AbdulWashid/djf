@@ -121,6 +121,26 @@ new #[Layout('components.frontend.main')] class extends Component {
             ->get();
 
         foreach ($jobs as $job) {
+            $addressParts = array_map('trim', explode(',', (string) ($job->employer->address ?? '')));
+
+            $streetAddress = filled($addressParts[0] ?? null) ? $addressParts[0] : (filled($job->employer->address ?? null) ? $job->employer->address : ($job->location?->name ?? 'Dubai'));
+            $addressLocality = filled($addressParts[1] ?? null) ? $addressParts[1] : ($job->location?->name ?? ($job->employer->city ?? 'Dubai'));
+            $addressRegion = filled($addressParts[2] ?? null) ? $addressParts[2] : ($job->employer->state ?? 'Dubai');
+            $addressCountry = filled($addressParts[3] ?? null) ? $addressParts[3] : 'AE';
+            $postalCode = $job->employer->postal_code ?? null;
+
+            $address = [
+                '@type' => 'PostalAddress',
+                'streetAddress' => $streetAddress,
+                'addressLocality' => $addressLocality,
+                'addressRegion' => $addressRegion,
+                'addressCountry' => $addressCountry,
+            ];
+
+            if (filled($postalCode)) {
+                $address['postalCode'] = $postalCode;
+            }
+
             $schemas[] = [
                 '@context' => 'https://schema.org',
                 '@type' => 'JobPosting',
@@ -128,7 +148,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                 'description' => strip_tags($job->description),
                 'datePosted' => optional($job->created_at)->toDateString(),
                 'employmentType' => $job->job_type,
-                'url' => route('jobs', $job->slug),
+                'url' => route('jobs.show', $job->slug),
 
                 'hiringOrganization' => [
                     '@type' => 'Organization',
@@ -138,11 +158,7 @@ new #[Layout('components.frontend.main')] class extends Component {
 
                 'jobLocation' => [
                     '@type' => 'Place',
-                    'address' => [
-                        '@type' => 'PostalAddress',
-                        'addressLocality' => $job->location?->name,
-                        'addressCountry' => 'AE',
-                    ],
+                    'address' => $address,
                 ],
             ];
         }

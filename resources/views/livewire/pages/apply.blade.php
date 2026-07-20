@@ -108,6 +108,24 @@ new #[Layout('components.frontend.main')] class extends Component {
     {
         $addressParts = array_map('trim', explode(',', (string) ($this->job->employer->address ?? '')));
 
+        $streetAddress = filled($addressParts[0] ?? null) ? $addressParts[0] : (filled($this->job->employer->address ?? null) ? $this->job->employer->address : ($this->job->location?->name ?? 'Dubai'));
+        $addressLocality = filled($addressParts[1] ?? null) ? $addressParts[1] : ($this->job->location?->name ?? ($this->job->employer->city ?? 'Dubai'));
+        $addressRegion = filled($addressParts[2] ?? null) ? $addressParts[2] : ($this->job->employer->state ?? 'Dubai');
+        $addressCountry = filled($addressParts[3] ?? null) ? $addressParts[3] : 'AE';
+        $postalCode = $this->job->employer->postal_code ?? null;
+
+        $address = [
+            '@type' => 'PostalAddress',
+            'streetAddress' => $streetAddress,
+            'addressLocality' => $addressLocality,
+            'addressRegion' => $addressRegion,
+            'addressCountry' => $addressCountry,
+        ];
+
+        if (filled($postalCode)) {
+            $address['postalCode'] = $postalCode;
+        }
+
         return array_filter(
             [
                 '@context' => 'https://schema.org',
@@ -125,22 +143,10 @@ new #[Layout('components.frontend.main')] class extends Component {
                     ],
                     fn($value) => filled($value),
                 ),
-                'jobLocation' => array_filter(
-                    [
-                        '@type' => 'Place',
-                        'address' => array_filter(
-                            [
-                                '@type' => 'PostalAddress',
-                                'streetAddress' => $addressParts[0] ?? null,
-                                'addressLocality' => $addressParts[1] ?? ($this->job->location?->name ?? null),
-                                'addressRegion' => $addressParts[2] ?? null,
-                                'addressCountry' => $addressParts[3] ?? null,
-                            ],
-                            fn($value) => filled($value),
-                        ),
-                    ],
-                    fn($value) => filled($value),
-                ),
+                'jobLocation' => [
+                    '@type' => 'Place',
+                    'address' => $address,
+                ],
                 'url' => route('jobs.show', $this->job->slug),
             ],
             fn($value) => filled($value),
