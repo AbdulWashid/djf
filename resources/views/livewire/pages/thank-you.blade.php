@@ -40,56 +40,7 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         view()->share('twitterTags', $this->job->twitter_tags);
 
-        view()->share('schemaData', [$this->generateJobPostingSchema()]);
-    }
-
-    protected function generateJobPostingSchema(): array
-    {
-        $addressParts = array_map('trim', explode(',', (string) ($this->job->employer->address ?? '')));
-
-        $streetAddress = filled($addressParts[0] ?? null) ? $addressParts[0] : (filled($this->job->employer->address ?? null) ? $this->job->employer->address : ($this->job->location?->name ?? 'Dubai'));
-        $addressLocality = filled($addressParts[1] ?? null) ? $addressParts[1] : ($this->job->location?->name ?? ($this->job->employer->city ?? 'Dubai'));
-        $addressRegion = filled($addressParts[2] ?? null) ? $addressParts[2] : ($this->job->employer->state ?? 'Dubai');
-        $addressCountry = filled($addressParts[3] ?? null) ? $addressParts[3] : 'AE';
-        $postalCode = $this->job->employer->postal_code ?? null;
-
-        $address = [
-            '@type' => 'PostalAddress',
-            'streetAddress' => $streetAddress,
-            'addressLocality' => $addressLocality,
-            'addressRegion' => $addressRegion,
-            'addressCountry' => $addressCountry,
-        ];
-
-        if (filled($postalCode)) {
-            $address['postalCode'] = $postalCode;
-        }
-
-        return array_filter(
-            [
-                '@context' => 'https://schema.org',
-                '@type' => 'JobPosting',
-                'title' => $this->job->title,
-                'description' => strip_tags($this->job->description ?? ''),
-                'datePosted' => $this->job->created_at?->toIso8601String(),
-                'employmentType' => $this->job->job_type?->getLabel(),
-                'hiringOrganization' => array_filter(
-                    [
-                        '@type' => 'Organization',
-                        'name' => $this->job->employer->name ?? config('app.name'),
-                        'sameAs' => $this->job->employer->website ?? null,
-                        'logo' => $this->job->employer->logo ? Storage::url($this->job->employer->logo) : null,
-                    ],
-                    fn($value) => filled($value),
-                ),
-                'jobLocation' => [
-                    '@type' => 'Place',
-                    'address' => $address,
-                ],
-                'url' => route('jobs.show', $this->job->slug),
-            ],
-            fn($value) => filled($value),
-        );
+        view()->share('schemaData', []);
     }
 }; ?>
 

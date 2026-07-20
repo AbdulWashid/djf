@@ -121,13 +121,57 @@ new #[Layout('components.frontend.main')] class extends Component {
             ->get();
 
         foreach ($jobs as $job) {
-            $addressParts = array_map('trim', explode(',', (string) ($job->employer->address ?? '')));
+            $employer = $job->employer;
+            $locationName = $job->location?->name;
 
-            $streetAddress = filled($addressParts[0] ?? null) ? $addressParts[0] : (filled($job->employer->address ?? null) ? $job->employer->address : ($job->location?->name ?? 'Dubai'));
-            $addressLocality = filled($addressParts[1] ?? null) ? $addressParts[1] : ($job->location?->name ?? ($job->employer->city ?? 'Dubai'));
-            $addressRegion = filled($addressParts[2] ?? null) ? $addressParts[2] : ($job->employer->state ?? 'Dubai');
-            $addressCountry = filled($addressParts[3] ?? null) ? $addressParts[3] : 'AE';
-            $postalCode = $job->employer->postal_code ?? null;
+            // Clean employer address
+            $rawAddress = trim((string) ($employer?->address ?? ''));
+            $addressParts = array_map('trim', explode(',', $rawAddress));
+            
+            // Filter out empty parts
+            $addressParts = array_values(array_filter($addressParts, 'filled'));
+
+            // Determine street address
+            $streetAddress = 'Dubai';
+            if (!empty($addressParts)) {
+                $streetAddress = $addressParts[0];
+            } elseif (filled($rawAddress)) {
+                $streetAddress = $rawAddress;
+            } elseif (filled($locationName)) {
+                $streetAddress = $locationName;
+            }
+
+            // Determine address locality
+            $addressLocality = 'Dubai';
+            if (count($addressParts) > 1) {
+                $addressLocality = $addressParts[1];
+            } elseif (filled($locationName)) {
+                $addressLocality = $locationName;
+            } elseif (filled($employer?->city)) {
+                $addressLocality = $employer->city;
+            }
+
+            // Determine address region
+            $addressRegion = 'Dubai';
+            if (count($addressParts) > 2) {
+                $addressRegion = $addressParts[2];
+            } elseif (filled($employer?->state)) {
+                $addressRegion = $employer->state;
+            }
+
+            // Determine address country
+            $addressCountry = 'AE';
+            if (count($addressParts) > 3) {
+                $addressCountry = $addressParts[3];
+            }
+
+            // Ensure 2-letter country code
+            if (strlen($addressCountry) !== 2) {
+                $addressCountry = 'AE';
+            }
+
+            // Determine postal code
+            $postalCode = filled($employer?->postal_code) ? trim($employer->postal_code) : '00000';
 
             $address = [
                 '@type' => 'PostalAddress',
@@ -135,32 +179,68 @@ new #[Layout('components.frontend.main')] class extends Component {
                 'addressLocality' => $addressLocality,
                 'addressRegion' => $addressRegion,
                 'addressCountry' => $addressCountry,
+                'postalCode' => $postalCode,
             ];
 
-            if (filled($postalCode)) {
-                $address['postalCode'] = $postalCode;
-            }
+            $schemas[] = array_filter(
+                [
+                    '@context' => 'https://schema.org',
+                    '@type' => 'JobPosting',
+                    'title' => $job->title,
+                    'description' => strip_tags($job->description ?? ''),
+                    'datePosted' => $job->created_at?->toIso8601String(),
+                    'validThrough' => ($job->created_at ?? now())->copy()->addMonth()->format('Y-m-d'),
+                    'employmentType' => $job->job_type ? match ($job->job_type) {
+                        EmploymentType::FULL_TIME => 'FULL_TIME',
+                        EmploymentType::PART_TIME => 'PART_TIME',
+                        EmploymentType::CONTRACT => 'CONTRACTOR',
+                        EmploymentType::INTERNSHIP => 'INTERN',
+                        EmploymentType::TEMPORARY => 'TEMPORARY',
+                        default => 'OTHER',
+                    } : null,
+                    'baseSalary' => filled($job->salary_range)
+                        ? (function () use ($job) {
+                            $salaryRange = $job->salary_range ?? '';
+                            $cleaned = str_replace(',', '', $salaryRange);
+                            preg_match_all('/\d+(?:\.\d+)?/', $cleaned, $matches);
+                            $numbers = array_map('floatval', $matches[0] ?? []);
 
-            $schemas[] = [
-                '@context' => 'https://schema.org',
-                '@type' => 'JobPosting',
-                'title' => $job->title,
-                'description' => strip_tags($job->description),
-                'datePosted' => optional($job->created_at)->toDateString(),
-                'employmentType' => $job->job_type,
-                'url' => route('jobs.show', $job->slug),
+                            if (empty($numbers)) {
+                                return null;
+                            }
 
-                'hiringOrganization' => [
-                    '@type' => 'Organization',
-                    'name' => $job->employer?->name,
-                    'logo' => $job->employer?->logo ? asset('storage/' . $job->employer->logo) : null,
+                            $min = $numbers[0];
+                            $max = $numbers[1] ?? $min;
+
+                            return [
+                                '@type' => 'MonetaryAmount',
+                                'currency' => 'AED',
+                                'value' => [
+                                    '@type' => 'QuantitativeValue',
+                                    'minValue' => $min,
+                                    'maxValue' => $max,
+                                    'unitText' => 'YEAR',
+                                ],
+                            ];
+                        })()
+                        : null,
+                    'hiringOrganization' => array_filter(
+                        [
+                            '@type' => 'Organization',
+                            'name' => $employer->name ?? config('app.name'),
+                            'sameAs' => $employer->website ?? null,
+                            'logo' => $employer->logo ? \Illuminate\Support\Facades\Storage::url($employer->logo) : null,
+                        ],
+                        fn($value) => filled($value)
+                    ),
+                    'jobLocation' => [
+                        '@type' => 'Place',
+                        'address' => $address,
+                    ],
+                    'url' => route('jobs.show', $job->slug),
                 ],
-
-                'jobLocation' => [
-                    '@type' => 'Place',
-                    'address' => $address,
-                ],
-            ];
+                fn($value) => filled($value)
+            );
         }
 
         return $schemas;
