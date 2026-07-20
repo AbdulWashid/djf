@@ -51,13 +51,57 @@ new #[Layout('components.frontend.main')] class extends Component {
 
     protected function generateJobPostingSchema(): array
     {
-        $addressParts = array_map('trim', explode(',', (string) ($this->job->employer->address ?? '')));
+        $employer = $this->job->employer;
+        $locationName = $this->job->location?->name;
 
-        $streetAddress = filled($addressParts[0] ?? null) ? $addressParts[0] : (filled($this->job->employer->address ?? null) ? $this->job->employer->address : ($this->job->location?->name ?? 'Dubai'));
-        $addressLocality = filled($addressParts[1] ?? null) ? $addressParts[1] : ($this->job->location?->name ?? ($this->job->employer->city ?? 'Dubai'));
-        $addressRegion = filled($addressParts[2] ?? null) ? $addressParts[2] : ($this->job->employer->state ?? 'Dubai');
-        $addressCountry = filled($addressParts[3] ?? null) ? $addressParts[3] : 'AE';
-        $postalCode = $this->job->employer->postal_code ?? null;
+        // Clean employer address
+        $rawAddress = trim((string) ($employer?->address ?? ''));
+        $addressParts = array_map('trim', explode(',', $rawAddress));
+        
+        // Filter out empty parts
+        $addressParts = array_values(array_filter($addressParts, 'filled'));
+
+        // Determine street address
+        $streetAddress = 'Dubai';
+        if (!empty($addressParts)) {
+            $streetAddress = $addressParts[0];
+        } elseif (filled($rawAddress)) {
+            $streetAddress = $rawAddress;
+        } elseif (filled($locationName)) {
+            $streetAddress = $locationName;
+        }
+
+        // Determine address locality
+        $addressLocality = 'Dubai';
+        if (count($addressParts) > 1) {
+            $addressLocality = $addressParts[1];
+        } elseif (filled($locationName)) {
+            $addressLocality = $locationName;
+        } elseif (filled($employer?->city)) {
+            $addressLocality = $employer->city;
+        }
+
+        // Determine address region
+        $addressRegion = 'Dubai';
+        if (count($addressParts) > 2) {
+            $addressRegion = $addressParts[2];
+        } elseif (filled($employer?->state)) {
+            $addressRegion = $employer->state;
+        }
+
+        // Determine address country
+        $addressCountry = 'AE';
+        if (count($addressParts) > 3) {
+            $addressCountry = $addressParts[3];
+        }
+
+        // Ensure we use a 2-letter country code
+        if (strlen($addressCountry) !== 2) {
+            $addressCountry = 'AE';
+        }
+
+        // Determine postal code
+        $postalCode = filled($employer?->postal_code) ? trim($employer->postal_code) : '00000';
 
         $address = [
             '@type' => 'PostalAddress',
@@ -65,11 +109,8 @@ new #[Layout('components.frontend.main')] class extends Component {
             'addressLocality' => $addressLocality,
             'addressRegion' => $addressRegion,
             'addressCountry' => $addressCountry,
+            'postalCode' => $postalCode,
         ];
-
-        if (filled($postalCode)) {
-            $address['postalCode'] = $postalCode;
-        }
 
         return array_filter(
             [
@@ -80,14 +121,31 @@ new #[Layout('components.frontend.main')] class extends Component {
                 'datePosted' => $this->job->created_at?->toIso8601String(),
 
                 // Job Expiry Date
-                'validThrough' => $this->job->created_at?->copy()->addMonth()->format('Y-m-d'),
+                'validThrough' => ($this->job->created_at ?? now())->copy()->addMonth()->format('Y-m-d'),
 
-                'employmentType' => $this->job->job_type?->getLabel(),
+                'employmentType' => $this->job->job_type ? match ($this->job->job_type) {
+                    \App\Enums\EmploymentType::FULL_TIME => 'FULL_TIME',
+                    \App\Enums\EmploymentType::PART_TIME => 'PART_TIME',
+                    \App\Enums\EmploymentType::CONTRACT => 'CONTRACTOR',
+                    \App\Enums\EmploymentType::INTERNSHIP => 'INTERN',
+                    \App\Enums\EmploymentType::TEMPORARY => 'TEMPORARY',
+                    default => 'OTHER',
+                } : null,
 
                 // Salary Information
                 'baseSalary' => filled($this->job->salary_range)
                     ? (function () {
-                        [$min, $max] = array_pad(explode('-', str_replace(' ', '', $this->job->salary_range)), 2, null);
+                        $salaryRange = $this->job->salary_range ?? '';
+                        $cleaned = str_replace(',', '', $salaryRange);
+                        preg_match_all('/\d+(?:\.\d+)?/', $cleaned, $matches);
+                        $numbers = array_map('floatval', $matches[0] ?? []);
+
+                        if (empty($numbers)) {
+                            return null;
+                        }
+
+                        $min = $numbers[0];
+                        $max = $numbers[1] ?? $min;
 
                         return [
                             '@type' => 'MonetaryAmount',
@@ -95,7 +153,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                             'value' => [
                                 '@type' => 'QuantitativeValue',
                                 'minValue' => $min,
-                                'maxValue' => $max ?: $min,
+                                'maxValue' => $max,
                                 'unitText' => 'YEAR',
                             ],
                         ];
@@ -105,9 +163,9 @@ new #[Layout('components.frontend.main')] class extends Component {
                 'hiringOrganization' => array_filter(
                     [
                         '@type' => 'Organization',
-                        'name' => $this->job->employer->name ?? config('app.name'),
-                        'sameAs' => $this->job->employer->website ?? null,
-                        'logo' => $this->job->employer->logo ? Storage::url($this->job->employer->logo) : null,
+                        'name' => $employer->name ?? config('app.name'),
+                        'sameAs' => $employer->website ?? null,
+                        'logo' => $employer->logo ? Storage::url($employer->logo) : null,
                     ],
                     fn($value) => filled($value),
                 ),
