@@ -561,7 +561,6 @@ new #[Layout('components.frontend.main')] class extends Component {
         }
         .sidebar-news-small .post-list-small-item .content .post-meta {
             display: flex;
-            flex-direction: column;
             gap: 0;
             line-height: 1.3;
         }
@@ -985,7 +984,7 @@ new #[Layout('components.frontend.main')] class extends Component {
                                                 wire:click="trackView('{{ $recentPost->id }}')">{{ Str::limit($recentPost->title, 50) }}</a>
                                         </h5>
                                         <div class="post-meta text">
-                                            <span>{{ $recentPost->author->name ?? 'Anonymous' }}</span>
+                                            <span>{{ $recentPost->author->name ?? 'Anonymous' }} | </span>
                                             <span>{{ $recentPost->published_at->format('M d, Y') }}</span>
                                         </div>
                                     </div>
