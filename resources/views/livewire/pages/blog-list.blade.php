@@ -341,10 +341,257 @@ new #[Layout('components.frontend.main')] class extends Component {
         }
     @endphp
     <style>
+        /* ══════════════════════════════════════════
+           BLOG CARD — Fixed height, image fills fully
+           ══════════════════════════════════════════ */
+
+        /* Card fixed height — controls everything */
+        .blog-card-compact {
+            height: 160px;
+            overflow: hidden;
+        }
+
+        /* Row fills card height */
+        .blog-card-compact .row.g-0 {
+            height: 100%;
+        }
+
+        /* Both columns stretch full height */
+        .blog-card-compact [class*="col-"] {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Anchor = full column size */
+        .blog-card-compact .blog-img-link {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Image wrapper = full column size */
+        .blog-list-image {
+            display: block;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 6px 0 0 6px;
+        }
+
+        /* object-fit: fill → image stretches to fit exactly, no crop, no gaps */
         .blog-list-image img {
             width: 100%;
             height: 100%;
             object-fit: fill;
+            display: block;
+            border-radius: 6px 0 0 6px;
+        }
+
+        /* ── Content column ── */
+        .blog-card-compact .col-sm-8.col-8 {
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Smooth text fade — hides overflow line by line */
+        .blog-card-compact .col-sm-8.col-8::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 28px;
+            background: linear-gradient(to bottom, transparent, #fff);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Card body: flex column to stack elements */
+        .blog-card-compact .card-body {
+            padding: 10px 14px;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        /* Title: max 2 lines */
+        .blog-card-compact .post-title {
+            font-size: 0.88rem;
+            line-height: 1.3;
+            margin-bottom: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        /* Author + date row */
+        .blog-card-compact .post-meta {
+            font-size: 0.72rem;
+            margin-bottom: 0 !important;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .blog-card-compact .post-meta .author img {
+            width: 18px !important;
+            height: 18px !important;
+        }
+
+        .blog-card-compact .post-meta .author {
+            margin-right: 6px !important;
+        }
+
+        /* Excerpt: fills remaining space, fades out */
+        .blog-card-compact .post-excerpt {
+            font-size: 0.78rem;
+            line-height: 1.4;
+            margin-bottom: 0;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        /* Category tag — hidden by default, shown if space allows */
+        .blog-card-compact .card-2-bottom {
+            display: none;
+        }
+
+        /* ── Tablet: 576px – 991px ── */
+        @media (min-width: 576px) and (max-width: 991.98px) {
+            .blog-card-compact {
+                height: 145px;
+            }
+            .blog-card-compact .card-body {
+                padding: 9px 12px;
+            }
+            .blog-card-compact .post-title {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* ── Mobile: < 576px ── */
+        @media (max-width: 575.98px) {
+            .blog-card-compact {
+                height: 130px;
+            }
+            .blog-card-compact .card-body {
+                padding: 7px 9px;
+                gap: 2px;
+            }
+            .blog-card-compact .post-title {
+                font-size: 0.78rem;
+                line-height: 1.25;
+                -webkit-line-clamp: 2;
+            }
+            .blog-card-compact .post-meta {
+                font-size: 0.68rem;
+            }
+            /* Hide date on mobile — save vertical space */
+            .blog-card-compact .date {
+                display: none !important;
+            }
+            /* Hide excerpt on mobile — only title + author visible */
+            .blog-card-compact .post-excerpt {
+                display: none;
+            }
+            .blog-card-compact .col-sm-8.col-8::after {
+                height: 18px;
+            }
+        }
+    </style>
+
+    {{-- ── Latest News sidebar fixes ── --}}
+    <style>
+        /* Global: keep each meta span on its own line — no mid-text wrapping */
+        .sidebar-news-small .post-list-small-item .content {
+            min-width: 0;
+            flex: 1;
+        }
+        .sidebar-news-small .post-list-small-item .content .post-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            line-height: 1.3;
+        }
+        .sidebar-news-small .post-list-small-item .content .post-meta span {
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sidebar-news-small .post-list-small-item .thumb {
+            flex-shrink: 0;
+        }
+
+        /* ── 992px – 1199px ── */
+        @media (min-width: 992px) and (max-width: 1199.98px) {
+            .sidebar-news-small .post-list-small-item .thumb {
+                width: 60px !important;
+                height: 60px !important;
+                margin-right: 10px !important;
+            }
+            .sidebar-news-small .post-list-small-item .thumb img {
+                width: 60px !important;
+                height: 60px !important;
+                object-fit: fill;
+                border-radius: 4px;
+            }
+            .sidebar-news-small .post-list-small-item .content h5 {
+                font-size: 0.76rem;
+                line-height: 1.3;
+                margin-bottom: 3px;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                white-space: normal;
+            }
+            .sidebar-news-small .post-list-small-item .content .post-meta {
+                font-size: 0.68rem;
+            }
+            .sidebar-news-small .post-list-small-item {
+                padding-bottom: 8px;
+                margin-bottom: 8px;
+            }
+        }
+
+        /* ── 1200px – 1399px ── */
+        @media (min-width: 1200px) and (max-width: 1399.98px) {
+            .sidebar-news-small .post-list-small-item .thumb {
+                width: 70px !important;
+                height: 70px !important;
+                margin-right: 12px !important;
+            }
+            .sidebar-news-small .post-list-small-item .thumb img {
+                width: 70px !important;
+                height: 70px !important;
+                object-fit: fill;
+                border-radius: 4px;
+            }
+            .sidebar-news-small .post-list-small-item .content h5 {
+                font-size: 0.82rem;
+                line-height: 1.35;
+                margin-bottom: 4px;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                white-space: normal;
+            }
+            .sidebar-news-small .post-list-small-item .content .post-meta {
+                font-size: 0.72rem;
+            }
+            .sidebar-news-small .post-list-small-item {
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+            }
         }
     </style>
     <div class="breacrumb-cover">
@@ -468,16 +715,16 @@ new #[Layout('components.frontend.main')] class extends Component {
                             </div>
                         </div>
                         @forelse($posts as $post)
-                            <div class="card mb-3 hover-up wow animate__animated animate__fadeIn" data-wow-delay=".0s"
+                            <div class="card mb-2 hover-up wow animate__animated animate__fadeIn blog-card-compact" data-wow-delay=".0s"
                                 wire:key="post-{{ $post->id }}"
                                 @if ($post->is_featured) style="border-color: #FFC107;" @endif>
                                 <div class="row g-0">
 
-                                    <div class="col-md-5">
-                                        <a href="{{ $post->getUrl() }}" wire:click="trackView('{{ $post->id }}')">
+                                    <div class="col-sm-4 col-4">
+                                        <a href="{{ $post->getUrl() }}" wire:click="trackView('{{ $post->id }}')" class="blog-img-link">
 
                                             <picture class="blog-list-image">
-                                                <source media="(min-width: 768px)"
+                                                <source media="(min-width: 576px)"
                                                     srcset="{{ $post->hasMediumImage()
                                                         ? $post->getMediumImageUrl()
                                                         : 'https://placehold.co/300x400?text=' . urlencode($post->title) }}">
@@ -485,13 +732,13 @@ new #[Layout('components.frontend.main')] class extends Component {
                                                 <img loading="lazy"
                                                     src="{{ $post->hasLargeImage()
                                                         ? $post->getLargeImageUrl()
-                                                        : 'https://placehold.co/1600x900?text=' . urlencode($post->title) }}"
-                                                    alt="{{ $post->title }}" class="img-fluid w-100 rounded">
+                                                        : 'https://placehold.co/600x400?text=' . urlencode($post->title) }}"
+                                                    alt="{{ $post->title }}" class="img-fluid w-100">
                                             </picture>
 
                                         </a>
                                     </div>
-                                    <div class="col-md-7">
+                                    <div class="col-sm-8 col-8">
                                         <div class="card-body">
                                             <h5 class="post-title mb-1">
                                                 <a href="{{ $post->getUrl() }}"
@@ -504,28 +751,28 @@ new #[Layout('components.frontend.main')] class extends Component {
                                                     @if ($post->author && $post->author->profile_photo_path)
                                                         <img loading="lazy"
                                                             src="{{ Storage::url($post->author->profile_photo_path) }}"
-                                                            alt="{{ $post->author->name }}" width="45"
-                                                            height="45" class="rounded-[50%]" />
+                                                            alt="{{ $post->author->name }}" width="22"
+                                                            height="22" class="rounded-[50%]" />
                                                     @else
                                                         <img loading="lazy"
-                                                            src="https://placehold.co/45x45?text={{ substr($post->author->name ?? 'A', 0, 1) }}"
-                                                            alt="{{ $post->author->name ?? 'Author' }}" width="25"
-                                                            height="25" class="rounded-[50%]" />
+                                                            src="https://placehold.co/22x22?text={{ substr($post->author->name ?? 'A', 0, 1) }}"
+                                                            alt="{{ $post->author->name ?? 'Author' }}" width="22"
+                                                            height="22" class="rounded-[50%]" />
                                                     @endif
-                                                    <span>{{ $post->author->name ?? 'Anonymous' }}</span>
+                                                    <span class="ml-1"> {{ $post->author->name ?? 'Anonymous' }}</span>
                                                 </div>
-                                                <div class="date">
+                                                <div class="date d-none d-sm-block">
                                                     <span>
                                                         <i class="fi-rr-edit mr-5 text-grey-6"></i>
                                                         {{ $post->published_at->format('M d, Y') }}
                                                     </span>
                                                 </div>
                                             </div>
-                                            <p class="post-excerpt text d-none d-md-block line-clamp-2">
+                                            <p class="post-excerpt text d-none d-sm-block">
                                                 {{ $post->content_overview }}
                                             </p>
                                             <div class="card-2-bottom mt-2">
-                                                <div class="d-flex align-items-center justify-content-between">
+                                                <div class="d-flex align-items-center">
                                                     <div class="keep-reading">
                                                         @if ($post->category)
                                                             <a href="#"
@@ -694,13 +941,8 @@ new #[Layout('components.frontend.main')] class extends Component {
                                                 wire:click="trackView('{{ $recentPost->id }}')">{{ Str::limit($recentPost->title, 50) }}</a>
                                         </h5>
                                         <div class="post-meta text">
-                                            {{-- <div class="author"> --}}
-                                                <span>{{ $recentPost->author->name ?? 'Anonymous' }} | </span>
-                                            {{-- </div> --}}
-
-                                            {{-- <div class="date"> --}}
-                                                <span>{{ $recentPost->published_at->format('M d, Y') }}</span>
-                                            {{-- </div> --}}
+                                            <span>{{ $recentPost->author->name ?? 'Anonymous' }}</span>
+                                            <span>{{ $recentPost->published_at->format('M d, Y') }}</span>
                                         </div>
                                     </div>
                                 </div>
