@@ -680,8 +680,8 @@ new #[Layout('components.frontend.main')] class extends Component {
                             @foreach ($recentPosts as $recentPost)
                                 <div class="post-list-small-item d-flex align-items-center">
                                     <figure class="thumb mr-15">
-                                        @if ($recentPost->hasLargeImage())
-                                            <img loading="lazy" src="{{ $recentPost->getLargeImageUrl() }}"
+                                        @if ($recentPost->hasMediumImage())
+                                            <img loading="lazy" src="{{ $recentPost->getMediumImageUrl() }}"
                                                 alt="{{ $recentPost->title }}" />
                                         @else
                                             <img loading="lazy"
@@ -693,14 +693,14 @@ new #[Layout('components.frontend.main')] class extends Component {
                                         <h5><a href="{{ $recentPost->getUrl() }}"
                                                 wire:click="trackView('{{ $recentPost->id }}')">{{ Str::limit($recentPost->title, 50) }}</a>
                                         </h5>
-                                        <div class="post-meta text d-flex align-items-end flex-column">
-                                            <div class="author">
-                                                <span>{{ $recentPost->author->name ?? 'Anonymous' }}</span>
-                                            </div>
+                                        <div class="post-meta text">
+                                            {{-- <div class="author"> --}}
+                                                <span>{{ $recentPost->author->name ?? 'Anonymous' }} | </span>
+                                            {{-- </div> --}}
 
-                                            <div class="date">
+                                            {{-- <div class="date"> --}}
                                                 <span>{{ $recentPost->published_at->format('M d, Y') }}</span>
-                                            </div>
+                                            {{-- </div> --}}
                                         </div>
                                     </div>
                                 </div>
