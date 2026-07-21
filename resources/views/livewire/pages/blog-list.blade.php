@@ -347,7 +347,7 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         /* Card fixed height — controls everything */
         .blog-card-compact {
-            height: 160px;
+            height: 180px;
             overflow: hidden;
         }
 
@@ -401,7 +401,7 @@ new #[Layout('components.frontend.main')] class extends Component {
             bottom: 0;
             left: 0;
             right: 0;
-            height: 28px;
+            height: 32px;
             background: linear-gradient(to bottom, transparent, #fff);
             pointer-events: none;
             z-index: 1;
@@ -409,18 +409,20 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         /* Card body: flex column to stack elements */
         .blog-card-compact .card-body {
-            padding: 10px 14px;
+            padding: 12px 16px;
             height: 100%;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 6px;
         }
 
-        /* Title: max 2 lines */
+        /* Title: max 2 lines with improved spacing */
         .blog-card-compact .post-title {
-            font-size: 0.88rem;
-            line-height: 1.3;
+            font-size: 0.95rem;
+            line-height: 1.45;
+            letter-spacing: 0.2px;
+            word-spacing: 0.5px;
             margin-bottom: 0;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -431,7 +433,9 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         /* Author + date row */
         .blog-card-compact .post-meta {
-            font-size: 0.72rem;
+            font-size: 0.76rem;
+            letter-spacing: 0.1px;
+            word-spacing: 0.3px;
             margin-bottom: 0 !important;
             flex-shrink: 0;
             display: flex;
@@ -449,10 +453,12 @@ new #[Layout('components.frontend.main')] class extends Component {
             margin-right: 6px !important;
         }
 
-        /* Excerpt: fills remaining space, fades out */
+        /* Excerpt: fills remaining space, fades out with improved spacing */
         .blog-card-compact .post-excerpt {
-            font-size: 0.78rem;
-            line-height: 1.4;
+            font-size: 0.8rem;
+            line-height: 1.55;
+            letter-spacing: 0.15px;
+            word-spacing: 0.4px;
             margin-bottom: 0;
             overflow: hidden;
             flex: 1;
@@ -466,32 +472,32 @@ new #[Layout('components.frontend.main')] class extends Component {
         /* ── Tablet: 576px – 991px ── */
         @media (min-width: 576px) and (max-width: 991.98px) {
             .blog-card-compact {
-                height: 145px;
+                height: 160px;
             }
             .blog-card-compact .card-body {
-                padding: 9px 12px;
+                padding: 10px 14px;
             }
             .blog-card-compact .post-title {
-                font-size: 0.85rem;
+                font-size: 0.9rem;
             }
         }
 
         /* ── Mobile: < 576px ── */
         @media (max-width: 575.98px) {
             .blog-card-compact {
-                height: 130px;
+                height: 140px;
             }
             .blog-card-compact .card-body {
-                padding: 7px 9px;
-                gap: 2px;
+                padding: 8px 10px;
+                gap: 4px;
             }
             .blog-card-compact .post-title {
-                font-size: 0.78rem;
-                line-height: 1.25;
+                font-size: 0.82rem;
+                line-height: 1.35;
                 -webkit-line-clamp: 2;
             }
             .blog-card-compact .post-meta {
-                font-size: 0.68rem;
+                font-size: 0.7rem;
             }
             /* Hide date on mobile — save vertical space */
             .blog-card-compact .date {
