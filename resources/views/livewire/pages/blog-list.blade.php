@@ -394,19 +394,6 @@ new #[Layout('components.frontend.main')] class extends Component {
             position: relative;
         }
 
-        /* Smooth text fade — hides overflow line by line */
-        .blog-card-compact .col-sm-8.col-8::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 32px;
-            background: linear-gradient(to bottom, transparent, #fff);
-            pointer-events: none;
-            z-index: 1;
-        }
-
         /* Card body: flex column to stack elements */
         .blog-card-compact .card-body {
             padding: 12px 16px;
@@ -453,20 +440,64 @@ new #[Layout('components.frontend.main')] class extends Component {
             margin-right: 6px !important;
         }
 
-        /* Excerpt: fills remaining space, fades out with improved spacing */
+        /* Excerpt: fills remaining space, clamped to 2 lines, no hard line-by-line crop */
         .blog-card-compact .post-excerpt {
             font-size: 0.8rem;
-            line-height: 1.55;
+            line-height: 1.5;
             letter-spacing: 0.15px;
             word-spacing: 0.4px;
             margin-bottom: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
             overflow: hidden;
             flex: 1;
         }
 
-        /* Category tag — hidden by default, shown if space allows */
-        .blog-card-compact .card-2-bottom {
-            display: none;
+        /* Card Footer: category tag and read more button */
+        .blog-card-compact .blog-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        .blog-card-compact .btn-category-tag {
+            font-size: 0.7rem;
+            color: #4a5568;
+            background: #edf2f7;
+            padding: 2px 8px;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        
+        .blog-card-compact .btn-category-tag:hover {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .blog-card-compact .btn-read-more {
+            font-size: 0.72rem;
+            color: #0f0f6e;
+            border: 1px solid #0f0f6e;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            background: transparent;
+        }
+
+        .blog-card-compact .btn-read-more:hover {
+            background: #0f0f6e;
+            color: #fff !important;
+            text-decoration: none;
         }
 
         /* ── Tablet: 576px – 991px ── */
@@ -479,6 +510,9 @@ new #[Layout('components.frontend.main')] class extends Component {
             }
             .blog-card-compact .post-title {
                 font-size: 0.9rem;
+            }
+            .blog-card-compact .post-excerpt {
+                -webkit-line-clamp: 1;
             }
         }
 
@@ -507,8 +541,13 @@ new #[Layout('components.frontend.main')] class extends Component {
             .blog-card-compact .post-excerpt {
                 display: none;
             }
-            .blog-card-compact .col-sm-8.col-8::after {
-                height: 18px;
+            .blog-card-compact .btn-read-more {
+                padding: 1px 8px;
+                font-size: 0.68rem;
+            }
+            .blog-card-compact .btn-category-tag {
+                padding: 1px 6px;
+                font-size: 0.66rem;
             }
         }
     </style>
@@ -777,21 +816,20 @@ new #[Layout('components.frontend.main')] class extends Component {
                                             <p class="post-excerpt text d-none d-sm-block">
                                                 {{ $post->content_overview }}
                                             </p>
-                                            <div class="card-2-bottom mt-2">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="keep-reading">
-                                                        @if ($post->category)
-                                                            <a href="#"
-                                                                wire:click.prevent="filterByCategory('{{ $post->category->id }}')"
-                                                                class="btn btn-tags-sm mb-10 mr-5">
-                                                                {{ $post->category->name }}
-                                                            </a>
-                                                        @else
-                                                            <span
-                                                                class="btn btn-tags-sm mb-10 mr-5">Uncategorized</span>
-                                                        @endif
-                                                    </div>
-                                                </div>
+                                            <div class="blog-card-footer">
+                                                @if ($post->category)
+                                                    <a href="#"
+                                                        wire:click.prevent="filterByCategory('{{ $post->category->id }}')"
+                                                        class="btn-category-tag">
+                                                        {{ $post->category->name }}
+                                                    </a>
+                                                @else
+                                                    <span class="btn-category-tag">Uncategorized</span>
+                                                @endif
+
+                                                <a href="{{ $post->getUrl() }}" wire:click="trackView('{{ $post->id }}')" class="btn-read-more">
+                                                    Read More →
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
