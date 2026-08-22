@@ -46,7 +46,34 @@ new #[Layout('components.frontend.main')] class extends Component {
 
         view()->share('twitterTags', $this->job->twitter_tags);
 
-        view()->share('schemaData', array_filter([$this->generateJobPostingSchema(), $this->generateFaqSchema()]));
+        $breadcrumbItems = [
+            ['label' => 'Home', 'url' => route('home')],
+            ['label' => 'Jobs', 'url' => route('jobs')],
+        ];
+
+        if ($this->job->job_category) {
+            $breadcrumbItems[] = [
+                'label' => $this->job->job_category->name,
+                'url' => route('jobs.category', ['category' => $this->job->job_category->slug]),
+            ];
+        }
+
+        $locationName = $this->job->location?->name ?? $this->job->employer?->city;
+        if ($locationName) {
+            $breadcrumbItems[] = [
+                'label' => $locationName,
+                'url' => route('jobs.location', ['location' => \Illuminate\Support\Str::slug($locationName)]),
+            ];
+        }
+
+        $breadcrumbItems[] = [
+            'label' => $this->job->title,
+            'url' => route('jobs.show', $this->job->slug),
+        ];
+
+        view()->share('breadcrumbItems', $breadcrumbItems);
+
+        view()->share('schemaData', array_filter([$this->generateJobPostingSchema()]));
     }
 
     protected function generateJobPostingSchema(): array
@@ -57,7 +84,7 @@ new #[Layout('components.frontend.main')] class extends Component {
         // Clean employer address
         $rawAddress = trim((string) ($employer?->address ?? ''));
         $addressParts = array_map('trim', explode(',', $rawAddress));
-        
+
         // Filter out empty parts
         $addressParts = array_values(array_filter($addressParts, 'filled'));
 
@@ -123,14 +150,16 @@ new #[Layout('components.frontend.main')] class extends Component {
                 // Job Expiry Date
                 'validThrough' => ($this->job->created_at ?? now())->copy()->addMonth()->format('Y-m-d'),
 
-                'employmentType' => $this->job->job_type ? match ($this->job->job_type) {
-                    \App\Enums\EmploymentType::FULL_TIME => 'FULL_TIME',
-                    \App\Enums\EmploymentType::PART_TIME => 'PART_TIME',
-                    \App\Enums\EmploymentType::CONTRACT => 'CONTRACTOR',
-                    \App\Enums\EmploymentType::INTERNSHIP => 'INTERN',
-                    \App\Enums\EmploymentType::TEMPORARY => 'TEMPORARY',
-                    default => 'OTHER',
-                } : null,
+                'employmentType' => $this->job->job_type
+                    ? match ($this->job->job_type) {
+                        \App\Enums\EmploymentType::FULL_TIME => 'FULL_TIME',
+                        \App\Enums\EmploymentType::PART_TIME => 'PART_TIME',
+                        \App\Enums\EmploymentType::CONTRACT => 'CONTRACTOR',
+                        \App\Enums\EmploymentType::INTERNSHIP => 'INTERN',
+                        \App\Enums\EmploymentType::TEMPORARY => 'TEMPORARY',
+                        default => 'OTHER',
+                    }
+                    : null,
 
                 // Salary Information
                 'baseSalary' => filled($this->job->salary_range)
@@ -180,39 +209,40 @@ new #[Layout('components.frontend.main')] class extends Component {
             fn($value) => filled($value),
         );
     }
-    protected function generateFaqSchema(): ?array
-    {
-        $faqs = rememberIfEnabled('job_faqs', now()->addHours(12), fn() => Faq::active()->where('section', 'jobs')->get());
-        if ($faqs->isEmpty()) {
-            return null;
-        }
 
-        return [
-            '@context' => 'https://schema.org',
-            '@type' => 'FAQPage',
-            'mainEntity' => $faqs
-                ->map(function ($faq) {
-                    return [
-                        '@type' => 'Question',
-                        'name' => strtr($faq->question, [
-                            '{category-name}' => $this->job->title,
-                            '{place-name}' => $this->job->location?->name,
-                        ]),
-                        'acceptedAnswer' => [
-                            '@type' => 'Answer',
-                            'text' => strip_tags(
-                                strtr($faq->answer, [
-                                    '{category-name}' => $this->job->title,
-                                    '{place-name}' => $this->job->location?->name,
-                                ]),
-                            ),
-                        ],
-                    ];
-                })
-                ->values()
-                ->all(),
-        ];
-    }
+    // protected function generateFaqSchema(): ?array
+    // {
+    //     $faqs = rememberIfEnabled('job_faqs', now()->addHours(12), fn() => Faq::active()->where('section', 'jobs')->get());
+    //     if ($faqs->isEmpty()) {
+    //         return null;
+    //     }
+
+    //     return [
+    //         '@context' => 'https://schema.org',
+    //         '@type' => 'FAQPage',
+    //         'mainEntity' => $faqs
+    //             ->map(function ($faq) {
+    //                 return [
+    //                     '@type' => 'Question',
+    //                     'name' => strtr($faq->question, [
+    //                         '{category-name}' => $this->job->title,
+    //                         '{place-name}' => $this->job->location?->name,
+    //                     ]),
+    //                     'acceptedAnswer' => [
+    //                         '@type' => 'Answer',
+    //                         'text' => strip_tags(
+    //                             strtr($faq->answer, [
+    //                                 '{category-name}' => $this->job->title,
+    //                                 '{place-name}' => $this->job->location?->name,
+    //                             ]),
+    //                         ),
+    //                     ],
+    //                 ];
+    //             })
+    //             ->values()
+    //             ->all(),
+    //     ];
+    // }
 }; ?>
 
 <div>
@@ -222,7 +252,19 @@ new #[Layout('components.frontend.main')] class extends Component {
                 <h1 style="font-size: 36px;">{{ $job->title }}</h1>
                 <ul class="breadcrumbs">
                     <li><a href="{{ route('home') }}">Home</a></li>
-                    <li><a href="{{ route('jobs') }}">Jobs listing</a></li>
+                    <li><a href="{{ route('jobs') }}">Jobs</a></li>
+                    @if ($job->job_category)
+                        <li>
+                            <a
+                                href="{{ route('jobs.category', ['category' => $job->job_category->slug]) }}">{{ $job->job_category->name }}</a>
+                        </li>
+                    @endif
+                    @if ($locationName = $job->location?->name ?? $job->employer?->city)
+                        <li>
+                            <a
+                                href="{{ route('jobs.location', ['location' => \Illuminate\Support\Str::slug($locationName)]) }}">{{ $locationName }}</a>
+                        </li>
+                    @endif
                 </ul>
             </div>
         </div>
@@ -405,13 +447,27 @@ new #[Layout('components.frontend.main')] class extends Component {
                             <div class="sidebar-team-member pt-40">
                                 <h6 class="small-heading">Contact Info</h6>
                                 <div class="info-address">
-                                    <span><i class="fi-rr-marker"></i> <span>{{ $job->employer->address }},
-                                            {{ $job->employer->city }}, {{ $job->employer->state }},
-                                            {{ $job->employer->country }}</span></span>
-                                    <span><i class="fi-rr-headset"></i> <span>{{ $job->employer->phone }}
-                                        </span></span>
-                                    <span><i class="fi-rr-paper-plane"></i>
-                                        <span>{{ $job->employer->email }}</span></span>
+                                    <span>
+                                        <i class="fi-rr-marker"></i>
+                                        <span>
+                                            {{ $job->employer->address }}
+                                            {{-- {{ $job->employer->city }}, --}}
+                                            {{-- {{ $job->employer->state }}, --}}
+                                            {{-- {{ $job->employer->country->name }} --}}
+                                        </span>
+                                    </span>
+                                    <span>
+                                        <i class="fi-rr-headset"></i>
+                                        <span>
+                                            {{ $job->employer->phone }}
+                                        </span>
+                                    </span>
+                                    <span>
+                                        <i class="fi-rr-paper-plane"></i>
+                                        <span>
+                                            {{ $job->employer->email }}
+                                        </span>
+                                    </span>
                                 </div>
                             </div>
                         @endif
