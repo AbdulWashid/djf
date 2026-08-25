@@ -448,9 +448,9 @@
                             The #1 portal for UAE careers.
                         </div>
                         <ul class="mt-20">
-                            <li><span class="fw-bold">Address:</span> {{ $siteSettings->company_address ?? '' }}</li>
+                            <li><span class="fw-bold">Address: </span> {{ $siteSettings->company_address ?? '' }}</li>
                             <li class="text-nowrap">
-                                <span class="fw-bold">Email:</span>
+                                <span class="fw-bold">Email: </span>
                                 @if ($siteSettings->company_email)
                                     @php
                                         [$emailUser, $emailDomain] = explode('@', $siteSettings->company_email, 2);
